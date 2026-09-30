@@ -56,7 +56,7 @@ export function AddFoodSheet({ onClose, date, initialMeal }: Props) {
   const limit = searching ? SHORTLIST : CATEGORY_SHORTLIST;
   const visible = showAll ? list : list.slice(0, limit);
 
-  const rows = (foods: Food[]) => foods.map((f) => <FoodRow key={f.id} food={f} favorite={browser.isFavorite(f.id)} onSelect={setPicked} />);
+  const rows = (foods: Food[]) => foods.map((f) => <FoodRow key={f.id} food={f} favorite={browser.isFavorite(f.id)} last={lastUsed[f.id]} onSelect={setPicked} />);
 
   const confirm = (choice: LogChoice) => {
     if (!picked) return;
@@ -99,7 +99,7 @@ export function AddFoodSheet({ onClose, date, initialMeal }: Props) {
 
         {!searching && !category && (
           <>
-            <SectionLabel>Quick add</SectionLabel>
+            <SectionLabel>Common foods</SectionLabel>
             <div className="scroll-row">
               {browser.quick.map((f) => <Chip key={f.id} selected={false} onClick={() => setPicked(f)}>{f.name}</Chip>)}
             </div>

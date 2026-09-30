@@ -13,7 +13,7 @@ interface RingProps {
   children?: ReactNode;
 }
 
-/** A progress ring that draws itself in on first paint (already drawn on a reloaded page) and eases to each new value. */
+/** A progress ring that draws itself in when it appears (already drawn when the app starts) and eases to each new value. */
 export function Ring({ value, max, size = 152, stroke = 14, tone = "primary", label, children }: RingProps) {
   const radius = (size - stroke) / 2;
   const circumference = 2 * Math.PI * radius;

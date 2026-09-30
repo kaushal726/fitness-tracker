@@ -18,7 +18,7 @@ export function Onboarding() {
   const controller = useProfileForm();
   const { form } = controller;
   const [current, setCurrent] = useState<WizardStep>("name");
-  /** Which way the step slides in. Null, on a reloaded page, until the first move: that first step just appears. */
+  /** Which way the step slides in. Null until the first move: the step the app starts on just appears. */
   const [direction, setDirection] = useState<"forward" | "back" | null>(() => (isInstantArrival() ? null : "forward"));
 
   const def = current === "plan" ? null : stepById(current);

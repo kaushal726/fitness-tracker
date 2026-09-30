@@ -5,8 +5,42 @@
 .header {
   display: flex;
   align-items: center;
+  gap: 4px;
+  padding-right: 14px;
+}
+
+.heading {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font: inherit;
+}
+
+/* The meal's name, what is in it and its total. A button when there is something to fold. */
+.summary {
+  display: flex;
+  align-items: center;
   gap: 14px;
-  padding: 14px 14px 14px 16px;
+  width: 100%;
+  padding: 14px 6px 14px 16px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+.toggle {
+  cursor: pointer;
+  transition: background var(--dur-fast) ease;
+}
+
+.toggle:hover {
+  background: var(--surface-2);
+}
+
+.toggle:active {
+  background: var(--surface-3);
 }
 
 .tile {
@@ -27,6 +61,8 @@
 
 .headText {
   flex: 1;
+  display: flex;
+  flex-direction: column;
   min-width: 0;
 }
 
@@ -39,7 +75,11 @@
 .count {
   margin-top: 1px;
   font-size: 13px;
+  font-weight: 500;
   color: var(--ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .total {
@@ -55,6 +95,33 @@
   font-weight: 600;
   letter-spacing: 0;
   color: var(--ink-3);
+}
+
+.chevron {
+  flex: none;
+  color: var(--ink-3);
+  font-size: 20px;
+  transition: transform var(--dur) var(--ease-out);
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+/* Folding slides the list's height to and from zero. */
+.body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--dur) var(--ease-out);
+}
+
+.bodyOpen {
+  grid-template-rows: 1fr;
+}
+
+.bodyInner {
+  min-height: 0;
+  overflow: hidden;
 }
 
 .list {

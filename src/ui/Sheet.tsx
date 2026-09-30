@@ -1,9 +1,9 @@
 /* Responsive dialog: a bottom sheet (or full screen for longer flows) on phones, a centred modal on
  * larger screens. Closes on Back, Escape, the close button or a backdrop tap.
  */
-import { useEffect, useId, useRef, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { isTopSheet, registerSheet, unregisterSheet } from "../app/sheetHistory";
+import { isTopSheet, openSheetCount, registerSheet, unregisterSheet } from "../app/sheetHistory";
 import { cx } from "../lib/cx";
 import { IconButton } from "./Button";
 import { IconClose } from "./icons";
@@ -44,6 +44,8 @@ function SheetPanel({ onClose, title, subtitle, children, footer, headerAction, 
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
   const close = () => onCloseRef.current();
+  /** Decided when the sheet opens: is another sheet already open beneath it? */
+  const [stacked] = useState(() => openSheetCount() > 0);
   useScrollLock();
 
   useEffect(() => {
@@ -64,7 +66,7 @@ function SheetPanel({ onClose, title, subtitle, children, footer, headerAction, 
   return createPortal(
     <div className={styles.root}>
       <div className={styles.backdrop} onClick={close} aria-hidden />
-      <div ref={panelRef} className={cx(styles.panel, size === "full" && styles.full)} role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1}>
+      <div ref={panelRef} className={cx(styles.panel, size === "full" && styles.full, stacked && styles.stacked)} role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1}>
         <div className={styles.grabber} aria-hidden />
         <header className={styles.header}>
           <div className={styles.titleWrap}>

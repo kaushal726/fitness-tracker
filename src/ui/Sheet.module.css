@@ -12,6 +12,12 @@
 }
 
 .panel {
+  /* What is drawn on a sheet uses the sheet's own card colours, so it stands out from the sheet, not from the page. */
+  --surface: var(--sheet-surface);
+  --surface-2: var(--sheet-surface-2);
+  --surface-3: var(--sheet-surface-3);
+  --line: var(--sheet-line);
+
   position: absolute;
   left: 0;
   right: 0;
@@ -19,18 +25,23 @@
   display: flex;
   flex-direction: column;
   max-height: calc(100dvh - 24px - var(--safe-top));
-  background: var(--bg);
+  background: var(--sheet);
+  border: 1px solid var(--sheet-edge);
   border-radius: var(--r-xl) var(--r-xl) 0 0;
   box-shadow: var(--shadow-sheet);
   outline: none;
   animation: rise var(--dur-slow) var(--ease-out);
 }
 
+/* Tall, but still a sheet: a strip of the dimmed page stays above it, so it reads as sliding up over the screen. */
 .full {
-  top: 0;
+  top: calc(24px + var(--safe-top));
   max-height: none;
-  border-radius: 0;
-  padding-top: var(--safe-top);
+}
+
+/* Opened over another sheet: it stops short of the one below, so a band of that sheet stays in view and the stack can be seen. */
+.stacked {
+  max-height: calc(100dvh - 52px - var(--safe-top));
 }
 
 .grabber {
@@ -40,10 +51,6 @@
   margin: 10px auto 0;
   border-radius: var(--r-pill);
   background: var(--line-strong);
-}
-
-.full .grabber {
-  display: none;
 }
 
 .header {
@@ -96,7 +103,7 @@
   align-items: center;
   gap: 10px;
   padding: 12px 20px calc(14px + var(--safe-bottom));
-  background: var(--bg);
+  background: var(--sheet);
   border-top: 1px solid var(--line);
 }
 
@@ -109,7 +116,6 @@
     right: auto;
     width: min(560px, calc(100vw - 48px));
     max-height: 88dvh;
-    padding-top: 0;
     border-radius: var(--r-xl);
     transform: translate(-50%, -50%);
     animation: pop var(--dur) var(--ease-out);
@@ -135,7 +141,7 @@
 }
 
 @keyframes rise {
-  from { transform: translateY(32px); opacity: 0.6; }
+  from { transform: translateY(100%); }
 }
 
 @keyframes pop {

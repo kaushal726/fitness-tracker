@@ -1,6 +1,6 @@
 import "fake-indexeddb/auto";
 import { describe, expect, it } from "vitest";
-import { defaultPortion, convertQuantity, portionOptions, portionText } from "../domain/portions.ts";
+import { defaultPortion, convertQuantity, lastPortionSummary, portionOptions, portionText } from "../domain/portions.ts";
 import { createCustomFood, getFoodById } from "../nutrition/index.ts";
 import type { Food } from "../nutrition/types.ts";
 import { parseBackup } from "./backup.ts";
@@ -25,6 +25,12 @@ describe("portions", () => {
     expect(portionText(food("plain_dosa"), 2, "piece")).toBe("2 dosa");
     expect(portionText(food("chicken_breast"), 200, "g")).toBe("200 g");
     expect(portionText(food("steamed_rice"), 1.5, "katori")).toBe("1.5 katori");
+  });
+
+  it("says how a food was last had, in the words the amount sheet uses", () => {
+    expect(lastPortionSummary(food("roti"), { quantity: 3, unit: "piece" })).toEqual({ text: "3 roti", calories: 318 });
+    expect(lastPortionSummary(food("roti"))).toBeNull();
+    expect(lastPortionSummary(food("roti"), { quantity: 3, unit: "nonsense" })).toBeNull();
   });
 
   it("remembers the last portion, and keeps the amount when the unit changes", () => {

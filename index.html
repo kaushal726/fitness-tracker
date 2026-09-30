@@ -21,22 +21,21 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="color-scheme" content="light dark" />
     <script>
-      // Before first paint: no white flash on a dark phone. Mirrors src/app/theme.ts.
+      // Before first paint, so the page has the right colours from the start and a dark phone sees no white
+      // flash while the app loads. Mirrors src/app/theme.ts.
       (function () {
         try {
           var saved = localStorage.getItem("fitly_theme");
-          if (saved !== "dark" && saved !== "light") return;   // following the phone: the metas above are already right
-          document.documentElement.dataset.theme = saved;
+          var pinned = saved === "dark" || saved === "light";
+          var theme = pinned ? saved : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          document.documentElement.dataset.theme = theme;
+          if (!pinned) return;   // following the phone: the metas above are already right
           var metas = document.querySelectorAll('meta[name="theme-color"]');
-          metas[0].media = saved === "light" ? "all" : "not all";
-          metas[1].media = saved === "dark" ? "all" : "not all";
+          metas[0].media = theme === "light" ? "all" : "not all";
+          metas[1].media = theme === "dark" ? "all" : "not all";
         } catch (e) {}
       })();
     </script>
-      <style>
-      /* Until the app draws its own opening screen, show the brand colour: no white or black flash. */
-      #root:empty { position: fixed; inset: 0; background: #1f6f54; }
-    </style>
   </head>
   <body>
     <div id="root"></div>

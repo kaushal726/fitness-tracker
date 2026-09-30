@@ -25,21 +25,21 @@ npm run build            # typecheck + production build
 
 ## The app
 
-Opens with a short animation (a reload skips it, the fade-in and the ring drawing itself, and shows the screen as it is), then a setup that asks **one question at a time** (name, gender, age, height, weight,
+Opens straight on its first screen, with no opening animation. A new person first gets a setup that asks **one question at a time** (name, gender, age, height, weight,
 goal, target, timeline, activity) and ends on the daily plan. After that there are three places, plus one big button:
 
 | | |
 |---|---|
-| **Today** | Calories in a ring, the four macros, a strip of days to switch between, and four meal cards. |
+| **Today** | Calories in a ring, the four macros, a strip of days to switch between, and four meal cards that fold away like an accordion: the meal you are in is open, the rest are one line with their total, and food added to a folded meal opens it. |
 | **History** | The week as seven bars against the goal, then every logged day. |
 | **Profile** | The plan, goal and body (change one answer at a time), meal times, theme, backup, About, and today's thought as a faded line at the very bottom. |
-| **Add food** | Always in the bottom bar. Search, shortcuts to common foods, favourites, recents, or browse by category. Every food, the `+` included, asks for the amount, unit and meal before anything is added, so three chapatis are one entry, not three taps. |
+| **Add food** | Always in the bottom bar. Search, shortcuts to common foods, favourites, recents, or browse by category. Every food, the `+` included, asks for the amount, unit and meal before anything is added, so three chapatis are one entry, not three taps. A row says how you last had that food, which is where the amount sheet starts. |
 
 The timeline accepts any number of days, weeks or months. Height can be typed in centimetres or feet and inches.
 
 **Design system.** Colours, sizes and motion come from `src/styles/tokens.css` (light and dark). Components live in
 `src/ui/`, icons (Lucide) are named in `src/ui/icons.ts`, and the typeface is Plus Jakarta Sans, bundled with the app so
-it works offline. Motion is skipped for people who ask their device for less of it.
+it works offline. Motion is skipped for people who ask their device for less of it. Sheets are their own layer: lighter than the page in dark mode (dimming a dark page shows nothing), a tall sheet leaves a strip of the page above it, and a sheet opened over another stops short of it so the stack can be seen.
 
 **Code.** `src/nutrition/` is the food engine, `src/domain/` is the maths (goals, timeline, meals, portions), `src/data/`
 is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features/` holds one folder per screen.

@@ -48,6 +48,9 @@ window.addEventListener("popstate", () => {
   ensureGuard();
 });
 
+/** How many sheets are open at this moment. */
+export const openSheetCount = (): number => stack.length;
+
 export function isTopSheet(id: number): boolean {
   return stack[stack.length - 1]?.id === id;
 }

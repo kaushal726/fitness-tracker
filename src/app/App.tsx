@@ -12,9 +12,7 @@ import { Dock } from "./Dock.tsx";
 import type { TabId } from "./navItems.ts";
 import { Screen } from "./Screen.tsx";
 import { SideNav } from "./SideNav.tsx";
-import { Splash } from "./Splash.tsx";
 import { UpdatePrompt } from "./UpdatePrompt.tsx";
-import { useSplash } from "./useSplash.ts";
 import { useToday } from "./useToday.ts";
 import styles from "./App.module.css";
 
@@ -27,7 +25,6 @@ export function App() {
   const { ready, profile } = useAppState();
   const toast = useToast();
   const today = useToday();
-  const splash = useSplash(ready);
   const [tab, setTab] = useState<TabId>("today");
   /** Null means "follow today". */
   const [pickedDate, setPickedDate] = useState<string | null>(null);
@@ -41,7 +38,7 @@ export function App() {
 
   useEffect(() => onStorageError(() => toast("Couldn't save on this device. Free up some space and try again.", { tone: "error" })), [toast]);
 
-  /** The first screen has been drawn; on a reloaded page, animations play as usual from here. */
+  /** The first screen has been drawn; from here on, animations play as usual. */
   useEffect(() => {
     if (ready) endInstantArrival();
   }, [ready]);
@@ -77,7 +74,6 @@ export function App() {
         </>
       )}
       {ready && !profile && <Onboarding />}
-      {splash !== "done" && <Splash leaving={splash === "leaving"} />}
     </>
   );
 }

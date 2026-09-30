@@ -46,6 +46,17 @@
 
   --track: color-mix(in srgb, var(--ink) 9%, transparent);
   --overlay: rgba(12, 18, 14, 0.48);
+
+  /* Sheets and dialogs sit above the page. In light mode they share the page colour, and the dimmed page behind
+   * them shows where they start. Dimming a dark page shows nothing, so in dark mode a sheet is a lighter
+   * colour, its cards lighter again, and it has a faint edge: each layer reads as a layer. */
+  --sheet: var(--bg);
+  --sheet-edge: transparent;
+  --sheet-surface: var(--surface);
+  --sheet-surface-2: var(--surface-2);
+  --sheet-surface-3: var(--surface-3);
+  --sheet-line: var(--line);
+
   --toast-bg: #15201a;
   --toast-ink: #f4f7f5;
   --toast-action: #7fe3b9;
@@ -121,6 +132,14 @@
 
   --track: color-mix(in srgb, var(--ink) 11%, transparent);
   --overlay: rgba(0, 0, 0, 0.62);
+
+  --sheet: #18211c;
+  --sheet-edge: rgba(255, 255, 255, 0.1);
+  --sheet-surface: #222d27;
+  --sheet-surface-2: #2a372f;
+  --sheet-surface-3: #33423a;
+  --sheet-line: #34443b;
+
   --toast-bg: #edf3ef;
   --toast-ink: #0b100d;
   --toast-action: #0f6a4a;

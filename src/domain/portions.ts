@@ -3,7 +3,7 @@
  */
 import type { LastUsed } from "../data/types.ts";
 import { formatQuantity, sentenceCase } from "../lib/format.ts";
-import { foodToGrams } from "../nutrition/calculate.ts";
+import { foodToGrams, nutritionForFood } from "../nutrition/calculate.ts";
 import type { Food } from "../nutrition/types.ts";
 
 const MASS_UNIT = "g";
@@ -52,6 +52,16 @@ export function quantityStep(unit: string): number {
 
 export function minQuantity(unit: string): number {
   return isMeasuredUnit(unit) ? MIN_MEASURED : MIN_COUNTED;
+}
+
+/** How a food was last had, worded and totalled ("3 roti", 318 kcal). Null when it never was, or that unit no longer fits. */
+export function lastPortionSummary(food: Food, last?: LastUsed): { text: string; calories: number } | null {
+  if (!last || !portionOptions(food).some((o) => o.unit === last.unit)) return null;
+  try {
+    return { text: portionText(food, last.quantity, last.unit), calories: nutritionForFood(food, last.quantity, last.unit).calories };
+  } catch {
+    return null;
+  }
 }
 
 /** What to show first: how the person last had this food, else one default serving. */

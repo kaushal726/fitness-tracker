@@ -4,13 +4,13 @@ import { useAppState } from "../../data/store.ts";
 import type { Entry, Profile } from "../../data/types.ts";
 import { computePlan } from "../../domain/goals.ts";
 import { dayInsight } from "../../domain/insights.ts";
-import { MEAL_ORDER } from "../../domain/meals.ts";
+import { mealForTime } from "../../domain/meals.ts";
 import type { MealType } from "../../nutrition/types.ts";
 import { CalorieHero } from "./CalorieHero.tsx";
 import { DayHeader } from "./DayHeader.tsx";
 import { EditEntrySheet } from "./EditEntrySheet.tsx";
 import { InsightPill } from "./InsightPill.tsx";
-import { MealCard } from "./MealCard.tsx";
+import { MealList } from "./MealList.tsx";
 import { WeekStrip } from "./WeekStrip.tsx";
 import styles from "./TodayScreen.module.css";
 
@@ -35,6 +35,7 @@ export function TodayScreen({ profile, date, today, onSelectDate, onAdd }: Props
   const logged = useMemo(() => new Set(entries.map((e) => e.date)), [entries]);
   const editing: Entry | undefined = dayEntries.find((e) => e.id === editingId);
   const insight = dayInsight(totals, plan.targets, dayEntries.length > 0, new Date().getHours());
+  const currentMeal = date === today ? mealForTime(new Date(), settings.mealStartHours) : null;
 
   return (
     <>
@@ -46,9 +47,7 @@ export function TodayScreen({ profile, date, today, onSelectDate, onAdd }: Props
           {insight && <InsightPill insight={insight} />}
         </div>
         <div className={styles.meals}>
-          {MEAL_ORDER.map((meal) => (
-            <MealCard key={meal} meal={meal} entries={byMeal[meal]} onOpen={(e) => setEditingId(e.id)} onAdd={onAdd} />
-          ))}
+          <MealList key={date} byMeal={byMeal} currentMeal={currentMeal} onOpenEntry={(e) => setEditingId(e.id)} onAdd={onAdd} />
         </div>
       </div>
 
