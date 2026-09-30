@@ -3,9 +3,11 @@
  */
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
-import { getAllFoods } from "../src/nutrition/registry.ts";
+import { getAllFoods, loadFoods } from "../src/nutrition/registry.ts";
 
 const OUT = fileURLToPath(new URL("../data/food-index.json", import.meta.url));
+
+await loadFoods();
 
 const index = getAllFoods().map((f) => ({
   id: f.id,

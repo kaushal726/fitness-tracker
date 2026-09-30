@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 import react from "@vitejs/plugin-react";
@@ -19,6 +20,9 @@ export default defineConfig({
     appShell({ appName: APP_NAME, description: WEB_MANIFEST.description, themeColor: THEME_COLOR, themeColorDark: THEME_COLOR_DARK, manifest: WEB_MANIFEST }),
     serviceWorker({ templatePath: fromRoot("./vite-plugins/sw-template.js") }),
   ],
+  // The food data is one deliberately large chunk, fetched after the first screen (see nutrition/registry.ts).
+  build: { chunkSizeWarningLimit: 3000 },
   server: { port: APP_PORT, strictPort: true },
+  test: { setupFiles: ["./src/test/setup.ts"] },
   preview: { port: APP_PORT, strictPort: true },
 });

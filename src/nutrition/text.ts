@@ -14,6 +14,33 @@ export function tokenize(input: string): string[] {
   return text ? text.split(" ") : [];
 }
 
+/** Other common spellings of words the data writes one way. Fuzzy matching cannot reach these: they are short or differ by more than one letter. */
+const SPELLING_VARIANTS: Record<string, string> = {
+  daal: "dal",
+  dhal: "dal",
+  dahl: "dal",
+  chat: "chaat",
+  laddu: "ladoo",
+  laddoo: "ladoo",
+  ladu: "ladoo",
+  panir: "paneer",
+  khir: "kheer",
+  rabadi: "rabri",
+  papadam: "papad",
+  papadum: "papad",
+  pappad: "papad",
+};
+
+/** normalizeText with every word spelled the way the data spells it, so either spelling finds the same foods. */
+export function normalizeForSearch(input: string): string {
+  return normalizeText(input).split(" ").map((word) => SPELLING_VARIANTS[word] ?? word).join(" ");
+}
+
+export function tokenizeForSearch(input: string): string[] {
+  const text = normalizeForSearch(input);
+  return text ? text.split(" ") : [];
+}
+
 /** Levenshtein distance that gives up (returns max + 1) once it can no longer stay within `max`. */
 export function boundedDistance(a: string, b: string, max: number): number {
   if (Math.abs(a.length - b.length) > max) return max + 1;

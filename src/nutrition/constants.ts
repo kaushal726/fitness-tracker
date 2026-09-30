@@ -12,6 +12,9 @@ export const ZERO_TOTALS: NutritionTotals = { calories: 0, protein: 0, carbs: 0,
 /** Energy per gram, used only for the data sanity check. */
 export const KCAL_PER_G = { protein: 4, carbohydrate: 4, fat: 9, fiberDiscounted: 2 } as const;
 
+/** Alcoholic drinks get most of their energy from ethanol, which is not a tracked macro, so the macro-based calorie check skips them. */
+export const ALCOHOL_SUB_CATEGORY = "alcohol";
+
 /** Tags derived from the numbers. Per 100 g. These are filters, not health claims. */
 export const AUTO_TAG_RULES: { tag: string; test: (n: Nutrition) => boolean }[] = [
   { tag: "high_protein", test: (n) => n.protein >= 15 },

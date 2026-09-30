@@ -97,6 +97,12 @@ export interface RawFile {
   foods: RawFood[];
 }
 
+/** One data file with the name it is listed under. */
+export interface DataFile {
+  name: string;
+  data: RawFile;
+}
+
 /** A food ready to use: defaults applied, derived fields filled. */
 export interface Food {
   id: string;
