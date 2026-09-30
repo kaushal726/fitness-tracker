@@ -4,7 +4,7 @@
 import type { LastUsed } from "../data/types.ts";
 import { formatQuantity, sentenceCase } from "../lib/format.ts";
 import { foodToGrams, nutritionForFood } from "../nutrition/calculate.ts";
-import type { Food } from "../nutrition/types.ts";
+import type { Food, NutritionTotals } from "../nutrition/types.ts";
 
 const MASS_UNIT = "g";
 const VOLUME_UNIT = "ml";
@@ -52,6 +52,16 @@ export function quantityStep(unit: string): number {
 
 export function minQuantity(unit: string): number {
   return isMeasuredUnit(unit) ? MIN_MEASURED : MIN_COUNTED;
+}
+
+/** What a portion comes to, or null while the quantity is not a usable number or the unit does not fit the food. */
+export function portionNutrition(food: Food, quantity: number, unit: string): NutritionTotals | null {
+  if (!(quantity > 0)) return null;
+  try {
+    return nutritionForFood(food, quantity, unit);
+  } catch {
+    return null;
+  }
 }
 
 /** How a food was last had, worded and totalled ("3 roti", 318 kcal). Null when it never was, or that unit no longer fits. */

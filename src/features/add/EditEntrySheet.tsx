@@ -47,14 +47,13 @@ export function EditEntrySheet({ entry, onClose }: Props) {
 
   return (
     <PortionSheet
-      mode="edit"
       food={food}
       initial={{ quantity: entry.quantity, unit: entry.unit }}
       initialMeal={entry.meal}
       onClose={onClose}
       onDelete={remove}
       onConfirm={({ quantity, unit, meal }) => {
-        replaceEntry(reviseEntry(entry, food, quantity, unit, meal ?? entry.meal));
+        replaceEntry(reviseEntry(entry, food, quantity, unit, meal));
         onClose();
       }}
     />

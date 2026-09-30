@@ -1,0 +1,12 @@
+/* Four chips share the row, so the one that is chosen is never scrolled out of sight. */
+.meals {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.meals > button {
+  justify-content: center;
+  padding: 0 4px;
+  font-size: 13px;
+}

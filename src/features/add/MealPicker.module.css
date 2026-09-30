@@ -1,0 +1,84 @@
+.root {
+  position: relative;
+  display: inline-block;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+  margin-left: -8px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: none;
+  font-size: 13.5px;
+  color: var(--ink-3);
+}
+
+.trigger strong {
+  font-weight: 750;
+  color: var(--primary);
+}
+
+.trigger:hover {
+  background: var(--surface-2);
+}
+
+.chevron {
+  color: var(--primary);
+  font-size: 16px;
+  transition: transform var(--dur) var(--ease-out);
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: -8px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  min-width: 190px;
+  padding: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-float);
+  animation: menuIn var(--dur-fast) var(--ease-out);
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: none;
+  font-size: 15px;
+  font-weight: 650;
+  text-align: left;
+}
+
+.option:hover,
+.option:active {
+  background: var(--surface-2);
+}
+
+.option[aria-checked="true"] {
+  color: var(--primary);
+}
+
+@keyframes menuIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}

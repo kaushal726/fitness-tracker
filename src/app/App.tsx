@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { onStorageError, useAppState } from "../data/store.ts";
-import { AddFoodSheet } from "../features/add/AddFoodSheet.tsx";
+import { AddFood } from "../features/add/AddFood.tsx";
 import { HistoryScreen } from "../features/history/HistoryScreen.tsx";
 import { Onboarding } from "../features/onboarding/Onboarding.tsx";
 import { ProfileScreen } from "../features/profile/ProfileScreen.tsx";
@@ -72,7 +72,7 @@ export function App() {
             </Screen>
           </main>
           <Dock active={tab} onSelect={selectTab} onAdd={() => openAdd(null)} />
-          {adding && <AddFoodSheet date={adding.date} initialMeal={adding.meal} onClose={() => setAdding(null)} />}
+          {adding && <AddFood date={adding.date} initialMeal={adding.meal} onClose={() => setAdding(null)} />}
           <UpdatePrompt />
         </>
       )}

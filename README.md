@@ -33,13 +33,13 @@ goal, target, timeline, activity) and ends on the daily plan. After that there a
 | **Today** | Calories in a ring, the four macros, a strip of days to switch between, and four meal cards that fold away like an accordion: the meal you are in is open, the rest are one line with their total, and food added to a folded meal opens it. |
 | **History** | The week as seven bars against the goal, then every logged day. |
 | **Profile** | The plan, goal and body (change one answer at a time), meal times, theme, backup, About, and today's thought as a faded line at the very bottom. |
-| **Add food** | Always in the bottom bar. Search, shortcuts to common foods, favourites, recents, or browse by category. Every food, the `+` included, asks for the amount, unit and meal before anything is added, so three chapatis are one entry, not three taps. A row says how you last had that food, which is where the amount sheet starts. Everything added in one go stays at the foot of the sheet as a list (*Review or edit*): change the amount of any item or take it out before pressing Done. |
+| **Add food** | Always in the bottom bar. One page, never a sheet on a sheet: the whole screen on a phone, a single dialog on a larger one. Search, shortcuts to common foods, favourites, recents, or browse by category (narrowed by type of food). **Tap a food and its amount card opens right there in the list**: the amount (stepper, one-tap 1-5, unit), what it comes to, and one button, so three chapatis are one entry, not three taps. A row says how you last had that food, which is where the card starts. "Adding to Dinner" under the title changes the meal for what is added next. The page stays open for several foods; the bar at the foot (*Review or edit*) lists them all, and any can be changed or taken out in place before Done. Phone Back or Escape steps out of a category, the list or the form before it closes the page. On a computer the amount field is focused: type a number and press Enter. |
 
 The timeline accepts any number of days, weeks or months. Height can be typed in centimetres or feet and inches.
 
 **Design system.** Colours, sizes and motion come from `src/styles/tokens.css` (light and dark). Components live in
 `src/ui/`, icons (Lucide) are named in `src/ui/icons.ts`, and the typeface is Plus Jakarta Sans, bundled with the app so
-it works offline. Motion is skipped for people who ask their device for less of it. Sheets are their own layer: lighter than the page in dark mode (dimming a dark page shows nothing), a tall sheet leaves a strip of the page above it, and a sheet opened over another stops short of it so the stack can be seen.
+it works offline. Motion is skipped for people who ask their device for less of it. Sheets are their own layer: lighter than the page in dark mode (dimming a dark page shows nothing) and a tall sheet leaves a strip of the page above it. Nothing opens on top of a sheet: a flow that needs more than one view (Add food) keeps them inside one surface.
 
 **Code.** `src/nutrition/` is the food engine, `src/domain/` is the maths (goals, timeline, meals, portions), `src/data/`
 is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features/` holds one folder per screen.
@@ -267,10 +267,10 @@ Options: `limit`, `category`, `cuisine`, `foodType`, `tag`, `recentIds`, `favori
 ## Loading the food data
 
 The foods are one lazy chunk (`src/nutrition/dataFiles.ts`, about 1.5 MB, 244 KB gzipped), so the app opens without waiting
-for them. The registry is empty until `await loadFoods()`: the app starts it in the background, and the Add and Edit sheets
+for them. The registry is empty until `await loadFoods()`: the app starts it in the background, and the Add page and the Edit sheet
 show a loading skeleton, or a "try again" button if the download failed, until it is ready. Scripts and tests call
 `loadFoods()` first; `getAllFoods`, `getFoodById` and the other getters throw if they are used before it finishes. In the
-Add sheet a big category is narrowed with sub-category chips and shown 30 at a time.
+Add page a big category is narrowed with sub-category chips and shown 30 at a time.
 
 ## Adding and changing foods
 

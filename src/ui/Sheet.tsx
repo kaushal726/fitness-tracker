@@ -6,7 +6,7 @@ import { createPortal } from "react-dom";
 import { isTopSheet, openSheetCount, registerSheet, unregisterSheet } from "../app/sheetHistory";
 import { cx } from "../lib/cx";
 import { IconButton } from "./Button";
-import { IconClose } from "./icons";
+import { IconBack, IconClose } from "./icons";
 import styles from "./Sheet.module.css";
 
 interface SheetProps {
@@ -17,8 +17,12 @@ interface SheetProps {
   children: ReactNode;
   footer?: ReactNode;
   headerAction?: ReactNode;
-  /** "full" = full screen on phones, for flows with their own scrolling content. */
-  size?: "auto" | "full";
+  /** Stays under the header while the body scrolls, such as a search field. */
+  toolbar?: ReactNode;
+  /** Puts a back arrow before the title, for a view that was reached from another one. */
+  onBack?: () => void;
+  /** "full" = tall on phones, for flows with their own scrolling content. "page" = the whole screen on phones, for a flow that has it to itself. */
+  size?: "auto" | "full" | "page";
 }
 
 let openCount = 0;
@@ -38,7 +42,7 @@ export function Sheet(props: SheetProps) {
   return props.open ? <SheetPanel {...props} /> : null;
 }
 
-function SheetPanel({ onClose, title, subtitle, children, footer, headerAction, size = "auto" }: SheetProps) {
+function SheetPanel({ onClose, title, subtitle, children, footer, headerAction, toolbar, onBack, size = "auto" }: SheetProps) {
   const titleId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
   const onCloseRef = useRef(onClose);
@@ -66,18 +70,20 @@ function SheetPanel({ onClose, title, subtitle, children, footer, headerAction, 
   return createPortal(
     <div className={styles.root}>
       <div className={styles.backdrop} onClick={close} aria-hidden />
-      <div ref={panelRef} className={cx(styles.panel, size === "full" && styles.full, stacked && styles.stacked)} role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1}>
+      <div ref={panelRef} className={cx(styles.panel, size === "full" && styles.full, size === "page" && styles.page, stacked && styles.stacked)} role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1}>
         <div className={styles.grabber} aria-hidden />
-        <header className={styles.header}>
+        <header className={cx(styles.header, onBack && styles.headerBack)}>
+          {onBack && <IconButton label="Back" icon={<IconBack />} onClick={onBack} />}
           <div className={styles.titleWrap}>
             <h2 id={titleId} className={styles.title}>{title}</h2>
-            {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
+            {subtitle && <div className={styles.subtitle}>{subtitle}</div>}
           </div>
           <div className={styles.actions}>
             {headerAction}
             <IconButton label="Close" icon={<IconClose />} onClick={close} />
           </div>
         </header>
+        {toolbar && <div className={styles.toolbar}>{toolbar}</div>}
         <div className={styles.body}>{children}</div>
         {footer && <footer className={styles.footer}>{footer}</footer>}
       </div>

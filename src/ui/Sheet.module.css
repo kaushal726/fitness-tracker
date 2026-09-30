@@ -39,6 +39,19 @@
   max-height: none;
 }
 
+/* The whole screen, for a flow that has the page to itself: a long list, a keyboard, views of its own. */
+.page {
+  top: 0;
+  max-height: none;
+  padding-top: var(--safe-top);
+  border: 0;
+  border-radius: 0;
+}
+
+.page .grabber {
+  display: none;
+}
+
 /* Opened over another sheet: it stops short of the one below, so a band of that sheet stays in view and the stack can be seen. */
 .stacked {
   max-height: calc(100dvh - 52px - var(--safe-top));
@@ -64,7 +77,14 @@
 }
 
 .titleWrap {
+  flex: 1;
   min-width: 0;
+}
+
+/* With a back arrow before the title the header starts closer to the edge. */
+.headerBack {
+  gap: 4px;
+  padding-left: 8px;
 }
 
 .title {
@@ -90,6 +110,11 @@
   gap: 2px;
 }
 
+.toolbar {
+  flex: none;
+  padding: 2px 20px 12px;
+}
+
 .body {
   flex: 1;
   overflow-y: auto;
@@ -109,19 +134,23 @@
 
 @media (min-width: 768px) {
   .panel,
-  .full {
+  .full,
+  .page {
     top: 50%;
     bottom: auto;
     left: 50%;
     right: auto;
     width: min(560px, calc(100vw - 48px));
     max-height: 88dvh;
+    padding-top: 0;
+    border: 1px solid var(--sheet-edge);
     border-radius: var(--r-xl);
     transform: translate(-50%, -50%);
     animation: pop var(--dur) var(--ease-out);
   }
 
-  .full {
+  .full,
+  .page {
     width: min(720px, calc(100vw - 48px));
     height: min(780px, 88dvh);
   }

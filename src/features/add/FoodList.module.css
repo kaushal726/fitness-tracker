@@ -1,4 +1,5 @@
-.list {
+.list,
+.card {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -9,7 +10,8 @@
   box-shadow: var(--shadow-card);
 }
 
-:root[data-theme="dark"] .list {
+:root[data-theme="dark"] .list,
+:root[data-theme="dark"] .card {
   --card-border: var(--line);
 }
 
@@ -46,11 +48,35 @@
   background: var(--primary-soft);
   color: var(--primary);
   font-size: 20px;
-  transition: background var(--dur-fast) ease;
+  transition: background var(--dur-fast) ease, color var(--dur-fast) ease, transform var(--dur) var(--ease-out);
 }
 
 .main:active .add {
   background: var(--primary-line);
+}
+
+/* Logged during this visit. */
+.added {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+/* Open: the plus turns into a cross, which closes it again. */
+.open .add {
+  transform: rotate(45deg);
+  background: var(--surface-2);
+  color: var(--ink-2);
+}
+
+.panel {
+  animation: reveal var(--dur) var(--ease-out);
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
 }
 
 .text {

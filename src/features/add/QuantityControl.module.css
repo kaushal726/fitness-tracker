@@ -70,3 +70,25 @@
 .amounts {
   margin-bottom: 12px;
 }
+
+/* Inside an amount card: no card of its own, and a little less tall. */
+.compact {
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+
+.compact .step {
+  width: 48px;
+  height: 48px;
+  font-size: 22px;
+}
+
+.compact .input {
+  font-size: 34px;
+}
+
+.compact .grams {
+  margin: 0 0 10px;
+}

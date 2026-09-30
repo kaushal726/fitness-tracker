@@ -1,0 +1,13 @@
+/* The card that opens under the Common foods chips: there is no row for it to open inside. */
+.quickCard {
+  margin-top: 12px;
+  padding-top: 14px;
+  animation: reveal var(--dur) var(--ease-out);
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
