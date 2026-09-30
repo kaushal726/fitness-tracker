@@ -31,9 +31,9 @@ goal, target, timeline, activity) and ends on the daily plan. After that there a
 | | |
 |---|---|
 | **Today** | Calories in a ring, the four macros, a strip of days to switch between, and four meal cards. |
-| **History** | The week as seven bars against the goal, today's thought, then every logged day. |
-| **Profile** | The plan, goal and body (change one answer at a time), meal times, theme, the daily thought switch, backup, About. |
-| **Add food** | Always in the bottom bar. Search, quick add, favourites, recents, or browse by category; tap `+` on a row for one usual serving, or tap the row to choose the amount, unit and meal. |
+| **History** | The week as seven bars against the goal, then every logged day. |
+| **Profile** | The plan, goal and body (change one answer at a time), meal times, theme, backup, About, and today's thought as a faded line at the very bottom. |
+| **Add food** | Always in the bottom bar. Search, shortcuts to common foods, favourites, recents, or browse by category. Every food, the `+` included, asks for the amount, unit and meal before anything is added, so three chapatis are one entry, not three taps. |
 
 The timeline accepts any number of days, weeks or months. Height can be typed in centimetres or feet and inches.
 
@@ -150,7 +150,7 @@ data/
   food-index.json       generated light index of every food (npm run build:index)
   quotes/*.json         the daily thoughts, one file per theme (edit these)
 src/nutrition/          types, loader, unit conversion, calculation, search, validation
-src/quotes/             the quote of the day, the opening-screen rule, validation
+src/quotes/             the quote of the day, validation
 scripts/                validate-foods, validate-quotes, build-index, stats
 ```
 
@@ -271,17 +271,11 @@ dairy/egg, an `estimateRange` that disagrees with the stored value, composites w
 **Warnings** ask for a look: no aliases, very high sodium, and a moderate calorie/macro gap. The calorie check uses
 protein×4 + (carbs−fibre)×4 + fibre×2 + fat×9 and is loose on purpose, since fibre, rounding and water content are real.
 
-## Daily thoughts
+## Daily thought
 
-One short line about eating well, once a day. It is meant to be a quiet reminder that food matters, so it is kept
-out of the way: **never on Today**, not a notification, and not more than once.
-
-- **When the app opens.** The first launch of each day shows the thought under the name on the opening screen for a few
-  seconds. Tap *Continue*, or press Enter or Escape, to move on early. Opening the app again the same day shows nothing.
-  Nobody who is still in setup sees it, and people who asked their device for less motion get no opening screen at all.
-- **On History.** Today's thought sits under the week chart, with *Show another* for anyone who wants more.
-- **Off switch.** Profile → Preferences → *Daily thought* turns both off. The choice, and the day it was last shown, are
-  stored with the other settings (`dailyThought`, `lastThoughtDate`).
+One short line about eating well, once a day. It is a quiet reminder that food matters, so it is kept out of the way: it
+lives at the very bottom of **Profile**, just above the credit, as a single small line in faded text. Nothing else shows
+it: not Today, not History, not the opening screen, and there is no notification.
 
 **Which quote, on which day.** `quoteForDay(date)` in `src/quotes/daily.ts` takes the quotes in a fixed order (sorted by a
 hash of the id, then nudged so two neighbours never share a theme) and walks through it one a day. Everyone sees the same

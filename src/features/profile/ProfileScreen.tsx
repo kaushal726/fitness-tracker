@@ -3,7 +3,7 @@ import { APP_NAME } from "../../app/brand";
 import { useInstallPrompt } from "../../app/installPrompt";
 import { setThemeChoice, useThemeChoice, type ThemeChoice } from "../../app/theme";
 import { backupFileName, parseBackup } from "../../data/backup.ts";
-import { exportBackup, resetAll, restoreBackup, saveSettings, useAppState } from "../../data/store.ts";
+import { exportBackup, resetAll, restoreBackup, useAppState } from "../../data/store.ts";
 import type { Profile } from "../../data/types.ts";
 import { computePlan, goalDef } from "../../domain/goals.ts";
 import { formatHour, MEAL_ORDER } from "../../domain/meals.ts";
@@ -11,14 +11,15 @@ import { downloadBlob } from "../../lib/files.ts";
 import { formatNumber } from "../../lib/format.ts";
 import { Avatar } from "../../ui/Avatar";
 import { useConfirm } from "../../ui/Confirm";
-import { IconBook, IconClock, IconDownload, IconFlame, IconInfo, IconPalette, IconPhone, IconQuote, IconTarget, IconTrash, IconUpload } from "../../ui/icons";
+import { IconBook, IconClock, IconDownload, IconFlame, IconInfo, IconPalette, IconPhone, IconTarget, IconTrash, IconUpload } from "../../ui/icons";
 import { MadeWithLove } from "../../ui/MadeWithLove";
 import { Segmented } from "../../ui/Segmented";
-import { SettingsGroup, SettingsRow, SettingsToggleRow } from "../../ui/SettingsList";
+import { SettingsGroup, SettingsRow } from "../../ui/SettingsList";
 import { useToast } from "../../ui/Toast";
 import { PlanPreview } from "../onboarding/PlanPreview.tsx";
 import { AboutSheet } from "./AboutSheet.tsx";
 import { CalorieTargetSheet } from "./CalorieTargetSheet.tsx";
+import { DailyThought } from "./DailyThought.tsx";
 import { EditProfileSheet } from "./EditProfileSheet.tsx";
 import { MealTimesSheet } from "./MealTimesSheet.tsx";
 import { MyFoodsSheet } from "./MyFoodsSheet.tsx";
@@ -32,7 +33,7 @@ const THEMES: { value: ThemeChoice; label: string }[] = [
   { value: "dark", label: "Dark" },
 ];
 
-export function ProfileScreen({ profile }: { profile: Profile }) {
+export function ProfileScreen({ profile, today }: { profile: Profile; today: string }) {
   const { settings, customFoods } = useAppState();
   const [open, setOpen] = useState<OpenSheet>(null);
   const theme = useThemeChoice();
@@ -87,7 +88,7 @@ export function ProfileScreen({ profile }: { profile: Profile }) {
         <SettingsRow icon={<IconBook />} tone="rose" title="My foods" subtitle="Foods you added yourself" value={customFoods.length ? String(customFoods.length) : undefined} onClick={() => setOpen("foods")} />
       </SettingsGroup>
 
-      <SettingsGroup label="Preferences">
+      <SettingsGroup label="Appearance">
         <div className={styles.themeRow}>
           <div className={styles.themeHead}>
             <span className={styles.themeTile} aria-hidden><IconPalette /></span>
@@ -95,7 +96,6 @@ export function ProfileScreen({ profile }: { profile: Profile }) {
           </div>
           <Segmented label="Theme" value={theme} onChange={setThemeChoice} options={THEMES} />
         </div>
-        <SettingsToggleRow icon={<IconQuote />} tone="green" title="Daily thought" subtitle="A short thought each day" checked={settings.dailyThought} onChange={(dailyThought) => saveSettings({ dailyThought })} />
       </SettingsGroup>
 
       <SettingsGroup label="Your data">
@@ -113,6 +113,7 @@ export function ProfileScreen({ profile }: { profile: Profile }) {
       </div>
 
       <footer className={styles.footer}>
+        <DailyThought today={today} />
         <MadeWithLove />
         <p className={styles.version}>{APP_NAME} · Version {__APP_VERSION__}</p>
       </footer>

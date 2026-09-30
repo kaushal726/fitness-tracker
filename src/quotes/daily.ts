@@ -45,9 +45,3 @@ export function quoteForDay(iso: string, rotation: readonly Quote[] = ROTATION):
   const size = rotation.length;
   return rotation[((dayNumber(iso) % size) + size) % size];
 }
-
-/** Another thought on request; never the one already on screen. */
-export function anotherQuote(currentId: string, random: () => number = Math.random, quotes: readonly Quote[] = QUOTES): Quote {
-  const others = quotes.filter((quote) => quote.id !== currentId);
-  return others[Math.floor(random() * others.length)];
-}

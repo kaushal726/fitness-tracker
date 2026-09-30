@@ -7,7 +7,6 @@ import { EmptyState } from "../../ui/EmptyState";
 import { IconHistory } from "../../ui/icons";
 import { ScreenHeader } from "../../ui/ScreenHeader";
 import { SectionLabel } from "../../ui/SectionLabel";
-import { ThoughtCard } from "../thought/ThoughtCard.tsx";
 import { DayRow } from "./DayRow.tsx";
 import { WeekChart } from "./WeekChart.tsx";
 import styles from "./history.module.css";
@@ -29,21 +28,16 @@ export function HistoryScreen({ profile, today, onOpenDay }: Props) {
     [entries],
   );
   const caloriesByDate = useMemo(() => new Map(days.map((d) => [d.date, d.totals.calories])), [days]);
-  const thought = settings.dailyThought ? <ThoughtCard key={today} today={today} /> : null;
 
   return (
     <>
       <ScreenHeader eyebrow="Your days" title="History" />
       {days.length === 0 ? (
-        <>
-          <EmptyState icon={<IconHistory />} title="Nothing here yet" message="The days you log will show up here, with how each one went against your goal." />
-          {thought}
-        </>
+        <EmptyState icon={<IconHistory />} title="Nothing here yet" message="The days you log will show up here, with how each one went against your goal." />
       ) : (
         <div className={styles.layout}>
           <div className={styles.aside}>
             <WeekChart today={today} goal={goal} caloriesByDate={caloriesByDate} />
-            {thought}
           </div>
           <div className={styles.main}>
             <SectionLabel>All days</SectionLabel>

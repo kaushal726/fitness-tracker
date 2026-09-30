@@ -43,7 +43,7 @@ export function AddFoodSheet({ onClose, date, initialMeal }: Props) {
   /** Ids of what was added while this sheet has been open, so it can total them (an Undo removes one from the total). */
   const [addedIds, setAddedIds] = useState<string[]>([]);
   const browser = useFoodBrowser(query);
-  const { log, quickAdd } = useLogFood(date, initialMeal);
+  const log = useLogFood(date);
 
   const addedEntries = entries.filter((e) => addedIds.includes(e.id));
   const addedKcal = addedEntries.reduce((sum, e) => sum + e.nutrition.calories, 0);
@@ -56,9 +56,7 @@ export function AddFoodSheet({ onClose, date, initialMeal }: Props) {
   const limit = searching ? SHORTLIST : CATEGORY_SHORTLIST;
   const visible = showAll ? list : list.slice(0, limit);
 
-  const rows = (foods: Food[]) => foods.map((f) => (
-    <FoodRow key={f.id} food={f} favorite={browser.isFavorite(f.id)} onSelect={setPicked} onQuickAdd={(food) => remember(quickAdd(food))} />
-  ));
+  const rows = (foods: Food[]) => foods.map((f) => <FoodRow key={f.id} food={f} favorite={browser.isFavorite(f.id)} onSelect={setPicked} />);
 
   const confirm = (choice: LogChoice) => {
     if (!picked) return;

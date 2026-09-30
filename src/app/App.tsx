@@ -12,8 +12,7 @@ import type { TabId } from "./navItems.ts";
 import { SideNav } from "./SideNav.tsx";
 import { Splash } from "./Splash.tsx";
 import { UpdatePrompt } from "./UpdatePrompt.tsx";
-import { useOpeningThought } from "./useOpeningThought.ts";
-import { splashHoldMs, useSplash } from "./useSplash.ts";
+import { useSplash } from "./useSplash.ts";
 import { useToday } from "./useToday.ts";
 import styles from "./App.module.css";
 
@@ -23,11 +22,10 @@ interface AddRequest {
 }
 
 export function App() {
-  const { ready, profile, settings } = useAppState();
+  const { ready, profile } = useAppState();
   const toast = useToast();
   const today = useToday();
-  const openingThought = useOpeningThought(ready, profile !== null, settings, today);
-  const splash = useSplash(ready, splashHoldMs(openingThought));
+  const splash = useSplash(ready);
   const [tab, setTab] = useState<TabId>("today");
   /** Null means "follow today". */
   const [pickedDate, setPickedDate] = useState<string | null>(null);
@@ -63,7 +61,7 @@ export function App() {
             <div key={tab} className={styles.content}>
               {tab === "today" && <TodayScreen profile={profile} date={date} today={today} onSelectDate={selectDate} onAdd={openAdd} />}
               {tab === "history" && <HistoryScreen profile={profile} today={today} onOpenDay={openDay} />}
-              {tab === "profile" && <ProfileScreen profile={profile} />}
+              {tab === "profile" && <ProfileScreen profile={profile} today={today} />}
             </div>
           </main>
           <Dock active={tab} onSelect={selectTab} onAdd={() => openAdd(null)} />
@@ -72,7 +70,7 @@ export function App() {
         </>
       )}
       {ready && !profile && <Onboarding />}
-      {splash.phase !== "done" && <Splash leaving={splash.phase === "leaving"} thought={openingThought} onSkip={splash.skip} />}
+      {splash !== "done" && <Splash leaving={splash === "leaving"} />}
     </>
   );
 }

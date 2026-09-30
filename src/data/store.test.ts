@@ -4,10 +4,10 @@ import { defaultPortion, convertQuantity, portionOptions, portionText } from "..
 import { createCustomFood, getFoodById } from "../nutrition/index.ts";
 import type { Food } from "../nutrition/types.ts";
 import { parseBackup } from "./backup.ts";
-import { getAll, getValue, setValue, STORE } from "./db.ts";
+import { getAll, STORE } from "./db.ts";
 import { buildEntry, reviseEntry } from "./entries.ts";
 import { frequentFoodIds, groupByMeal, makeFoodLookup, recentFoodIds, sumEntries } from "./selectors.ts";
-import { addCustomFood, addEntry, DEFAULT_SETTINGS, exportBackup, getState, initStore, removeEntry, replaceEntry, resetAll, restoreBackup, saveSettings, toggleFavorite } from "./store.ts";
+import { addCustomFood, addEntry, DEFAULT_SETTINGS, exportBackup, getState, initStore, removeEntry, replaceEntry, resetAll, restoreBackup, toggleFavorite } from "./store.ts";
 import type { Entry } from "./types.ts";
 
 const food = (id: string): Food => getFoodById(id) as Food;
@@ -92,17 +92,6 @@ describe("store", () => {
     await new Promise((r) => setTimeout(r, 30));
     expect(getState().entries).toHaveLength(1);
     expect((await getAll<Entry>(STORE.entries)).length).toBe(1);
-  });
-
-  it("reads settings saved before newer options existed, and keeps the thought's date", async () => {
-    await setValue("settings", { mealStartHours: DEFAULT_SETTINGS.mealStartHours, customCalories: 1800 });
-    await initStore();
-    expect(getState().settings).toEqual({ ...DEFAULT_SETTINGS, customCalories: 1800 });
-    expect(getState().settings).toMatchObject({ dailyThought: true, lastThoughtDate: null });
-
-    saveSettings({ lastThoughtDate: "2026-01-05" });
-    await new Promise((r) => setTimeout(r, 30));
-    expect(await getValue("settings")).toMatchObject({ customCalories: 1800, dailyThought: true, lastThoughtDate: "2026-01-05" });
   });
 
   it("lets a custom food be logged like any other", () => {

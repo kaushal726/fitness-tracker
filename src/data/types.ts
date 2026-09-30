@@ -31,10 +31,6 @@ export interface Settings {
   mealStartHours: Record<MealType, number>;
   /** When set, replaces the calculated calorie target. */
   customCalories: number | null;
-  /** One short thought a day: when the app opens, and on History. */
-  dailyThought: boolean;
-  /** The last day (YYYY-MM-DD) the opening screen showed the thought, so it appears once a day. */
-  lastThoughtDate: string | null;
 }
 
 export interface Entry {

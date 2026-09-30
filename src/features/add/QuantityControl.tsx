@@ -1,6 +1,7 @@
 import { useMemo } from "react";
-import { convertQuantity, isMeasuredUnit, minQuantity, optionDisplayLabel, portionOptions, quantityStep } from "../../domain/portions.ts";
+import { convertQuantity, isMeasuredUnit, minQuantity, optionDisplayLabel, portionOptions, QUICK_AMOUNTS, quantityStep } from "../../domain/portions.ts";
 import { formatNumber, formatQuantity, parseNumber } from "../../lib/format.ts";
+import { cx } from "../../lib/cx.ts";
 import { foodToGrams } from "../../nutrition/calculate.ts";
 import type { Food } from "../../nutrition/types.ts";
 import { Chip } from "../../ui/Chip";
@@ -15,7 +16,7 @@ interface Props {
   onUnit: (unit: string) => void;
 }
 
-/** How much: a stepper for the number, chips for the unit, and the weight it comes to. */
+/** How much: a stepper for the number, one-tap amounts for counted foods, chips for the unit, and the weight it comes to. */
 export function QuantityControl({ food, quantityText, unit, onQuantityText, onUnit }: Props) {
   const options = useMemo(() => portionOptions(food), [food]);
   const quantity = parseNumber(quantityText);
@@ -55,6 +56,13 @@ export function QuantityControl({ food, quantityText, unit, onQuantityText, onUn
         <button type="button" className={styles.step} aria-label="More" onClick={() => nudge(1)}><IconPlus aria-hidden /></button>
       </div>
       <p className={styles.grams} aria-live="polite">{grams !== null ? `About ${formatNumber(grams)} g` : " "}</p>
+      {!isMeasuredUnit(unit) && (
+        <div className={cx(styles.chips, styles.amounts)} role="radiogroup" aria-label="Quick amount">
+          {QUICK_AMOUNTS.map((n) => (
+            <Chip key={n} role="radio" selected={quantity === n} onClick={() => onQuantityText(formatQuantity(n))}>{n}</Chip>
+          ))}
+        </div>
+      )}
       <div className={styles.chips} role="radiogroup" aria-label="Unit">
         {options.map((o) => (
           <Chip key={o.unit} role="radio" selected={o.unit === unit} onClick={() => changeUnit(o.unit)}>{optionDisplayLabel(o)}</Chip>

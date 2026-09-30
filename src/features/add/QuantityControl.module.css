@@ -66,3 +66,7 @@
   gap: 8px;
   justify-content: center;
 }
+
+.amounts {
+  margin-bottom: 12px;
+}

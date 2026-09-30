@@ -2,16 +2,14 @@ import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { addDays } from "../lib/dates.ts";
-import { anotherQuote, dayNumber, quoteForDay } from "./daily.ts";
+import { dayNumber, quoteForDay } from "./daily.ts";
 import { QUOTE_FILES } from "./dataFiles.ts";
 import { QUOTES } from "./library.ts";
-import { openingThought, readingTimeMs } from "./opening.ts";
-import type { Quote, RawQuoteFile } from "./types.ts";
+import type { RawQuoteFile } from "./types.ts";
 import { MAX_QUOTE_CHARS, MIN_QUOTES_TOTAL, similarity, validateQuotes } from "./validation.ts";
 
 const DATA_DIR = fileURLToPath(new URL("../../data/quotes", import.meta.url));
 const messages = (files: RawQuoteFile[]) => validateQuotes(files).map((i) => i.message);
-const quote = (id: string, text: string, theme = "fuel"): Quote => ({ id, text, theme });
 
 describe("the collection", () => {
   it("has no errors and enough quotes for a year without a repeat", () => {
@@ -85,36 +83,5 @@ describe("the thought of the day", () => {
     const repeatedTheme = cycle.filter((q, i) => i > 0 && q.theme === cycle[i - 1].theme);
     expect(repeatedTheme).toEqual([]);
     expect(quoteForDay(addDays(start, QUOTES.length)).id).toBe(cycle[0].id);
-  });
-
-  it("offers another thought on request, never the one on screen", () => {
-    const current = QUOTES[0];
-    expect(anotherQuote(current.id, () => 0).id).toBe(QUOTES[1].id);
-    expect(anotherQuote(current.id, () => 0.999999).id).toBe(QUOTES[QUOTES.length - 1].id);
-    for (const q of QUOTES.slice(0, 40)) expect(anotherQuote(q.id).id).not.toBe(q.id);
-  });
-});
-
-describe("the opening thought", () => {
-  const settings = { dailyThought: true, lastThoughtDate: "2026-06-14" as string | null };
-  const base = { hasProfile: true, settings, today: "2026-06-15", reducedMotion: false };
-
-  it("greets once a day, with the thought of the day", () => {
-    expect(openingThought(base)).toEqual(quoteForDay("2026-06-15"));
-    expect(openingThought({ ...base, settings: { ...settings, lastThoughtDate: null } })).toEqual(quoteForDay("2026-06-15"));
-  });
-
-  it("stays out of the way when it has been seen, is switched off, or there is no goal yet", () => {
-    expect(openingThought({ ...base, settings: { ...settings, lastThoughtDate: "2026-06-15" } })).toBeNull();
-    expect(openingThought({ ...base, settings: { ...settings, dailyThought: false } })).toBeNull();
-    expect(openingThought({ ...base, hasProfile: false })).toBeNull();
-    expect(openingThought({ ...base, reducedMotion: true })).toBeNull();
-  });
-
-  it("allows longer to read a longer line, within limits", () => {
-    expect(readingTimeMs(quote("a", "Eat well."))).toBe(3000);
-    expect(readingTimeMs(quote("b", "One two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen."))).toBe(3700);
-    expect(readingTimeMs(quote("c", "word ".repeat(80)))).toBe(5000);
-    expect(readingTimeMs({ text: "Eat well.", gloss: "word ".repeat(80) })).toBe(5000);
   });
 });

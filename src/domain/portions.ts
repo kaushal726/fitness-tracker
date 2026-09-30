@@ -14,6 +14,9 @@ const ROUND_MEASURED_TO = 5;
 const MIN_COUNTED = 0.5;
 const MIN_MEASURED = 5;
 
+/** One-tap amounts for counted foods ("3 rotis"). Anything else, halves included, is typed or stepped. */
+export const QUICK_AMOUNTS: readonly number[] = [1, 2, 3, 4, 5];
+
 export interface PortionOption {
   unit: string;
   label: string;

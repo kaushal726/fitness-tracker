@@ -18,7 +18,7 @@ export interface AppState {
 }
 
 const KEY = { profile: "profile", settings: "settings", favorites: "favorites", lastUsed: "lastUsed" } as const;
-export const DEFAULT_SETTINGS: Settings = { mealStartHours: DEFAULT_MEAL_STARTS, customCalories: null, dailyThought: true, lastThoughtDate: null };
+export const DEFAULT_SETTINGS: Settings = { mealStartHours: DEFAULT_MEAL_STARTS, customCalories: null };
 
 let state: AppState = { ready: false, profile: null, settings: DEFAULT_SETTINGS, entries: [], customFoods: [], favorites: [], lastUsed: {} };
 const listeners = new Set<() => void>();

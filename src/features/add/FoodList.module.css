@@ -13,25 +13,18 @@
   --card-border: var(--line);
 }
 
-.row {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding-right: 10px;
-}
-
 .row + .row {
   border-top: 1px solid var(--line);
 }
 
 .main {
-  flex: 1;
   display: flex;
   align-items: center;
   gap: 14px;
+  width: 100%;
   min-width: 0;
   min-height: 68px;
-  padding: 10px 6px 10px 14px;
+  padding: 10px 10px 10px 14px;
   border: 0;
   background: none;
   text-align: left;
@@ -39,6 +32,25 @@
 
 .main:active {
   background: var(--surface-2);
+}
+
+/* Drawn like the round soft button it replaced, but it is only a sign: the whole row is the button. */
+.add {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: 20px;
+  transition: background var(--dur-fast) ease;
+}
+
+.main:active .add {
+  background: var(--primary-line);
 }
 
 .text {
