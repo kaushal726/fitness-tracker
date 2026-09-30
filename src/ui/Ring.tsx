@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
+import { useAnimatesIn } from "../lib/arrival";
 import { cx } from "../lib/cx";
 import styles from "./Ring.module.css";
 
@@ -12,12 +13,13 @@ interface RingProps {
   children?: ReactNode;
 }
 
-/** A progress ring that draws itself in on first paint and eases to each new value. */
+/** A progress ring that draws itself in on first paint (already drawn on a reloaded page) and eases to each new value. */
 export function Ring({ value, max, size = 152, stroke = 14, tone = "primary", label, children }: RingProps) {
   const radius = (size - stroke) / 2;
   const circumference = 2 * Math.PI * radius;
   const share = max > 0 ? Math.min(1, Math.max(0, value / max)) : 0;
-  const [drawn, setDrawn] = useState(0);
+  const drawsIn = useAnimatesIn();
+  const [drawn, setDrawn] = useState(drawsIn ? 0 : share);
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => setDrawn(share));

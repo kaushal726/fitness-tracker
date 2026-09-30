@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { saveProfile } from "../../data/store.ts";
+import { isInstantArrival } from "../../lib/arrival.ts";
 import { cx } from "../../lib/cx.ts";
 import { Button, IconButton } from "../../ui/Button";
 import { IconBack, IconSparkles } from "../../ui/icons";
@@ -17,7 +18,8 @@ export function Onboarding() {
   const controller = useProfileForm();
   const { form } = controller;
   const [current, setCurrent] = useState<WizardStep>("name");
-  const [direction, setDirection] = useState<"forward" | "back">("forward");
+  /** Which way the step slides in. Null, on a reloaded page, until the first move: that first step just appears. */
+  const [direction, setDirection] = useState<"forward" | "back" | null>(() => (isInstantArrival() ? null : "forward"));
 
   const def = current === "plan" ? null : stepById(current);
   const valid = def ? def.isValid(controller) : controller.profile !== null;
@@ -55,7 +57,7 @@ export function Onboarding() {
       </header>
 
       <main className={styles.body}>
-        <section key={current} className={cx(styles.step, direction === "back" ? styles.fromLeft : styles.fromRight)}>
+        <section key={current} className={cx(styles.step, direction && (direction === "back" ? styles.fromLeft : styles.fromRight))}>
           {def ? (
             <StepScreen def={def} controller={controller} onCommit={advance} />
           ) : (

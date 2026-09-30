@@ -5,10 +5,12 @@ import { HistoryScreen } from "../features/history/HistoryScreen.tsx";
 import { Onboarding } from "../features/onboarding/Onboarding.tsx";
 import { ProfileScreen } from "../features/profile/ProfileScreen.tsx";
 import { TodayScreen } from "../features/today/TodayScreen.tsx";
+import { endInstantArrival } from "../lib/arrival.ts";
 import type { MealType } from "../nutrition/types.ts";
 import { useToast } from "../ui/Toast";
 import { Dock } from "./Dock.tsx";
 import type { TabId } from "./navItems.ts";
+import { Screen } from "./Screen.tsx";
 import { SideNav } from "./SideNav.tsx";
 import { Splash } from "./Splash.tsx";
 import { UpdatePrompt } from "./UpdatePrompt.tsx";
@@ -39,6 +41,11 @@ export function App() {
 
   useEffect(() => onStorageError(() => toast("Couldn't save on this device. Free up some space and try again.", { tone: "error" })), [toast]);
 
+  /** The first screen has been drawn; on a reloaded page, animations play as usual from here. */
+  useEffect(() => {
+    if (ready) endInstantArrival();
+  }, [ready]);
+
   const selectTab = (next: TabId) => {
     if (next === "today" && tab === "today") setPickedDate(null);
     setTab(next);
@@ -58,11 +65,11 @@ export function App() {
         <>
           <SideNav active={tab} onSelect={selectTab} onAdd={() => openAdd(null)} />
           <main className={styles.main}>
-            <div key={tab} className={styles.content}>
+            <Screen key={tab}>
               {tab === "today" && <TodayScreen profile={profile} date={date} today={today} onSelectDate={selectDate} onAdd={openAdd} />}
               {tab === "history" && <HistoryScreen profile={profile} today={today} onOpenDay={openDay} />}
               {tab === "profile" && <ProfileScreen profile={profile} today={today} />}
-            </div>
+            </Screen>
           </main>
           <Dock active={tab} onSelect={selectTab} onAdd={() => openAdd(null)} />
           {adding && <AddFoodSheet date={adding.date} initialMeal={adding.meal} onClose={() => setAdding(null)} />}

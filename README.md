@@ -25,7 +25,7 @@ npm run build            # typecheck + production build
 
 ## The app
 
-Opens with a short animation, then a setup that asks **one question at a time** (name, gender, age, height, weight,
+Opens with a short animation (a reload skips it, the fade-in and the ring drawing itself, and shows the screen as it is), then a setup that asks **one question at a time** (name, gender, age, height, weight,
 goal, target, timeline, activity) and ends on the daily plan. After that there are three places, plus one big button:
 
 | | |
