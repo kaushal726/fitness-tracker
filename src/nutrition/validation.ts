@@ -4,10 +4,10 @@
  */
 import categoriesJson from "../../data/categories.json" with { type: "json" };
 import popular from "../../data/popular-foods.json" with { type: "json" };
-import { KCAL_PER_G } from "./constants.ts";
+import { ALCOHOL_SUB_CATEGORY, KCAL_PER_G } from "./constants.ts";
 import { DATA_FILES } from "./dataFiles.ts";
 import { isComposite } from "./loader.ts";
-import { getAllFoods, getFoodById } from "./registry.ts";
+import { foodsLoaded, getAllFoods, getFoodById, setDataFiles } from "./registry.ts";
 import { normalizeText } from "./text.ts";
 import { baseUnitId, resolveUnitId } from "./units.ts";
 import type { CompositeIngredient, Nutrition, RawFood } from "./types.ts";
@@ -43,7 +43,7 @@ export function atwaterCalories(n: Nutrition): number {
   return n.protein * KCAL_PER_G.protein + digestibleCarbs * KCAL_PER_G.carbohydrate + n.fiber * KCAL_PER_G.fiberDiscounted + n.fat * KCAL_PER_G.fat;
 }
 
-function checkNutrition(n: Nutrition | undefined, push: (level: Issue["level"], message: string) => void): void {
+function checkNutrition(n: Nutrition | undefined, push: (level: Issue["level"], message: string) => void, isAlcohol = false): void {
   if (!n) return push("error", "missing nutritionPer100g");
   for (const key of NUTRIENT_KEYS) {
     const v = n[key];
@@ -57,6 +57,8 @@ function checkNutrition(n: Nutrition | undefined, push: (level: Issue["level"], 
   if (n.protein + n.carbohydrates + n.fat > 100 + LIMITS.macroSumSlackG) push("error", `protein+carbs+fat = ${(n.protein + n.carbohydrates + n.fat).toFixed(1)} g in 100 g`);
   if (n.fiber > n.carbohydrates + 0.5) push("error", `fiber (${n.fiber}) is more than carbohydrates (${n.carbohydrates})`);
   if (n.sugar > n.carbohydrates + LIMITS.maxSugarOverCarbG) push("error", `sugar (${n.sugar}) is more than carbohydrates (${n.carbohydrates})`);
+
+  if (isAlcohol) return;
 
   const expected = atwaterCalories(n);
   const gap = Math.abs(expected - n.calories);
@@ -95,6 +97,7 @@ function checkRange(raw: RawFood, push: (level: Issue["level"], message: string)
 }
 
 export function validateDataset(): Issue[] {
+  if (!foodsLoaded()) setDataFiles(DATA_FILES);
   const issues: Issue[] = [];
   const ids = new Map<string, string>();
   const names = new Map<string, string>();
@@ -139,14 +142,14 @@ export function validateDataset(): Issue[] {
         for (const part of (raw.ingredients ?? []) as CompositeIngredient[]) {
           if (!part.foodId || !part.unit) push("error", "composite ingredient needs foodId, quantity and unit");
         }
-      } else checkNutrition(raw.nutritionPer100g, push);
+      } else checkNutrition(raw.nutritionPer100g, push, raw.subCategory === ALCOHOL_SUB_CATEGORY);
     }
   }
 
   for (const food of getAllFoods()) {
     const push = (level: Issue["level"], message: string) => issues.push({ level, id: food.id, file: food.sourceFile, message });
     if (!food.searchableText) push("error", "missing searchableText");
-    if (food.type === "composite") checkNutrition(food.nutritionPer100g, push);
+    if (food.type === "composite") checkNutrition(food.nutritionPer100g, push, food.subCategory === ALCOHOL_SUB_CATEGORY);
   }
   for (const id of popular.ids) if (!getFoodById(id)) issues.push({ level: "error", id, file: "popular-foods", message: "popular-foods.json lists an id that does not exist" });
   return issues;

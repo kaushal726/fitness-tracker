@@ -5,7 +5,7 @@
  */
 import popular from "../../data/popular-foods.json" with { type: "json" };
 import { getAllFoods } from "./registry.ts";
-import { boundedDistance, normalizeText, stem, tokenize } from "./text.ts";
+import { boundedDistance, normalizeForSearch, stem, tokenizeForSearch } from "./text.ts";
 import type { Food } from "./types.ts";
 
 const DEFAULT_LIMIT = 20;
@@ -16,8 +16,11 @@ const MIN_SUBSTRING_LENGTH = 3;
 const SCORE = {
   exactName: 1000,
   exactAlias: 900,
-  namePrefix: 560,
-  aliasPrefix: 540,
+  namePrefix: 530,
+  /** Below a whole-word match in the name, so a "Veg Sandwich" beats a food that only lists "sandwich bread" as a nickname. */
+  aliasPrefix: 450,
+  /** The typed text stops inside a longer word of the name ("pane" in "paneer"): it is still being typed, so weaker than a whole-word match. */
+  partialWordPrefix: 470,
   wordMatchBase: 200,
   wordMatchPerLevel: 3,
   popularMax: 60,
@@ -46,15 +49,15 @@ interface Indexed {
 }
 
 function index(food: Food): Indexed {
-  const aliases = food.aliases.map(normalizeText);
+  const aliases = food.aliases.map(normalizeForSearch);
   return {
     food,
-    name: normalizeText(food.name),
-    nameWords: tokenize(food.name).map(stem),
+    name: normalizeForSearch(food.name),
+    nameWords: tokenizeForSearch(food.name).map(stem),
     aliases,
     aliasWords: new Set(aliases.flatMap((a) => a.split(" ")).map(stem)),
-    textWords: new Set(food.searchableText.split(" ").map(stem)),
-    categoryWords: new Set(tokenize(`${food.category} ${food.subCategory} ${food.cuisine}`).map(stem)),
+    textWords: new Set(tokenizeForSearch(food.searchableText).map(stem)),
+    categoryWords: new Set(tokenizeForSearch(`${food.category} ${food.subCategory} ${food.cuisine}`).map(stem)),
   };
 }
 
@@ -93,8 +96,9 @@ function tokenLevel(ix: Indexed, token: string): number {
 function baseScore(ix: Indexed, query: string, tokens: string[]): number {
   if (ix.name === query) return SCORE.exactName;
   if (ix.aliases.includes(query)) return SCORE.exactAlias;
-  if (ix.name.startsWith(query)) return SCORE.namePrefix;
-  if (ix.aliases.some((a) => a.startsWith(query))) return SCORE.aliasPrefix;
+  const endsWord = (text: string) => text.length === query.length || text[query.length] === " ";
+  if (ix.name.startsWith(query)) return endsWord(ix.name) ? SCORE.namePrefix : SCORE.partialWordPrefix;
+  if (ix.aliases.some((a) => a.startsWith(query) && endsWord(a))) return SCORE.aliasPrefix;
   let total = 0;
   for (const token of tokens) {
     const level = tokenLevel(ix, token);
@@ -132,7 +136,7 @@ function passesFilters(food: Food, o: SearchOptions): boolean {
 }
 
 export function searchFood(query: string, options: SearchOptions = {}): Food[] {
-  const q = normalizeText(query);
+  const q = normalizeForSearch(query);
   if (!q) return [];
   const tokens = q.split(" ").map(stem);
   const favorites = new Set(options.favoriteIds);

@@ -10,7 +10,7 @@ import { resolveUnitId } from "./units.ts";
 import { atwaterCalories, validateDataset } from "./validation.ts";
 
 const DATA_DIR = fileURLToPath(new URL("../../data/foods", import.meta.url));
-const MIN_FOODS = 500;
+const MIN_FOODS = 3000;
 
 const ids = (query: string, limit = 5) => searchFood(query, { limit }).map((f) => f.id);
 
@@ -139,6 +139,22 @@ describe("search", () => {
   it("tolerates typos", () => {
     expect(ids("panner", 5)).toContain("paneer");
     expect(ids("chiken", 8).some((id) => id.startsWith("chicken"))).toBe(true);
+  });
+
+  it("treats common alternate spellings as the same word", () => {
+    expect(ids("daal")[0]).toBe("dal");
+    expect(ids("daal tadka", 3)[0]).toBe("dal_tadka");
+    expect(ids("dal tadka", 3)[0]).toBe("dal_tadka");
+    expect(ids("laddu", 6)).toEqual(expect.arrayContaining(["besan_ladoo"]));
+    expect(ids("aloo chat", 3).some((id) => id.includes("chaat"))).toBe(true);
+    expect(ids("papadam", 3).some((id) => id.startsWith("papad"))).toBe(true);
+  });
+
+  it("ranks a dish named after the word above foods that only mention it as a nickname", () => {
+    expect(ids("sandwich", 3).every((id) => id.includes("sandwich"))).toBe(true);
+    expect(ids("thali", 3).every((id) => id.includes("thali"))).toBe(true);
+    expect(ids("biryani", 4)).toEqual(expect.arrayContaining(["chicken_biryani", "veg_biryani"]));
+    expect(ids("kheer", 4).every((id) => id.includes("kheer"))).toBe(true);
   });
 
   it("returns a useful shortlist for common words", () => {

@@ -6,6 +6,7 @@ import { Onboarding } from "../features/onboarding/Onboarding.tsx";
 import { ProfileScreen } from "../features/profile/ProfileScreen.tsx";
 import { TodayScreen } from "../features/today/TodayScreen.tsx";
 import { endInstantArrival } from "../lib/arrival.ts";
+import { loadFoods } from "../nutrition/registry.ts";
 import type { MealType } from "../nutrition/types.ts";
 import { useToast } from "../ui/Toast";
 import { Dock } from "./Dock.tsx";
@@ -38,9 +39,11 @@ export function App() {
 
   useEffect(() => onStorageError(() => toast("Couldn't save on this device. Free up some space and try again.", { tone: "error" })), [toast]);
 
-  /** The first screen has been drawn; from here on, animations play as usual. */
+  /** The first screen has been drawn: from here on animations play as usual, and the food data starts downloading in the background. */
   useEffect(() => {
-    if (ready) endInstantArrival();
+    if (!ready) return;
+    endInstantArrival();
+    loadFoods().catch(() => undefined); // the Add sheet asks again, with a retry, if this did not work
   }, [ready]);
 
   const selectTab = (next: TabId) => {

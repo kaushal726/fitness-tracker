@@ -8,7 +8,7 @@ import { mealForTime } from "../../domain/meals.ts";
 import type { MealType } from "../../nutrition/types.ts";
 import { CalorieHero } from "./CalorieHero.tsx";
 import { DayHeader } from "./DayHeader.tsx";
-import { EditEntrySheet } from "./EditEntrySheet.tsx";
+import { EditEntrySheet } from "../add/EditEntrySheet.tsx";
 import { InsightPill } from "./InsightPill.tsx";
 import { MealList } from "./MealList.tsx";
 import { WeekStrip } from "./WeekStrip.tsx";

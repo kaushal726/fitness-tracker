@@ -1,7 +1,8 @@
 /* npm run validate:foods — prints every issue, exits 1 if any is an error. */
-import { getAllFoods } from "../src/nutrition/registry.ts";
+import { getAllFoods, loadFoods } from "../src/nutrition/registry.ts";
 import { validateDataset } from "../src/nutrition/validation.ts";
 
+await loadFoods();
 const issues = validateDataset();
 const errors = issues.filter((i) => i.level === "error");
 const warnings = issues.filter((i) => i.level === "warning");

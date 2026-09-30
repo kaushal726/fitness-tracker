@@ -33,7 +33,7 @@ goal, target, timeline, activity) and ends on the daily plan. After that there a
 | **Today** | Calories in a ring, the four macros, a strip of days to switch between, and four meal cards that fold away like an accordion: the meal you are in is open, the rest are one line with their total, and food added to a folded meal opens it. |
 | **History** | The week as seven bars against the goal, then every logged day. |
 | **Profile** | The plan, goal and body (change one answer at a time), meal times, theme, backup, About, and today's thought as a faded line at the very bottom. |
-| **Add food** | Always in the bottom bar. Search, shortcuts to common foods, favourites, recents, or browse by category. Every food, the `+` included, asks for the amount, unit and meal before anything is added, so three chapatis are one entry, not three taps. A row says how you last had that food, which is where the amount sheet starts. |
+| **Add food** | Always in the bottom bar. Search, shortcuts to common foods, favourites, recents, or browse by category. Every food, the `+` included, asks for the amount, unit and meal before anything is added, so three chapatis are one entry, not three taps. A row says how you last had that food, which is where the amount sheet starts. Everything added in one go stays at the foot of the sheet as a list (*Review or edit*): change the amount of any item or take it out before pressing Done. |
 
 The timeline accepts any number of days, weeks or months. Height can be typed in centimetres or feet and inches.
 
@@ -48,94 +48,109 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 <!-- stats:start -->
 
-**Total foods: 1080** (23 composite, 1057 simple)
+**Total foods: 3783** (153 composite, 3630 simple)
 
 **By category**
 
 | Category | Foods |
 |---|---|
-| Main Course | 234 |
-| Snacks | 99 |
-| Drinks | 90 |
-| Breakfast | 82 |
-| Fast Food | 69 |
-| Protein Foods | 68 |
-| Vegetables | 65 |
-| Chinese | 56 |
-| Sweets | 53 |
-| Condiments & Cooking | 42 |
-| Dairy & Eggs | 36 |
-| Fruits | 33 |
-| Staples & Grains | 33 |
-| Nuts & Seeds | 29 |
-| Packaged Food | 28 |
-| Desserts | 27 |
-| Bakery | 26 |
+| Main Course | 1372 |
+| Drinks | 339 |
+| Snacks | 314 |
+| Breakfast | 236 |
+| Sweets | 205 |
+| Condiments & Cooking | 192 |
+| Vegetables | 150 |
+| Staples & Grains | 137 |
+| Protein Foods | 136 |
+| Chinese | 127 |
+| Fast Food | 127 |
+| Dairy & Eggs | 87 |
+| Fruits | 84 |
+| Bakery | 82 |
+| Packaged Food | 78 |
+| Desserts | 65 |
+| Nuts & Seeds | 42 |
 | Supplements | 10 |
 
 **By cuisine**
 
 | Cuisine | Foods |
 |---|---|
-| pan_indian | 540 |
-| global | 81 |
-| indo_chinese | 56 |
-| north_indian | 53 |
-| south_indian | 46 |
-| american | 37 |
-| bengali | 37 |
-| kerala | 29 |
-| maharashtrian | 26 |
-| punjabi | 26 |
-| gujarati | 22 |
-| bihari_jharkhand | 18 |
-| italian | 18 |
-| rajasthani | 16 |
-| tamil | 14 |
-| andhra_telangana | 11 |
-| karnataka | 11 |
-| hyderabadi | 9 |
-| mughlai | 7 |
-| goan | 5 |
-| mexican | 5 |
-| middle_eastern | 5 |
-| kashmiri | 4 |
-| odia | 4 |
+| pan_indian | 1513 |
+| global | 301 |
+| north_indian | 210 |
+| tamil | 176 |
+| punjabi | 142 |
+| bengali | 135 |
+| kerala | 134 |
+| maharashtrian | 110 |
+| south_indian | 93 |
+| american | 90 |
+| indo_chinese | 87 |
+| gujarati | 77 |
+| andhra_telangana | 75 |
+| karnataka | 52 |
+| continental | 48 |
+| hyderabadi | 48 |
+| mughlai | 48 |
+| goan | 44 |
+| italian | 37 |
+| rajasthani | 36 |
+| bihari_jharkhand | 33 |
+| middle_eastern | 33 |
+| odia | 30 |
+| nepali_tibetan | 27 |
+| kashmiri | 23 |
+| mangalorean | 21 |
+| japanese_korean | 18 |
+| sindhi | 17 |
+| assamese | 16 |
+| awadhi | 16 |
+| northeastern | 16 |
+| parsi | 16 |
+| mexican | 14 |
+| himachali | 12 |
+| malvani | 12 |
+| uttarakhandi | 11 |
+| chettinad | 7 |
+| chinese | 3 |
+| anglo_indian | 2 |
 
 **By food type**
 
 | Food type | Foods |
 |---|---|
-| vegan | 481 |
-| vegetarian | 376 |
-| non_vegetarian | 171 |
-| eggetarian | 52 |
+| vegan | 1588 |
+| vegetarian | 1330 |
+| non_vegetarian | 711 |
+| eggetarian | 154 |
 
 **By confidence**
 
 | Confidence | Foods |
 |---|---|
-| medium | 563 |
-| low | 287 |
-| high | 230 |
+| medium | 2971 |
+| low | 465 |
+| high | 347 |
 
 **By variability**
 
 | Variability | Foods |
 |---|---|
-| low | 580 |
-| medium | 253 |
-| high | 247 |
+| medium | 2273 |
+| low | 1048 |
+| high | 462 |
 
 **By data source**
 
 | Data source | Foods |
 |---|---|
-| recipe_based | 631 |
-| standard_reference | 275 |
-| estimated | 174 |
+| recipe_based | 2652 |
+| standard_reference | 621 |
+| estimated | 510 |
 
-**Serving units:** `g` (mass), `kg` (mass), `ml` (volume), `litre` (volume), `tsp` (volume), `tbsp` (volume), `cup` (volume), `glass` (volume), `katori` (volume), `bowl` (volume), `bottle` (volume), `can` (volume), `piece` (count), `slice` (count), `plate` (count), `serving` (count), `handful` (count), `scoop` (count), `packet` (count), `roti` (count, = piece), `paratha` (count, = piece), `dosa` (count, = piece), `idli` (count, = piece), `vada` (count, = piece), `samosa` (count, = piece), `egg` (count, = piece), `banana` (count, = piece), `apple` (count, = piece), `orange` (count, = piece), `mango` (count, = piece), `breast` (count, = piece)
+**Serving units:** `g` (mass), `kg` (mass), `ml` (volume), `litre` (volume), `tsp` (volume), `tbsp` (volume), `cup` (volume), `glass` (volume), `katori` (volume), `bowl` (volume), `bottle` (volume), `can` (volume), `peg` (volume), `piece` (count), `slice` (count), `plate` (count), `serving` (count), `handful` (count), `scoop` (count), `pinch` (count), `packet` (count), `roti` (count, = piece), `paratha` (count, = piece), `dosa` (count, = piece), `idli` (count, = piece), `vada` (count, = piece), `samosa` (count, = piece), `egg` (count, = piece), `banana` (count, = piece), `apple` (count, = piece), `orange` (count, = piece), `mango` (count, = piece), `breast` (count, = piece)
 
 <!-- stats:end -->
 
@@ -241,10 +256,21 @@ searchFood("chilli chicken");                    // ranked foods; aliases, word 
 
 ## Search
 
-`searchFood(query, options)` ranks: exact name > exact alias > name prefix > alias prefix > every word matches
-(name, then alias, then any searchable text; plurals are ignored) > close spelling. On top of that it adds a bonus for commonly eaten
-foods (`popular-foods.json`), the user's favourites and recents (pass their ids), and prefers shorter names.
+`searchFood(query, options)` ranks: exact name > exact alias > the name starts with what was typed > every typed word is a
+word of the name > a nickname (alias) starts with it > every word matches (alias, then any searchable text; plurals are
+ignored) > close spelling. On top of that it adds a bonus for commonly eaten foods (`popular-foods.json`, which also decides
+what comes first when browsing a category), the user's favourites and recents (pass their ids), and prefers shorter names.
+A few alternate spellings count as one word (`daal` = `dal`, `laddu` = `ladoo`, `chat` = `chaat`; see `SPELLING_VARIANTS`
+in `src/nutrition/text.ts`).
 Options: `limit`, `category`, `cuisine`, `foodType`, `tag`, `recentIds`, `favoriteIds`, `extraFoods` (user-created foods).
+
+## Loading the food data
+
+The foods are one lazy chunk (`src/nutrition/dataFiles.ts`, about 1.5 MB, 244 KB gzipped), so the app opens without waiting
+for them. The registry is empty until `await loadFoods()`: the app starts it in the background, and the Add and Edit sheets
+show a loading skeleton, or a "try again" button if the download failed, until it is ready. Scripts and tests call
+`loadFoods()` first; `getAllFoods`, `getFoodById` and the other getters throw if they are used before it finishes. In the
+Add sheet a big category is narrowed with sub-category chips and shown 30 at a time.
 
 ## Adding and changing foods
 

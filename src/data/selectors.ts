@@ -1,6 +1,6 @@
 import { ZERO_TOTALS } from "../nutrition/constants.ts";
 import { addTotals } from "../nutrition/math.ts";
-import { getFoodById } from "../nutrition/registry.ts";
+import { foodsLoaded, getFoodById } from "../nutrition/registry.ts";
 import type { Food, MealType, NutritionTotals } from "../nutrition/types.ts";
 import { MEAL_ORDER } from "../domain/meals.ts";
 import { addDays, todayISO } from "../lib/dates.ts";
@@ -10,7 +10,7 @@ export type FoodLookup = (id: string) => Food | undefined;
 
 export function makeFoodLookup(customFoods: Food[]): FoodLookup {
   const custom = new Map(customFoods.map((f) => [f.id, f]));
-  return (id) => custom.get(id) ?? getFoodById(id);
+  return (id) => custom.get(id) ?? (foodsLoaded() ? getFoodById(id) : undefined);
 }
 
 export function entriesOn(entries: Entry[], date: string): Entry[] {

@@ -4,13 +4,14 @@
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 import categoriesJson from "../data/categories.json" with { type: "json" };
-import { getAllFoods } from "../src/nutrition/registry.ts";
+import { getAllFoods, loadFoods } from "../src/nutrition/registry.ts";
 import { UNITS } from "../src/nutrition/units.ts";
 import type { Food } from "../src/nutrition/types.ts";
 
 const README = fileURLToPath(new URL("../README.md", import.meta.url));
 const START = "<!-- stats:start -->";
 const END = "<!-- stats:end -->";
+await loadFoods();
 const foods = getAllFoods();
 
 function table(title: string, rows: [string, number][]): string {
