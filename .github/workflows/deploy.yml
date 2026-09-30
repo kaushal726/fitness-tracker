@@ -1,0 +1,58 @@
+# Publishes the app to GitHub Pages whenever master changes (in practice, when a pull request is merged).
+#
+# One-time setup in the repository:
+#   Settings > Pages > Build and deployment > Source: GitHub Actions
+#   Settings > Branches > make master the default branch (until other branches are allowed, the
+#   github-pages environment only accepts deploys from the default branch)
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time. A newer push waits for the running one instead of cancelling it half way.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # Dataset, search, maths and storage tests. A failing test stops the deploy.
+      - run: npm test
+
+      - run: npm run build
+        env:
+          # A project site is served from https://<user>.github.io/<repo>/, not from the root.
+          # Use "/" here instead for a custom domain or a <user>.github.io repository.
+          BASE_PATH: /${{ github.event.repository.name }}/
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

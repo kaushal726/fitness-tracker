@@ -297,3 +297,19 @@ and uniqueness, length (12–160 characters), sentence ending, emoji, near-dupli
 non-English lines, at least 366 quotes in all, and the share of attributed lines. **Add a theme:** create
 `data/quotes/<theme>.json` (theme, label, quotes) and list it in `src/quotes/dataFiles.ts`; a test fails if a file is missing.
 Never change or reuse an id.
+
+## Deploy
+
+The app is a static site. `.github/workflows/deploy.yml` publishes it to GitHub Pages every time `master` changes (in
+practice, when a pull request is merged): it installs, runs the tests, builds with `BASE_PATH=/<repo>/` and uploads `dist/`.
+The site is then at `https://<user>.github.io/<repo>/`. A failing test stops the deploy and leaves the live site as it was.
+
+One-time setup on GitHub: **Settings → Pages → Source: GitHub Actions**, and make `master` the default branch. For a custom
+domain or a `<user>.github.io` repository, set `BASE_PATH` to `/` in the workflow.
+
+To look at the deployed build locally, stop `npm run dev` (both use port 8790) and run:
+
+```
+BASE_PATH=/fitness-tracker/ npm run build
+BASE_PATH=/fitness-tracker/ npm run preview   # then open http://localhost:8790/fitness-tracker/
+```
