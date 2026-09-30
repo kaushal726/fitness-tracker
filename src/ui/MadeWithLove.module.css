@@ -1,0 +1,32 @@
+.credit {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.heart {
+  flex: none;
+  color: var(--n-fat);
+  fill: currentColor;
+  font-size: 15px;
+  animation: beat 2.4s ease-in-out infinite;
+}
+
+.onBrand {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.onBrand .heart {
+  color: #ffa6bd;
+}
+
+@keyframes beat {
+  0%, 60%, 100% { transform: scale(1); }
+  70% { transform: scale(1.22); }
+  80% { transform: scale(1); }
+  88% { transform: scale(1.14); }
+}

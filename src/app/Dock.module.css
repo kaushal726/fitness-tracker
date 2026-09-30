@@ -1,0 +1,84 @@
+.dock {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 16px calc(14px + var(--safe-bottom));
+  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+
+.tabs {
+  display: flex;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 58px;
+  height: 52px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: none;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-3);
+  transition: background var(--dur) ease, color var(--dur-fast) ease;
+}
+
+.tab svg {
+  font-size: 21px;
+}
+
+.tab[aria-current="page"] {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.add {
+  flex: 1;
+  max-width: 240px;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--primary);
+  color: var(--on-primary);
+  font-size: 16.5px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--primary) 28%, transparent);
+  transition: transform var(--dur-fast) var(--ease-out), background var(--dur-fast) ease;
+}
+
+.add svg {
+  font-size: 22px;
+}
+
+.add:active {
+  transform: scale(0.97);
+}
+
+@media (max-width: 359px) {
+  .tab {
+    width: 52px;
+    font-size: 10.5px;
+  }
+}

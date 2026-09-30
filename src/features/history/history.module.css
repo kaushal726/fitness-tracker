@@ -1,0 +1,30 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.aside {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (min-width: 1100px) {
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(360px, 420px) minmax(0, 1fr);
+    gap: 32px;
+    align-items: start;
+  }
+
+  .aside {
+    position: sticky;
+    top: 40px;
+  }
+
+  /* Line the list's heading up with the top of the chart card. */
+  .main > :first-child {
+    margin-top: 0;
+  }
+}

@@ -1,0 +1,62 @@
+.search {
+  position: relative;
+}
+
+.icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink-3);
+  font-size: 20px;
+  pointer-events: none;
+}
+
+.input {
+  width: 100%;
+  min-height: 54px;
+  padding: 0 48px 0 46px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  font-size: 16.5px;
+  font-weight: 600;
+  outline: none;
+  transition: border-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease;
+}
+
+.input::placeholder {
+  color: var(--ink-3);
+  font-weight: 500;
+}
+
+.input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px var(--primary-soft);
+}
+
+/* The field draws its own clear button; hide the browser's second one. */
+.input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.clear {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--ink-3);
+  font-size: 18px;
+}
+
+.clear:hover {
+  background: var(--surface-2);
+}

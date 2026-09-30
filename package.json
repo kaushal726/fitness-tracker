@@ -1,0 +1,34 @@
+{
+  "name": "eatright",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Simple calorie tracker with a large Indian food dataset. Data stays on the device.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "validate:foods": "node scripts/validate-foods.ts",
+    "validate:quotes": "node scripts/validate-quotes.ts",
+    "build:index": "node scripts/build-index.ts",
+    "stats:foods": "node scripts/stats.ts"
+  },
+  "dependencies": {
+    "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-icons": "^5.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "fake-indexeddb": "^6.0.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1"
+  }
+}

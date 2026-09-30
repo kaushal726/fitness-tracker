@@ -1,0 +1,122 @@
+.hero {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 0 18px;
+}
+
+.flame {
+  align-self: center;
+  color: var(--over);
+  font-size: 30px;
+}
+
+.kcal {
+  font-size: 60px;
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.unit {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ink-3);
+}
+
+.pills {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pills li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 11px 6px 12px;
+  border-radius: 16px;
+}
+
+.protein { background: var(--n-protein-soft); }
+.carbs { background: var(--n-carbs-soft); }
+.fat { background: var(--n-fat-soft); }
+.fiber { background: var(--n-fiber-soft); }
+
+.pillLabel {
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.protein .pillLabel { color: var(--n-protein); }
+.carbs .pillLabel { color: var(--n-carbs); }
+.fat .pillLabel { color: var(--n-fat); }
+.fiber .pillLabel { color: var(--n-fiber); }
+
+.pillValue {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.more {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+.more summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  cursor: pointer;
+  font-weight: 700;
+  list-style: none;
+}
+
+.more summary::-webkit-details-marker {
+  display: none;
+}
+
+.more[open] summary svg {
+  transform: rotate(180deg);
+}
+
+.more summary svg {
+  transition: transform var(--dur) var(--ease-out);
+}
+
+.more dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 20px;
+  margin: 4px 0 0;
+  padding: 12px 16px;
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+
+.more dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.approx {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--ink-3);
+}
+
+.approx svg {
+  flex: none;
+  font-size: 16px;
+}

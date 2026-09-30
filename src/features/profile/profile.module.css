@@ -1,0 +1,208 @@
+.who {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 4px 0 18px;
+}
+
+.whoText {
+  min-width: 0;
+}
+
+.name {
+  font-size: var(--fs-h1);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta {
+  margin-top: 2px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.themeRow {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.themeHead {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.themeTile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 13px;
+  background: var(--surface-2);
+  color: var(--ink-2);
+  font-size: 19px;
+}
+
+.themeLabel {
+  font-size: 15.5px;
+  font-weight: 700;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin: 32px 0 0;
+}
+
+.version {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-3);
+  opacity: 0.8;
+}
+
+.fieldBody {
+  padding-top: 12px;
+}
+
+.hintCard {
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+
+.select {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.error {
+  color: var(--danger);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.foods {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.foodRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 10px 12px 14px;
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+
+.foodText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.foodName {
+  font-size: 15.5px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.foodMeta {
+  font-size: 13px;
+  color: var(--ink-3);
+}
+
+.about {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-top: 12px;
+}
+
+.aboutItem {
+  display: flex;
+  gap: 16px;
+}
+
+.aboutIcon {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 15px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: 21px;
+}
+
+.aboutTitle {
+  font-size: 16.5px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.aboutText {
+  margin-top: 4px;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.aboutCredit {
+  display: flex;
+  justify-content: center;
+  padding-top: 8px;
+}
+
+@media (min-width: 1100px) {
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(360px, 420px) minmax(0, 1fr);
+    gap: 32px;
+    align-items: start;
+  }
+
+  .aside {
+    position: sticky;
+    top: 40px;
+  }
+
+  /* Line the first group up with the top of the profile block. */
+  .main > :first-child {
+    margin-top: 0;
+  }
+}

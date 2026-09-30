@@ -1,0 +1,120 @@
+.card {
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 14px 14px 16px;
+}
+
+.tile {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 15px;
+  font-size: 22px;
+}
+
+.amber { background: var(--n-carbs-soft); color: var(--n-carbs); }
+.green { background: var(--n-fiber-soft); color: var(--n-fiber); }
+.rose { background: var(--n-fat-soft); color: var(--n-fat); }
+.blue { background: var(--n-protein-soft); color: var(--n-protein); }
+
+.headText {
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.count {
+  margin-top: 1px;
+  font-size: 13px;
+  color: var(--ink-3);
+}
+
+.total {
+  flex: none;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.total small,
+.entryKcal small {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--ink-3);
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.list li + li {
+  border-top: 1px solid var(--line);
+}
+
+.entry {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 64px;
+  padding: 10px 16px;
+  border: 0;
+  background: none;
+  text-align: left;
+  transition: background var(--dur-fast) ease;
+}
+
+.entry:hover {
+  background: var(--surface-2);
+}
+
+.entry:active {
+  background: var(--surface-3);
+}
+
+.entryMain {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.entryName {
+  font-size: 15.5px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.entryMeta {
+  font-size: 13px;
+  color: var(--ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.entryKcal {
+  flex: none;
+  font-size: 15.5px;
+  font-weight: 800;
+}

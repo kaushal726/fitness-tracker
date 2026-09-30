@@ -1,0 +1,24 @@
+{
+  "_readme": "Commonly eaten foods, most common first. It only affects search ranking and the default suggestions; a food that is not listed is still found. Ids that do not exist are reported by validation.",
+  "ids": [
+    "egg_boiled", "chicken_breast", "roti", "steamed_rice", "dal", "milk_tea", "coffee_milk_sugar", "banana", "apple", "curd",
+    "paneer", "milk", "plain_dosa", "idli", "masala_dosa", "sambar", "coconut_chutney", "green_chutney", "chicken_curry", "dal_tadka", "rajma", "chole",
+    "aloo_paratha", "paratha", "poha", "upma", "samosa", "pani_puri", "vada_pav", "pav_bhaji", "chicken_biryani", "veg_biryani",
+    "instant_noodles", "oats_porridge_water", "whey_protein", "protein_shake", "chicken_breast_boiled", "chicken_breast_grilled",
+    "chicken_tikka", "butter_chicken", "paneer_butter_masala", "palak_paneer", "veg_momos", "chicken_momos", "veg_burger",
+    "chicken_burger", "french_fries", "margherita_pizza", "veg_pizza", "chicken_wrap", "cola", "diet_cola", "orange_juice",
+    "green_tea", "black_coffee", "lassi_sweet", "buttermilk", "coconut_water", "water", "mango", "orange", "watermelon", "guava",
+    "papaya", "grapes", "pomegranate", "potato_boiled", "tomato", "onion", "cucumber", "carrot", "almonds", "peanuts_roasted",
+    "walnuts", "cashews", "peanut_butter", "bread_white", "bread_brown", "egg_white", "omelette", "egg_fried", "masala_omelette",
+    "tofu_firm", "soya_chunks_dry", "greek_yogurt", "gulab_jamun", "jalebi", "rasgulla", "ice_cream_vanilla", "chocolate_milk_bar",
+    "cake_vanilla", "glucose_biscuit", "potato_chips", "popcorn_plain", "khichdi", "curd_rice", "lemon_rice", "medu_vada", "uttapam",
+    "aloo_gobi", "bhindi_masala", "mix_veg", "egg_curry", "fish_curry", "mutton_curry", "keema", "naan", "butter_naan", "puri",
+    "chole_bhature", "kachori", "bhel_puri", "aloo_tikki", "pakora", "dhokla", "thepla", "misal_pav", "sabudana_khichdi", "kheer",
+    "kulfi", "dates_dried", "raisins", "moong_sprouts", "boiled_chickpeas", "roasted_chana", "roasted_makhana", "paneer_tikka",
+    "chilli_chicken_dry", "veg_fried_rice", "veg_hakka_noodles", "chicken_fried_rice", "chilli_paneer_dry", "cold_coffee",
+    "cappuccino", "latte", "banana_shake", "mango_shake", "rajma_chawal", "dal_chawal", "home_thali", "dosa_meal", "idli_meal",
+    "oats_bowl", "chicken_rice_bowl", "salmon_grilled", "tuna_canned_water", "fish_fry_indian", "egg_bhurji", "paneer_bhurji",
+    "sprouts_salad", "green_salad", "kachumber_salad", "chicken_thigh", "tandoori_chicken", "mutton_biryani", "egg_biryani",
+    "hyderabadi_chicken_biryani", "corn_flakes", "muesli", "honey_spread", "jam", "butter", "ghee", "cheese_slice"
+  ]
+}

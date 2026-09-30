@@ -1,0 +1,79 @@
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--card-border, transparent);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
+}
+
+:root[data-theme="dark"] .list {
+  --card-border: var(--line);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-right: 10px;
+}
+
+.row + .row {
+  border-top: 1px solid var(--line);
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  min-height: 68px;
+  padding: 10px 6px 10px 14px;
+  border: 0;
+  background: none;
+  text-align: left;
+}
+
+.main:active {
+  background: var(--surface-2);
+}
+
+.text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15.5px;
+  font-weight: 700;
+}
+
+.nameText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.star {
+  flex: none;
+  color: var(--n-carbs);
+  fill: currentColor;
+  font-size: 14px;
+}
+
+.meta {
+  font-size: 13px;
+  color: var(--ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

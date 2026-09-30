@@ -1,0 +1,202 @@
+.shell {
+  min-height: 100dvh;
+}
+
+.panel {
+  display: none;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: calc(8px + var(--safe-top)) 20px 0;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 56px;
+  margin: 0 -8px;
+}
+
+.progress {
+  flex: 1;
+}
+
+.spacer {
+  flex: none;
+  width: 44px;
+}
+
+.body {
+  flex: 1;
+  padding: 28px 0 24px;
+  overflow-x: clip;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+}
+
+.fromRight {
+  animation: fromRight 340ms var(--ease-out) both;
+}
+
+.fromLeft {
+  animation: fromLeft 340ms var(--ease-out) both;
+}
+
+.tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  margin-bottom: 22px;
+  border-radius: 20px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: 28px;
+}
+
+.title {
+  font-size: 31px;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.12;
+}
+
+.helper {
+  margin: 10px 0 30px;
+  font-size: 16.5px;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+.gap {
+  height: 30px;
+}
+
+.footer {
+  position: sticky;
+  bottom: 0;
+  padding: 12px 0 calc(18px + var(--safe-bottom));
+  background: var(--bg);
+}
+
+@media (min-width: 768px) {
+  .page {
+    padding-top: 6vh;
+  }
+}
+
+@keyframes fromRight {
+  from { opacity: 0; transform: translateX(32px); }
+}
+
+@keyframes fromLeft {
+  from { opacity: 0; transform: translateX(-32px); }
+}
+
+/* Wide screens: the brand on the left, the questions centred on the right. */
+@media (min-width: 900px) {
+  .shell {
+    display: grid;
+    grid-template-columns: minmax(400px, 42%) minmax(0, 1fr);
+  }
+
+  .panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 32px;
+    overflow: hidden;
+    padding: 56px;
+    background: var(--brand);
+    color: #ffffff;
+  }
+
+  .ringLarge,
+  .ringSmall {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    pointer-events: none;
+  }
+
+  .ringLarge {
+    right: -200px;
+    bottom: -170px;
+    width: 540px;
+    height: 540px;
+  }
+
+  .ringSmall {
+    right: 110px;
+    bottom: 70px;
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .panelBrand {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .panelMark {
+    width: 30px;
+    height: auto;
+  }
+
+  .panelName {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+
+  .panelCopy {
+    position: relative;
+    max-width: 400px;
+  }
+
+  .panelCopy h2 {
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.08;
+  }
+
+  .panelCopy p {
+    margin-top: 16px;
+    font-size: 17px;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .page {
+    justify-content: center;
+    width: 100%;
+    max-width: 580px;
+    padding: 40px 56px;
+  }
+
+  .body {
+    flex: none;
+    padding: 36px 0 4px;
+  }
+
+  .footer {
+    position: static;
+    padding: 28px 0 0;
+    background: none;
+  }
+}

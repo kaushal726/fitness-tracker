@@ -1,0 +1,119 @@
+.nav {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: var(--sidenav-width);
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 28px 18px;
+  background: var(--surface);
+  border-right: 1px solid var(--line);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 6px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: var(--brand);
+}
+
+.mark {
+  width: 20px;
+  height: auto;
+}
+
+.brandName {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 52px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--primary);
+  color: var(--on-primary);
+  font-size: 15.5px;
+  font-weight: 800;
+  transition: background var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out);
+}
+
+.add:hover {
+  background: var(--primary-strong);
+}
+
+.add:active {
+  transform: scale(0.98);
+}
+
+.add svg {
+  font-size: 20px;
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: var(--r-md);
+  background: none;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink-2);
+  transition: background var(--dur-fast) ease;
+}
+
+.item svg {
+  font-size: 20px;
+}
+
+.item:hover {
+  background: var(--surface-2);
+}
+
+.item[aria-current="page"] {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.foot {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: auto;
+  padding: 0 6px;
+}
+
+.version {
+  padding-left: 22px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-3);
+  opacity: 0.8;
+}

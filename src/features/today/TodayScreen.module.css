@@ -1,0 +1,25 @@
+.meals {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+/* Wide screens: the day's summary on the left, the meals on the right. */
+@media (min-width: 1100px) {
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(360px, 400px) minmax(0, 1fr);
+    gap: 32px;
+    align-items: start;
+  }
+
+  .aside {
+    position: sticky;
+    top: 40px;
+  }
+
+  .meals {
+    margin-top: 0;
+  }
+}

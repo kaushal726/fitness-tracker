@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>%APP_NAME%</title>
+    <meta name="description" content="%APP_DESCRIPTION%" />
+    <!-- One per scheme, so an installed app paints the right status bar before any script
+         runs. src/app/theme.ts re-points their `media` when a theme is chosen by hand. -->
+    <meta name="theme-color" content="%THEME_COLOR%" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="%THEME_COLOR_DARK%" media="(prefers-color-scheme: dark)" />
+    <link rel="manifest" href="%BASE_URL%manifest.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%icons/icon.svg" />
+    <link rel="icon" type="image/png" href="%BASE_URL%icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="%BASE_URL%icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="%APP_NAME%" />
+    <!-- Transparent status bar: the page background (light or dark) shows through it.
+         Safe-area padding keeps content clear of it — see --safe-top. -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      // Before first paint: no white flash on a dark phone. Mirrors src/app/theme.ts.
+      (function () {
+        try {
+          var saved = localStorage.getItem("fitly_theme");
+          if (saved !== "dark" && saved !== "light") return;   // following the phone: the metas above are already right
+          document.documentElement.dataset.theme = saved;
+          var metas = document.querySelectorAll('meta[name="theme-color"]');
+          metas[0].media = saved === "light" ? "all" : "not all";
+          metas[1].media = saved === "dark" ? "all" : "not all";
+        } catch (e) {}
+      })();
+    </script>
+      <style>
+      /* Until the app draws its own opening screen, show the brand colour: no white or black flash. */
+      #root:empty { position: fixed; inset: 0; background: #1f6f54; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

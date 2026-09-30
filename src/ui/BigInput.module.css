@@ -1,0 +1,76 @@
+.wrap {
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 4px 0 8px;
+  border-bottom: 2.5px solid var(--line-strong);
+  transition: border-color var(--dur) ease;
+}
+
+.row:focus-within {
+  border-color: var(--primary);
+}
+
+.invalid,
+.invalid:focus-within {
+  border-color: var(--danger);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  font-size: 46px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Sized inline to its content; the unit follows. */
+.row:has(.fitted) {
+  gap: 8px;
+}
+
+.fitted {
+  flex: none;
+  min-width: 1.5ch;
+  max-width: 100%;
+}
+
+.input::placeholder {
+  color: var(--ink-3);
+  opacity: 0.5;
+}
+
+.unit {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink-3);
+}
+
+.md .input {
+  font-size: 34px;
+}
+
+.md .unit {
+  font-size: 16px;
+}
+
+.hint {
+  margin: 12px 2px 0;
+  font-size: 14px;
+  color: var(--ink-3);
+}
+
+.hintInvalid {
+  color: var(--danger);
+  font-weight: 600;
+}

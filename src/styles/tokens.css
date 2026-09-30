@@ -1,0 +1,137 @@
+/* Design tokens. Every colour, size and duration used by the app comes from here, so a screen never
+ * invents its own. Light is the default; dark is applied by <html data-theme="dark"> (see app/theme.ts).
+ */
+:root {
+  color-scheme: light;
+
+  --font: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Surfaces: a warm paper background with white cards on it */
+  --bg: #f6f5f0;
+  --surface: #ffffff;
+  --surface-2: #efeee8;
+  --surface-3: #e5e3da;
+  --line: #e7e5dd;
+  --line-strong: #d2cfc4;
+
+  /* Text */
+  --ink: #15201a;
+  --ink-2: #4a5a50;
+  --ink-3: #78877d;
+
+  /* Brand */
+  --brand: #1f6f54;
+  --primary: #1b7a56;
+  --primary-strong: #145f43;
+  --primary-soft: #e1f1e8;
+  --primary-line: #c1dfcf;
+  --on-primary: #ffffff;
+
+  /* Status */
+  --over: #e2692f;
+  --warn: #a4570b;
+  --warn-soft: #fcefd9;
+  --danger: #bf402c;
+  --danger-soft: #fbe8e3;
+
+  /* Nutrients: one colour always means one nutrient */
+  --n-protein: #4a6fe3;
+  --n-protein-soft: #e8edfc;
+  --n-carbs: #dc9518;
+  --n-carbs-soft: #fbf0d8;
+  --n-fat: #d8597a;
+  --n-fat-soft: #fbe6eb;
+  --n-fiber: #2b9967;
+  --n-fiber-soft: #dff2e8;
+
+  --track: color-mix(in srgb, var(--ink) 9%, transparent);
+  --overlay: rgba(12, 18, 14, 0.48);
+  --toast-bg: #15201a;
+  --toast-ink: #f4f7f5;
+  --toast-action: #7fe3b9;
+
+  /* Shape */
+  --r-sm: 12px;
+  --r-md: 16px;
+  --r-lg: 22px;
+  --r-xl: 28px;
+  --r-pill: 999px;
+  --shadow-card: 0 1px 2px rgba(21, 32, 26, 0.04), 0 6px 18px rgba(21, 32, 26, 0.05);
+  --shadow-float: 0 12px 32px rgba(21, 32, 26, 0.16);
+  --shadow-sheet: 0 -10px 40px rgba(21, 32, 26, 0.16);
+
+  /* Type scale */
+  --fs-caption: 12.5px;
+  --fs-small: 14px;
+  --fs-body: 16px;
+  --fs-lead: 18px;
+  --fs-h2: 20px;
+  --fs-h1: 28px;
+
+  /* Layout */
+  --content-max: 640px;
+  --sidenav-width: 248px;
+  --dock-h: 88px;
+  --touch: 44px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-spring: cubic-bezier(0.2, 0.9, 0.25, 1.15);
+  --dur-fast: 120ms;
+  --dur: 220ms;
+  --dur-slow: 420ms;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #0b100d;
+  --surface: #131a16;
+  --surface-2: #1a231e;
+  --surface-3: #232e28;
+  --line: #222c26;
+  --line-strong: #2f3c34;
+
+  --ink: #edf3ef;
+  --ink-2: #b4c1b9;
+  --ink-3: #84948a;
+
+  --primary: #4fd39e;
+  --primary-strong: #7be0b7;
+  --primary-soft: #13302a;
+  --primary-line: #21463a;
+  --on-primary: #05221a;
+
+  --over: #ff8a4c;
+  --warn: #f0a55a;
+  --warn-soft: #2c2114;
+  --danger: #ff8a78;
+  --danger-soft: #2f1a16;
+
+  --n-protein: #86a1ff;
+  --n-protein-soft: #1a2240;
+  --n-carbs: #f2b64a;
+  --n-carbs-soft: #33280f;
+  --n-fat: #f083a0;
+  --n-fat-soft: #341a24;
+  --n-fiber: #4fd39e;
+  --n-fiber-soft: #12302a;
+
+  --track: color-mix(in srgb, var(--ink) 11%, transparent);
+  --overlay: rgba(0, 0, 0, 0.62);
+  --toast-bg: #edf3ef;
+  --toast-ink: #0b100d;
+  --toast-action: #0f6a4a;
+
+  --shadow-card: none;
+  --shadow-float: 0 12px 32px rgba(0, 0, 0, 0.55);
+  --shadow-sheet: 0 -10px 40px rgba(0, 0, 0, 0.55);
+}
+
+@media (min-width: 900px) {
+  :root {
+    --dock-h: 0px;
+  }
+}

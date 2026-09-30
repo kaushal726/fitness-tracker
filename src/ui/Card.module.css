@@ -1,0 +1,20 @@
+.card {
+  background: var(--surface);
+  border: 1px solid var(--card-border, transparent);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
+}
+
+:root[data-theme="dark"] .card {
+  --card-border: var(--line);
+}
+
+.padded {
+  padding: 20px;
+}
+
+.hero {
+  background: var(--primary-soft);
+  border-color: var(--primary-line);
+  box-shadow: none;
+}

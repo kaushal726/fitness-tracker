@@ -1,0 +1,27 @@
+.main {
+  min-height: 100dvh;
+  padding: calc(14px + var(--safe-top)) 16px calc(var(--dock-h) + var(--safe-bottom) + 32px);
+}
+
+.content {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  animation: screenIn var(--dur) var(--ease-out) both;
+}
+
+@media (min-width: 900px) {
+  .main {
+    margin-left: var(--sidenav-width);
+    padding: 40px 48px 64px;
+  }
+}
+
+@media (min-width: 1100px) {
+  .content {
+    max-width: 1080px;
+  }
+}
+
+@keyframes screenIn {
+  from { opacity: 0; transform: translateY(8px); }
+}

@@ -1,0 +1,13 @@
+.tile {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 32%;
+}
+
+.green { background: var(--n-fiber-soft); color: var(--n-fiber); }
+.blue { background: var(--n-protein-soft); color: var(--n-protein); }
+.amber { background: var(--n-carbs-soft); color: var(--n-carbs); }
+.rose { background: var(--n-fat-soft); color: var(--n-fat); }
+.slate { background: var(--surface-2); color: var(--ink-2); }

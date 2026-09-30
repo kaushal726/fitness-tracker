@@ -1,0 +1,36 @@
+{
+  "categories": {
+    "breakfast": { "label": "Breakfast", "subCategories": ["north_indian", "south_indian", "bengali", "western_indian", "high_protein", "cereal", "western", "egg_based"] },
+    "main_course": { "label": "Main Course", "subCategories": ["rice", "roti", "dal", "pulses", "vegetable_curry", "paneer", "chicken", "fish", "mutton", "egg", "one_pot", "thali", "regional"] },
+    "snacks": { "label": "Snacks", "subCategories": ["indian", "western", "healthy", "packaged", "street_food", "fried", "chaat"] },
+    "fruits": { "label": "Fruits", "subCategories": ["fresh", "dried", "juice_fresh", "tropical", "berries", "citrus", "melon"] },
+    "vegetables": { "label": "Vegetables", "subCategories": ["salad", "raw", "boiled", "cooked", "fried", "leafy", "root", "gourd", "legume_veg"] },
+    "dairy": { "label": "Dairy & Eggs", "subCategories": ["milk", "curd", "cheese", "paneer", "butter_ghee", "egg", "cream"] },
+    "protein": { "label": "Protein Foods", "subCategories": ["chicken", "fish", "seafood", "mutton", "egg", "soy", "tofu", "sprouts", "legumes", "other_meat"] },
+    "drinks": { "label": "Drinks", "subCategories": ["water", "tea", "coffee", "juice", "milk_drink", "lassi", "soft_drink", "energy_sports", "shake", "traditional", "alcohol"] },
+    "sweets": { "label": "Sweets", "subCategories": ["mithai", "halwa", "ladoo", "milk_sweet", "fried_sweet", "regional_sweet", "chikki"] },
+    "desserts": { "label": "Desserts", "subCategories": ["ice_cream", "pudding", "cake", "pastry", "cookie", "chocolate", "kheer"] },
+    "fast_food": { "label": "Fast Food", "subCategories": ["burger", "pizza", "fries", "sandwich", "wrap_roll", "fried_chicken", "pasta", "hotdog", "cafe"] },
+    "chinese": { "label": "Chinese", "subCategories": ["noodles", "rice", "starter", "gravy", "momos", "soup", "roll"] },
+    "bakery": { "label": "Bakery", "subCategories": ["bread", "bun", "puff", "cake", "biscuit", "toast"] },
+    "nuts_seeds": { "label": "Nuts & Seeds", "subCategories": ["nuts", "seeds", "dry_fruit", "nut_butter", "trail_mix"] },
+    "condiments": { "label": "Condiments & Cooking", "subCategories": ["sauce", "chutney", "pickle", "oil_fat", "sweetener", "spread", "dressing", "spice"] },
+    "supplements": { "label": "Supplements", "subCategories": ["whey", "protein_bar", "shake", "creatine_other", "meal_replacement"] },
+    "packaged": { "label": "Packaged Food", "subCategories": ["noodles", "chips", "namkeen", "biscuit", "cereal", "bar", "instant", "spread", "chocolate"] },
+    "staples": { "label": "Staples & Grains", "subCategories": ["rice_raw", "flour", "grain", "pulse_raw", "cooked_grain", "millet"] }
+  },
+  "cuisines": [
+    "pan_indian", "north_indian", "punjabi", "south_indian", "andhra_telangana", "kerala", "tamil", "karnataka", "hyderabadi",
+    "bengali", "bihari_jharkhand", "odia", "gujarati", "maharashtrian", "rajasthani", "mughlai", "kashmiri", "goan",
+    "indo_chinese", "chinese", "italian", "american", "continental", "mexican", "middle_eastern", "japanese_korean", "global"
+  ],
+  "foodTypes": ["vegetarian", "non_vegetarian", "vegan", "eggetarian"],
+  "mealTypes": ["breakfast", "lunch", "snack", "dinner"],
+  "dietaryTags": [
+    "vegetarian", "non_vegetarian", "vegan", "high_protein", "high_fiber", "low_calorie", "high_calorie", "low_fat", "high_fat",
+    "low_carb", "high_carb", "sugar_free", "contains_dairy", "contains_egg", "contains_gluten", "contains_nuts", "spicy"
+  ],
+  "confidence": ["high", "medium", "low"],
+  "dataSourceTypes": ["standard_reference", "estimated", "recipe_based"],
+  "variability": ["low", "medium", "high"]
+}

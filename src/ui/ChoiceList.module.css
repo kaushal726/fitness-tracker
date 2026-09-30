@@ -1,0 +1,84 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.choice {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 68px;
+  padding: 12px 16px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  text-align: left;
+  transition: border-color var(--dur-fast) ease, background var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out);
+}
+
+.choice:active {
+  transform: scale(0.985);
+}
+
+.selected {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.icon {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: var(--surface-2);
+  color: var(--ink-2);
+  font-size: 20px;
+}
+
+.selected .icon {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.label {
+  font-size: 16.5px;
+  font-weight: 750;
+  letter-spacing: -0.01em;
+}
+
+.hint {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ink-3);
+}
+
+.mark {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--line-strong);
+  color: var(--on-primary);
+  font-size: 15px;
+  transition: background var(--dur-fast) ease, border-color var(--dur-fast) ease;
+}
+
+.selected .mark {
+  background: var(--primary);
+  border-color: var(--primary);
+}

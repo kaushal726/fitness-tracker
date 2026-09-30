@@ -1,0 +1,20 @@
+{
+  "theme": "wisdom",
+  "label": "Old wisdom",
+  "quotes": [
+    {"id":"wisdom_001","text":"The first wealth is health.","by":"Ralph Waldo Emerson"},
+    {"id":"wisdom_002","text":"Tell me what you eat, and I will tell you what you are.","by":"Jean Anthelme Brillat-Savarin"},
+    {"id":"wisdom_003","text":"Eat food. Not too much. Mostly plants.","by":"Michael Pollan"},
+    {"id":"wisdom_004","text":"Take care of your body. It’s the only place you have to live.","by":"Jim Rohn"},
+    {"id":"wisdom_005","text":"One cannot think well, love well, sleep well, if one has not dined well.","by":"Virginia Woolf"},
+    {"id":"wisdom_006","text":"पहला सुख निरोगी काया।","by":"Hindi proverb","gloss":"The first happiness is a healthy body."},
+    {"id":"wisdom_007","text":"जैसा खाओ अन्न, वैसा होवे मन।","by":"Hindi proverb","gloss":"As is the food you eat, so is the mind."},
+    {"id":"wisdom_008","text":"आहारशुद्धौ सत्त्वशुद्धिः।","by":"Chandogya Upanishad","gloss":"When the food is pure, the mind grows clear."},
+    {"id":"wisdom_009","text":"अति सर्वत्र वर्जयेत्।","by":"Sanskrit proverb","gloss":"Avoid excess in everything."},
+    {"id":"wisdom_010","text":"When diet is wrong, medicine is of no use. When diet is correct, medicine is of no need.","by":"Ayurvedic proverb"},
+    {"id":"wisdom_011","text":"An apple a day keeps the doctor away.","by":"Proverb"},
+    {"id":"wisdom_012","text":"Eat breakfast like a king, lunch like a prince and dinner like a pauper.","by":"Proverb"},
+    {"id":"wisdom_013","text":"Eat only once the last meal has settled, and the body will need no medicine.","by":"Thirukkural 942, paraphrased"},
+    {"id":"wisdom_014","text":"Well-being keeps company with those who eat in measure. Illness keeps company with those who eat far beyond it.","by":"Thirukkural 946, paraphrased"}
+  ]
+}

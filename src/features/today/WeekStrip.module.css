@@ -1,0 +1,97 @@
+.wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 -16px 18px;
+}
+
+.arrow {
+  flex: none;
+}
+
+.strip {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  gap: 8px;
+  padding: 2px 16px 4px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+
+.strip::-webkit-scrollbar {
+  display: none;
+}
+
+.day {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 52px;
+  height: 74px;
+  border: 1.5px solid transparent;
+  border-radius: 18px;
+  background: var(--surface);
+  color: var(--ink);
+  scroll-snap-align: center;
+  transition: background var(--dur) ease, color var(--dur-fast) ease, border-color var(--dur) ease, transform var(--dur-fast) var(--ease-out);
+}
+
+.day:active {
+  transform: scale(0.96);
+}
+
+.weekday {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ink-3);
+}
+
+.number {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.logged {
+  background: var(--primary);
+}
+
+.today {
+  border-color: var(--primary-line);
+}
+
+.selected {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--on-primary);
+}
+
+.selected .weekday {
+  color: color-mix(in srgb, var(--on-primary) 78%, transparent);
+}
+
+.selected .logged {
+  background: var(--on-primary);
+}
+
+@media (min-width: 900px) {
+  .wrap {
+    margin: 0 0 22px;
+  }
+
+  .strip {
+    padding: 2px 0 4px;
+  }
+}
