@@ -19,7 +19,7 @@ const MACROS = [
 
 const KCAL_COUNT_MS = 300;
 
-/** The short form of the nutrition summary, for inside an amount card: calories large, the four macros beside them. */
+/** What the amount comes to, kept quiet: the calories, and the four macros in one row under them. */
 export function NutritionLine({ nutrition, approximate }: Props) {
   return (
     <section className={styles.line} aria-label="Nutrition" aria-live="polite">

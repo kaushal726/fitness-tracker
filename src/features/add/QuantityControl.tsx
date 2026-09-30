@@ -14,13 +14,11 @@ interface Props {
   unit: string;
   onQuantityText: (text: string) => void;
   onUnit: (unit: string) => void;
-  /** Drawn without a card of its own, for use inside one. */
-  compact?: boolean;
   autoFocus?: boolean;
 }
 
 /** How much: a stepper for the number, one-tap amounts for counted foods, chips for the unit, and the weight it comes to. */
-export function QuantityControl({ food, quantityText, unit, onQuantityText, onUnit, compact, autoFocus }: Props) {
+export function QuantityControl({ food, quantityText, unit, onQuantityText, onUnit, autoFocus }: Props) {
   const options = useMemo(() => portionOptions(food), [food]);
   const quantity = parseNumber(quantityText);
   const valid = Number.isFinite(quantity) && quantity > 0;
@@ -45,7 +43,7 @@ export function QuantityControl({ food, quantityText, unit, onQuantityText, onUn
   };
 
   return (
-    <div className={cx(styles.control, compact && styles.compact)}>
+    <div className={styles.control}>
       <div className={styles.stepper}>
         <button type="button" className={styles.step} aria-label="Less" onClick={() => nudge(-1)}><IconMinus aria-hidden /></button>
         <input

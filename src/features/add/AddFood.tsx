@@ -1,23 +1,25 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useBackLayer } from "../../app/useBackLayer.ts";
+import { makeFoodLookup } from "../../data/selectors.ts";
 import { useAppState } from "../../data/store.ts";
-import { mealForTime } from "../../domain/meals.ts";
+import type { Entry } from "../../data/types.ts";
+import { MEAL_LABELS, mealForTime } from "../../domain/meals.ts";
 import { hasFinePointer } from "../../lib/device.ts";
 import { formatNumber } from "../../lib/format.ts";
+import { scrollParent } from "../../lib/scroll.ts";
 import { categoryLabel } from "../../nutrition/categories.ts";
 import type { Food, MealType } from "../../nutrition/types.ts";
 import { SearchInput } from "../../ui/SearchInput";
 import { Sheet } from "../../ui/Sheet";
-import { BrowseView } from "./BrowseView.tsx";
 import { CartBar } from "./CartBar.tsx";
-import { CategoryFoods } from "./CategoryFoods.tsx";
 import { CustomFoodForm } from "./CustomFoodForm.tsx";
-import { FoodsNotReady } from "./FoodsNotReady.tsx";
+import { FavoriteButton } from "./FavoriteButton.tsx";
+import type { PortionChoice } from "./FoodDetail.tsx";
+import { FoodFinder } from "./FoodFinder.tsx";
 import { MealPicker } from "./MealPicker.tsx";
 import { ReviewView } from "./ReviewView.tsx";
-import { SearchResults } from "./SearchResults.tsx";
+import { SelectedFood, type Selected } from "./SelectedFood.tsx";
 import { useAddSession } from "./useAddSession.ts";
-import { useFoodPicker } from "./useFoodPicker.ts";
 import { useFoodBrowser } from "./useFoodSearch.ts";
 
 interface Props {
@@ -28,75 +30,86 @@ interface Props {
   initialMeal: MealType | null;
 }
 
-/** The page the add flow lives on. Its views replace each other inside it, so nothing ever opens on top of it. */
-type View = "browse" | "review" | "custom";
+/** The pages of the add flow. They replace each other inside one surface, so nothing opens on top of anything. */
+type View = "add" | "review" | "custom";
 
 /**
- * Add food: find a food (type, tap a shortcut, or browse), set the amount where the food is, add. It stays open so
- * several foods can be logged in a row; Review lists them for changes, and Done closes.
+ * Add food: search or pick a food, say how much, add. It stays open so several foods can be logged in a row;
+ * the bar at the foot lists them for changes, and Done closes.
  */
 export function AddFood({ onClose, date, initialMeal }: Props) {
-  const { settings } = useAppState();
-  const [view, setView] = useState<View>("browse");
+  const { settings, customFoods } = useAppState();
+  const [view, setView] = useState<View>("add");
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string | null>(null);
   const [customName, setCustomName] = useState("");
   /** Null leaves the meal to the time of day. */
   const [mealChoice, setMealChoice] = useState<MealType | null>(initialMeal);
-  const browser = useFoodBrowser(query);
+  /** The amount page, when one is open. It takes the place of the page underneath, which stays exactly as it was. */
+  const [selected, setSelected] = useState<Selected | null>(null);
+  const browser = useFoodBrowser(query, category);
   const session = useAddSession(date);
+  const lookup = useMemo(() => makeFoodLookup(customFoods), [customFoods]);
+  const pages = useRef<HTMLDivElement>(null);
+  const savedScroll = useRef(0);
   const meal = mealChoice ?? mealForTime(new Date(), settings.mealStartHours);
-  const picker = useFoodPicker({ browser, session, meal, mealChoice });
 
   const count = session.entries.length;
   const kcal = session.entries.reduce((sum, e) => sum + e.nutrition.calories, 0);
-  const categoryFoods = useMemo(() => (category ? browser.inCategory(category) : []), [category, browser.inCategory]);
 
-  // Everything was taken out from the list: there is nothing left to look over.
+  // Coming back from the amount page lands on the same spot of the page it was opened from.
+  useLayoutEffect(() => {
+    if (!selected) scrollParent(pages.current)?.scrollTo({ top: savedScroll.current });
+  }, [selected]);
+
+  // Everything was taken out of the list: nothing is left to look over.
   useEffect(() => {
-    if (view === "review" && count === 0) setView("browse");
+    if (view === "review" && count === 0) setView("add");
   }, [view, count]);
 
-  /** Where Back (the arrow, the phone's button, Escape) steps to before it closes the page. */
-  const back = view !== "browse" ? () => setView("browse") : category ? () => setCategory(null) : undefined;
+  /** Where Back (the arrow, the phone's button, Escape) steps to before it closes the flow. */
+  const back = selected ? () => setSelected(null) : view !== "add" ? () => setView("add") : undefined;
   useBackLayer(back !== undefined, () => back?.());
 
-  const type = (value: string) => {
-    setQuery(value);
-    if (value.trim()) setCategory(null);
-    picker.close();
+  const open = (next: Selected) => {
+    savedScroll.current = scrollParent(pages.current)?.scrollTop ?? 0;
+    setSelected(next);
   };
-  const pickCategory = (id: string) => {
-    setCategory(id);
-    picker.close();
+  const edit = (entry: Entry) => {
+    const food = lookup(entry.foodId);
+    if (food) open({ food, entry });
+  };
+  const add = (food: Food, { quantity, unit }: PortionChoice) => {
+    session.add(food, { quantity, unit, meal: mealChoice });
+    setSelected(null);
+  };
+  const save = (entry: Entry, food: Food, { quantity, unit, meal: chosen }: PortionChoice) => {
+    session.revise(entry, food, { quantity, unit, meal: chosen ?? entry.meal });
+    setSelected(null);
+  };
+  const remove = (entry: Entry) => {
+    session.remove(entry);
+    setSelected(null);
   };
   const openCustom = (name: string) => {
     setCustomName(name);
     setView("custom");
-    picker.close();
   };
-  /** The food they just made is found by its own name, with its amount card already open. */
+  /** The food they just made goes straight to its amount. */
   const created = (food: Food) => {
     setQuery(food.name);
     setCategory(null);
-    setView("browse");
-    picker.open("results", food);
+    setView("add");
+    open({ food });
   };
 
-  const content = () => {
-    if (view === "review") return <ReviewView session={session} />;
-    if (view === "custom") return <CustomFoodForm initialName={customName} onCreated={created} />;
-    if (browser.status !== "ready") return <FoodsNotReady status={browser.status} onRetry={browser.retry} />;
-    if (query.trim() !== "") return <SearchResults key={query} query={query} results={browser.results} picker={picker} onCustom={openCustom} />;
-    if (category) return <CategoryFoods key={category} foods={categoryFoods} picker={picker} onCustom={() => openCustom("")} />;
-    return <BrowseView browser={browser} picker={picker} onPickCategory={pickCategory} />;
+  const header = () => {
+    if (selected) return { title: selected.food.name, subtitle: categoryLabel(selected.food.category) };
+    if (view === "review") return { title: "Added", subtitle: `${count} ${count === 1 ? "item" : "items"} · ${formatNumber(kcal)} kcal` };
+    if (view === "custom") return { title: "Add your own food", subtitle: "Numbers for one serving" };
+    return { title: "Add food", subtitle: <MealPicker value={meal} onChange={setMealChoice} /> };
   };
-
-  const header = {
-    review: { title: "Added", subtitle: `${count} ${count === 1 ? "item" : "items"} · ${formatNumber(kcal)} kcal` },
-    custom: { title: "Add your own food", subtitle: "Numbers for one serving" },
-    browse: { title: category ? categoryLabel(category) : "Add food", subtitle: <MealPicker value={meal} onChange={setMealChoice} /> },
-  }[view];
+  const { title, subtitle } = header();
 
   return (
     <Sheet
@@ -104,12 +117,18 @@ export function AddFood({ onClose, date, initialMeal }: Props) {
       size="page"
       onClose={onClose}
       onBack={back}
-      title={header.title}
-      subtitle={header.subtitle}
-      toolbar={view === "browse" ? <SearchInput value={query} onChange={type} placeholder="Search dosa, chai, chicken…" autoFocus={hasFinePointer()} /> : undefined}
-      footer={view !== "custom" && count > 0 ? <CartBar count={count} kcal={kcal} reviewing={view === "review"} onToggleReview={() => setView(view === "review" ? "browse" : "review")} onDone={onClose} /> : undefined}
+      title={title}
+      subtitle={subtitle}
+      headerAction={selected ? <FavoriteButton foodId={selected.food.id} /> : undefined}
+      toolbar={view === "add" && !selected ? <SearchInput value={query} onChange={setQuery} placeholder="Search dosa, chai, chicken…" autoFocus={hasFinePointer()} /> : undefined}
+      footer={!selected && view !== "custom" && count > 0 ? <CartBar count={count} kcal={kcal} reviewing={view === "review"} onToggleReview={() => setView(view === "review" ? "add" : "review")} onDone={onClose} /> : undefined}
     >
-      {content()}
+      <div ref={pages} hidden={selected !== null}>
+        {view === "add" && <FoodFinder browser={browser} query={query} category={category} onCategory={setCategory} onSelect={(food) => open({ food })} onCustom={openCustom} />}
+        {view === "review" && <ReviewView session={session} onEdit={edit} />}
+        {view === "custom" && <CustomFoodForm initialName={customName} onCreated={created} />}
+      </div>
+      {selected && <SelectedFood selected={selected} addLabel={`Add to ${MEAL_LABELS[meal]}`} onAdd={add} onSave={save} onRemove={remove} />}
     </Sheet>
   );
 }

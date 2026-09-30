@@ -1,0 +1,36 @@
+.detail {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  animation: enter var(--dur) var(--ease-out);
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 8px 0 24px;
+}
+
+/* Stays at the foot while the page scrolls; the negative margins take it to the edges of the body and over its padding. */
+.bar {
+  flex: none;
+  position: sticky;
+  bottom: -24px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 -20px -24px;
+  padding: 12px 20px calc(14px + var(--safe-bottom));
+  background: var(--sheet);
+  border-top: 1px solid var(--line);
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+}

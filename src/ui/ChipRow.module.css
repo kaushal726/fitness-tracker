@@ -1,0 +1,19 @@
+/* Bleeds to the edges of a sheet body (20px gutters) so a half-visible chip reads as "there is more". */
+.row {
+  display: flex;
+  gap: 8px;
+  margin: 0 -20px;
+  padding: 2px 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent 100%);
+  mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent 100%);
+}
+
+.row::-webkit-scrollbar {
+  display: none;
+}
+
+.row > * {
+  flex: none;
+}
