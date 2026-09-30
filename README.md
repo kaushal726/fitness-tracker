@@ -300,9 +300,10 @@ Never change or reuse an id.
 
 ## Deploy
 
-The app is a static site. `.github/workflows/deploy.yml` publishes it to GitHub Pages every time `master` changes (in
-practice, when a pull request is merged): it installs, runs the tests, builds with `BASE_PATH=/<repo>/` and uploads `dist/`.
-The site is then at `https://<user>.github.io/<repo>/`. A failing test stops the deploy and leaves the live site as it was.
+The app is a static site. `.github/workflows/deploy.yml` publishes it to GitHub Pages every time `master` changes, and only
+then (no other branch, pull request or manual run deploys): it installs, runs the tests, builds with `BASE_PATH=/<repo>/` and
+uploads `dist/`. The site is then at `https://<user>.github.io/<repo>/`. A failing test stops the deploy and leaves the live
+site as it was.
 
 One-time setup on GitHub: **Settings → Pages → Source: GitHub Actions**, and make `master` the default branch. For a custom
 domain or a `<user>.github.io` repository, set `BASE_PATH` to `/` in the workflow.

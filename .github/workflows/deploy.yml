@@ -1,4 +1,5 @@
-# Publishes the app to GitHub Pages whenever master changes (in practice, when a pull request is merged).
+# Publishes the app to GitHub Pages whenever master changes, and only then: no other branch, pull
+# request or manual run deploys.
 #
 # One-time setup in the repository:
 #   Settings > Pages > Build and deployment > Source: GitHub Actions
@@ -9,7 +10,6 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [master]
-  workflow_dispatch:
 
 permissions:
   contents: read
