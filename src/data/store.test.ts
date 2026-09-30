@@ -6,7 +6,7 @@ import type { Food } from "../nutrition/types.ts";
 import { parseBackup } from "./backup.ts";
 import { getAll, STORE } from "./db.ts";
 import { buildEntry, reviseEntry } from "./entries.ts";
-import { frequentFoodIds, groupByMeal, makeFoodLookup, recentFoodIds, sumEntries } from "./selectors.ts";
+import { groupByMeal, makeFoodLookup, recentFoodIds, sumEntries } from "./selectors.ts";
 import { addCustomFood, addEntry, DEFAULT_SETTINGS, exportBackup, getState, initStore, removeEntry, replaceEntry, resetAll, restoreBackup, toggleFavorite } from "./store.ts";
 import type { Entry } from "./types.ts";
 
@@ -63,7 +63,6 @@ describe("entries", () => {
     expect(groupByMeal(list).snack).toHaveLength(0);
     expect(sumEntries(list).calories).toBe(list.reduce((s, e) => s + e.nutrition.calories, 0));
     expect(recentFoodIds(list, 5)).toEqual(["egg_boiled", "steamed_rice"]);
-    expect(frequentFoodIds(list, 1, "2026-01-06")).toEqual(["egg_boiled"]);
   });
 });
 

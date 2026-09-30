@@ -1,6 +1,7 @@
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import { makeFoodLookup } from "../../data/selectors.ts";
 import { useAppState } from "../../data/store.ts";
+import type { Entry } from "../../data/types.ts";
 import { useScrollTop } from "../../lib/useScrollTop.ts";
 import { FoodList } from "./FoodRow.tsx";
 import { ReviewRow } from "./ReviewRow.tsx";
@@ -8,13 +9,13 @@ import type { AddSession } from "./useAddSession.ts";
 
 interface Props {
   session: AddSession;
+  onEdit: (entry: Entry) => void;
 }
 
-/** Everything added on this visit, newest first. Open any to change it or take it out; nothing has to wait for Done. */
-export function ReviewView({ session }: Props) {
+/** Everything added on this visit, newest first. Nothing has to wait for Done to be put right. */
+export function ReviewView({ session, onEdit }: Props) {
   const { customFoods } = useAppState();
   const lookup = useMemo(() => makeFoodLookup(customFoods), [customFoods]);
-  const [openId, setOpenId] = useState<string | null>(null);
   const top = useRef<HTMLDivElement>(null);
   useScrollTop(top);
 
@@ -22,22 +23,7 @@ export function ReviewView({ session }: Props) {
     <div ref={top}>
       <FoodList>
         {[...session.entries].reverse().map((entry) => (
-          <ReviewRow
-            key={entry.id}
-            entry={entry}
-            food={lookup(entry.foodId)}
-            open={openId === entry.id}
-            onToggle={() => setOpenId((id) => (id === entry.id ? null : entry.id))}
-            onRevise={(choice) => {
-              const food = lookup(entry.foodId);
-              if (food) session.revise(entry, food, choice);
-              setOpenId(null);
-            }}
-            onRemove={() => {
-              session.remove(entry);
-              setOpenId(null);
-            }}
-          />
+          <ReviewRow key={entry.id} entry={entry} editable={lookup(entry.foodId) !== undefined} onEdit={() => onEdit(entry)} onRemove={() => session.remove(entry)} />
         ))}
       </FoodList>
     </div>

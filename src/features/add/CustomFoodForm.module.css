@@ -1,3 +1,31 @@
+.more {
+  margin-top: 4px;
+}
+
+.more summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  cursor: pointer;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--primary);
+  list-style: none;
+}
+
+.more summary::-webkit-details-marker {
+  display: none;
+}
+
+.more summary svg {
+  transition: transform var(--dur) var(--ease-out);
+}
+
+.more[open] summary svg {
+  transform: rotate(180deg);
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -5,5 +33,5 @@
 }
 
 .save {
-  margin-top: 12px;
+  margin-top: 20px;
 }

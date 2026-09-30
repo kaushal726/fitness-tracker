@@ -1,5 +1,4 @@
-.list,
-.card {
+.list {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -10,8 +9,7 @@
   box-shadow: var(--shadow-card);
 }
 
-:root[data-theme="dark"] .list,
-:root[data-theme="dark"] .card {
+:root[data-theme="dark"] .list {
   --card-border: var(--line);
 }
 
@@ -32,11 +30,11 @@
   text-align: left;
 }
 
-.main:active {
+button.main:active {
   background: var(--surface-2);
 }
 
-/* Drawn like the round soft button it replaced, but it is only a sign: the whole row is the button. */
+/* Only a sign that the row adds: the whole row is the button. */
 .add {
   flex: none;
   display: flex;
@@ -48,35 +46,11 @@
   background: var(--primary-soft);
   color: var(--primary);
   font-size: 20px;
-  transition: background var(--dur-fast) ease, color var(--dur-fast) ease, transform var(--dur) var(--ease-out);
+  transition: background var(--dur-fast) ease;
 }
 
 .main:active .add {
   background: var(--primary-line);
-}
-
-/* Logged during this visit. */
-.added {
-  background: var(--primary);
-  color: var(--on-primary);
-}
-
-/* Open: the plus turns into a cross, which closes it again. */
-.open .add {
-  transform: rotate(45deg);
-  background: var(--surface-2);
-  color: var(--ink-2);
-}
-
-.panel {
-  animation: reveal var(--dur) var(--ease-out);
-}
-
-@keyframes reveal {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
 }
 
 .text {

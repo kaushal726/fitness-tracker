@@ -6,6 +6,7 @@ import { useScrollTop } from "../../lib/useScrollTop.ts";
 import { createCustomFood, CUSTOM_ID_PREFIX } from "../../nutrition/custom.ts";
 import type { Food } from "../../nutrition/types.ts";
 import { Button } from "../../ui/Button";
+import { IconChevronDown } from "../../ui/icons";
 import { TextField } from "../../ui/Field";
 import styles from "./CustomFoodForm.module.css";
 
@@ -25,7 +26,7 @@ function optionalNumber(text: string): number {
   return Number.isNaN(n) ? 0 : n;
 }
 
-/** The fallback when a food is missing from the dataset. A view of the add page, not a sheet of its own. */
+/** The fallback when a food is missing from the dataset: a name and its calories, and the rest only if they want it. */
 export function CustomFoodForm({ initialName, onCreated }: Props) {
   const [name, setName] = useState(initialName);
   const [serving, setServing] = useState("");
@@ -34,6 +35,7 @@ export function CustomFoodForm({ initialName, onCreated }: Props) {
   const [carbs, setCarbs] = useState("");
   const [fat, setFat] = useState("");
   const [fiber, setFiber] = useState("");
+  const [more, setMore] = useState(false);
   const [tried, setTried] = useState(false);
   const top = useRef<HTMLFormElement>(null);
   useScrollTop(top);
@@ -46,6 +48,7 @@ export function CustomFoodForm({ initialName, onCreated }: Props) {
   const save = (e: FormEvent) => {
     e.preventDefault();
     setTried(true);
+    if (!macrosOk) setMore(true);
     if (!name.trim() || !kcalOk || !macrosOk) return;
     const [p, c, f, fi] = macros;
     const food = createCustomFood({
@@ -65,14 +68,19 @@ export function CustomFoodForm({ initialName, onCreated }: Props) {
   return (
     <form ref={top} onSubmit={save} noValidate>
       <TextField label="Food name" value={name} onChange={setName} error={tried && !name.trim() ? "Enter a name" : undefined} placeholder="Amma's sambar" autoFocus />
-      <TextField label="One serving is" optional value={serving} onChange={setServing} placeholder="1 bowl" />
-      <TextField label="Calories" inputMode="decimal" value={calories} onChange={setCalories} suffix="kcal" error={tried && !kcalOk ? "Enter the calories" : undefined} placeholder="150" />
-      <div className={styles.grid}>
-        <TextField label="Protein" optional inputMode="decimal" value={protein} onChange={setProtein} suffix="g" />
-        <TextField label="Carbs" optional inputMode="decimal" value={carbs} onChange={setCarbs} suffix="g" />
-        <TextField label="Fat" optional inputMode="decimal" value={fat} onChange={setFat} suffix="g" />
-        <TextField label="Fiber" optional inputMode="decimal" value={fiber} onChange={setFiber} suffix="g" error={tried && !macrosOk ? "Check the grams" : undefined} />
-      </div>
+      <TextField label="Calories in one serving" inputMode="decimal" value={calories} onChange={setCalories} suffix="kcal" error={tried && !kcalOk ? "Enter the calories" : undefined} placeholder="150" />
+
+      <details className={styles.more} open={more} onToggle={(e) => setMore(e.currentTarget.open)}>
+        <summary>More details <IconChevronDown aria-hidden /></summary>
+        <TextField label="One serving is" optional value={serving} onChange={setServing} placeholder="1 bowl" />
+        <div className={styles.grid}>
+          <TextField label="Protein" optional inputMode="decimal" value={protein} onChange={setProtein} suffix="g" />
+          <TextField label="Carbs" optional inputMode="decimal" value={carbs} onChange={setCarbs} suffix="g" />
+          <TextField label="Fat" optional inputMode="decimal" value={fat} onChange={setFat} suffix="g" />
+          <TextField label="Fiber" optional inputMode="decimal" value={fiber} onChange={setFiber} suffix="g" error={tried && !macrosOk ? "Check the grams" : undefined} />
+        </div>
+      </details>
+
       <Button type="submit" variant="primary" size="lg" block className={styles.save}>Save food</Button>
     </form>
   );
