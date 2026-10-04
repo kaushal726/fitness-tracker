@@ -5,6 +5,7 @@ import { setThemeChoice, useThemeChoice, type ThemeChoice } from "../../app/them
 import { backupFileName, parseBackup } from "../../data/backup.ts";
 import { exportBackup, resetAll, restoreBackup, useAppState } from "../../data/store.ts";
 import type { Profile } from "../../data/types.ts";
+import { bmi } from "../../domain/bmi.ts";
 import { computePlan, goalDef } from "../../domain/goals.ts";
 import { formatHour, MEAL_ORDER } from "../../domain/meals.ts";
 import { downloadBlob } from "../../lib/files.ts";
@@ -74,7 +75,7 @@ export function ProfileScreen({ profile, today }: { profile: Profile; today: str
           <Avatar name={profile.name} size={60} />
           <div className={styles.whoText}>
             <h1 className={styles.name}>{profile.name || "Your profile"}</h1>
-            <p className={styles.meta}>{goalDef(profile.goal).label} · {profile.age} years · {Math.round(profile.weightKg * 10) / 10} kg</p>
+            <p className={styles.meta}>{goalDef(profile.goal).label} · {profile.age} years · {Math.round(profile.weightKg * 10) / 10} kg · BMI {bmi(profile.weightKg, profile.heightCm).toFixed(1)}</p>
           </div>
         </header>
         <PlanPreview plan={plan} requestedWeeks={profile.weeks} />

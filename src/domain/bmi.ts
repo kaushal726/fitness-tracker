@@ -7,15 +7,17 @@ export type BmiBandId = "under" | "healthy" | "over" | "obese";
 export interface BmiBand {
   id: BmiBandId;
   label: string;
+  /** Short enough to sit under its band on the scale. */
+  short: string;
   /** The first BMI that is no longer in this band. */
   below: number;
 }
 
 export const BMI_BANDS: readonly BmiBand[] = [
-  { id: "under", label: "Underweight", below: 18.5 },
-  { id: "healthy", label: "Healthy", below: 25 },
-  { id: "over", label: "Overweight", below: 30 },
-  { id: "obese", label: "Obese", below: Number.POSITIVE_INFINITY },
+  { id: "under", label: "Underweight", short: "Under", below: 18.5 },
+  { id: "healthy", label: "Healthy", short: "Healthy", below: 25 },
+  { id: "over", label: "Overweight", short: "Over", below: 30 },
+  { id: "obese", label: "Obese", short: "Obese", below: Number.POSITIVE_INFINITY },
 ];
 
 /** The healthy band as people quote it: 18.5 up to 24.9. */

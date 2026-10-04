@@ -3,6 +3,7 @@ import { progressNote, formatKg } from "../../domain/progressNote.ts";
 import { formatDate } from "../../lib/dates.ts";
 import { formatSpan, spanParts } from "../../lib/duration.ts";
 import { formatNumber } from "../../lib/format.ts";
+import { Button } from "../../ui/Button";
 import { signed } from "../insights/chartScale.ts";
 import { InsightCard } from "../insights/InsightCard.tsx";
 import { InsightNote } from "../insights/InsightNote.tsx";
@@ -14,6 +15,7 @@ import styles from "./ProgressCard.module.css";
 interface Props {
   profile: Profile;
   view: BodyView;
+  onUpdateWeight: () => void;
 }
 
 /** A change in kilograms with a real minus sign, one decimal. */
@@ -32,7 +34,7 @@ function EtaSpan({ days }: { days: number }) {
  * What the food has done to the weight so far, how fast, and how long it is to the goal at that pace. All of it is an
  * estimate from the logged days against what the body uses.
  */
-export function ProgressCard({ profile, view }: Props) {
+export function ProgressCard({ profile, view, onUpdateWeight }: Props) {
   const { progress: p, plan, goal } = view;
   const target = p.target;
   const note = progressNote(p, { direction: goal.direction, tdee: plan.tdee, planCalories: plan.targets.calories });
@@ -83,7 +85,8 @@ export function ProgressCard({ profile, view }: Props) {
       {profile.goal !== "maintain" && plan.estimatedWeeks !== null && (
         <p className={styles.plan}>Your plan aims for {formatKg(plan.weeklyChangeKg)} a week and {formatNumber(plan.targets.calories)} kcal a day: about {formatSpan(plan.estimatedWeeks * 7)} in all.</p>
       )}
-      <p className={styles.foot}>An estimate: the food you log against what your body uses, 7,700 kcal to a kilo. Days with nothing logged are left out. After a weigh-in, update your weight in Profile and it starts again from the real number.</p>
+      <p className={styles.foot}>An estimate: the food you log against what your body uses, 7,700 kcal to a kilo. Days with nothing logged are left out.</p>
+      <Button variant="secondary" size="md" block onClick={onUpdateWeight}>Weighed yourself? Update your weight</Button>
     </InsightCard>
   );
 }

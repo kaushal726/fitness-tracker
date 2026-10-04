@@ -29,7 +29,7 @@ export function BmiScale({ value, target }: Props) {
       <div className={styles.names} aria-hidden>
         {BMI_BANDS.map((band, i) => (
           <span key={band.id} className={cx(styles.name, band.id === bmiBand(value).id && styles.current)} style={{ flexGrow: BAND_ENDS[i] - (i === 0 ? FROM : BAND_ENDS[i - 1]) }}>
-            {band.label}
+            {band.short}
           </span>
         ))}
       </div>

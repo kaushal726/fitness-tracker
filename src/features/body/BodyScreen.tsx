@@ -11,16 +11,18 @@ import styles from "./BodyScreen.module.css";
 interface Props {
   profile: Profile;
   today: string;
+  /** Goes to where the weight is updated. */
+  onUpdateWeight: () => void;
 }
 
 /** The body, in numbers: where the weight stands, where the food is taking it, and how long that takes. */
-export function BodyScreen({ profile, today }: Props) {
+export function BodyScreen({ profile, today, onUpdateWeight }: Props) {
   const view = useBodyProgress(profile, today);
   return (
     <>
       <ScreenHeader eyebrow="Your body" title="Body" />
       <div className={styles.grid}>
-        <div className={styles.wide}><ProgressCard profile={profile} view={view} /></div>
+        <div className={styles.wide}><ProgressCard profile={profile} view={view} onUpdateWeight={onUpdateWeight} /></div>
         <BmiCard profile={profile} view={view} />
         <EnergyCard view={view} />
         <WeeksCard view={view} />
