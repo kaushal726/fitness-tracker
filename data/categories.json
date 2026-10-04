@@ -24,7 +24,9 @@
     "bengali", "bihari_jharkhand", "odia", "gujarati", "maharashtrian", "rajasthani", "mughlai", "kashmiri", "goan",
     "indo_chinese", "chinese", "italian", "american", "continental", "mexican", "middle_eastern", "japanese_korean", "global",
     "assamese", "northeastern", "himachali", "uttarakhandi", "chettinad", "mangalorean", "malvani", "parsi", "sindhi", "awadhi",
-    "anglo_indian", "nepali_tibetan"
+    "anglo_indian", "nepali_tibetan", "jharkhandi", "chhattisgarhi", "haryanvi",
+    "thai", "vietnamese", "french", "spanish", "greek", "turkish", "british", "german", "eastern_european", "african",
+    "sri_lankan", "pakistani", "bangladeshi", "burmese", "southeast_asian", "latin_american"
   ],
   "foodTypes": ["vegetarian", "non_vegetarian", "vegan", "eggetarian"],
   "mealTypes": ["breakfast", "lunch", "snack", "dinner"],

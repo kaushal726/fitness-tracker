@@ -49,107 +49,121 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 <!-- stats:start -->
 
-**Total foods: 3783** (153 composite, 3630 simple)
+**Total foods: 6226** (153 composite, 6073 simple)
 
 **By category**
 
 | Category | Foods |
 |---|---|
-| Main Course | 1372 |
-| Drinks | 339 |
-| Snacks | 314 |
-| Breakfast | 236 |
-| Sweets | 205 |
-| Condiments & Cooking | 192 |
-| Vegetables | 150 |
-| Staples & Grains | 137 |
-| Protein Foods | 136 |
-| Chinese | 127 |
-| Fast Food | 127 |
-| Dairy & Eggs | 87 |
-| Fruits | 84 |
-| Bakery | 82 |
-| Packaged Food | 78 |
-| Desserts | 65 |
-| Nuts & Seeds | 42 |
+| Main Course | 1914 |
+| Drinks | 574 |
+| Snacks | 480 |
+| Desserts | 393 |
+| Fast Food | 371 |
+| Breakfast | 353 |
+| Sweets | 333 |
+| Vegetables | 265 |
+| Condiments & Cooking | 258 |
+| Packaged Food | 216 |
+| Dairy & Eggs | 199 |
+| Staples & Grains | 188 |
+| Protein Foods | 180 |
+| Bakery | 163 |
+| Fruits | 143 |
+| Chinese | 141 |
+| Nuts & Seeds | 45 |
 | Supplements | 10 |
 
 **By cuisine**
 
 | Cuisine | Foods |
 |---|---|
-| pan_indian | 1513 |
-| global | 301 |
-| north_indian | 210 |
-| tamil | 176 |
-| punjabi | 142 |
-| bengali | 135 |
-| kerala | 134 |
-| maharashtrian | 110 |
-| south_indian | 93 |
-| american | 90 |
-| indo_chinese | 87 |
-| gujarati | 77 |
-| andhra_telangana | 75 |
-| karnataka | 52 |
-| continental | 48 |
-| hyderabadi | 48 |
+| pan_indian | 2232 |
+| american | 488 |
+| global | 415 |
+| tamil | 288 |
+| bengali | 244 |
+| north_indian | 215 |
+| kerala | 207 |
+| maharashtrian | 178 |
+| karnataka | 163 |
+| andhra_telangana | 148 |
+| punjabi | 146 |
+| jharkhandi | 132 |
+| gujarati | 112 |
+| south_indian | 102 |
+| italian | 98 |
+| continental | 96 |
+| indo_chinese | 88 |
+| goan | 68 |
+| hyderabadi | 67 |
+| odia | 58 |
 | mughlai | 48 |
-| goan | 44 |
-| italian | 37 |
-| rajasthani | 36 |
-| bihari_jharkhand | 33 |
-| middle_eastern | 33 |
-| odia | 30 |
-| nepali_tibetan | 27 |
-| kashmiri | 23 |
-| mangalorean | 21 |
-| japanese_korean | 18 |
+| bihari_jharkhand | 45 |
+| northeastern | 45 |
+| mangalorean | 43 |
+| mexican | 40 |
+| rajasthani | 37 |
+| middle_eastern | 36 |
+| assamese | 34 |
+| british | 31 |
+| malvani | 31 |
+| nepali_tibetan | 31 |
+| japanese_korean | 27 |
+| chettinad | 25 |
+| french | 25 |
+| kashmiri | 25 |
 | sindhi | 17 |
-| assamese | 16 |
 | awadhi | 16 |
-| northeastern | 16 |
 | parsi | 16 |
-| mexican | 14 |
+| uttarakhandi | 13 |
 | himachali | 12 |
-| malvani | 12 |
-| uttarakhandi | 11 |
-| chettinad | 7 |
-| chinese | 3 |
-| anglo_indian | 2 |
+| chhattisgarhi | 11 |
+| spanish | 11 |
+| chinese | 9 |
+| german | 9 |
+| eastern_european | 8 |
+| greek | 8 |
+| haryanvi | 8 |
+| turkish | 8 |
+| anglo_indian | 4 |
+| latin_american | 4 |
+| thai | 2 |
+| southeast_asian | 1 |
+| vietnamese | 1 |
 
 **By food type**
 
 | Food type | Foods |
 |---|---|
-| vegan | 1588 |
-| vegetarian | 1330 |
-| non_vegetarian | 711 |
-| eggetarian | 154 |
+| vegan | 2384 |
+| vegetarian | 2344 |
+| non_vegetarian | 1150 |
+| eggetarian | 348 |
 
 **By confidence**
 
 | Confidence | Foods |
 |---|---|
-| medium | 2971 |
-| low | 465 |
-| high | 347 |
+| medium | 4731 |
+| low | 1062 |
+| high | 433 |
 
 **By variability**
 
 | Variability | Foods |
 |---|---|
-| medium | 2273 |
-| low | 1048 |
-| high | 462 |
+| medium | 3900 |
+| low | 1608 |
+| high | 718 |
 
 **By data source**
 
 | Data source | Foods |
 |---|---|
-| recipe_based | 2652 |
-| standard_reference | 621 |
-| estimated | 510 |
+| recipe_based | 4092 |
+| estimated | 1382 |
+| standard_reference | 752 |
 
 **Serving units:** `g` (mass), `kg` (mass), `ml` (volume), `litre` (volume), `tsp` (volume), `tbsp` (volume), `cup` (volume), `glass` (volume), `katori` (volume), `bowl` (volume), `bottle` (volume), `can` (volume), `peg` (volume), `piece` (count), `slice` (count), `plate` (count), `serving` (count), `handful` (count), `scoop` (count), `pinch` (count), `packet` (count), `roti` (count, = piece), `paratha` (count, = piece), `dosa` (count, = piece), `idli` (count, = piece), `vada` (count, = piece), `samosa` (count, = piece), `egg` (count, = piece), `banana` (count, = piece), `apple` (count, = piece), `orange` (count, = piece), `mango` (count, = piece), `breast` (count, = piece)
 

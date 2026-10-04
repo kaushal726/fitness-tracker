@@ -3,6 +3,8 @@
  */
 import { useSyncExternalStore } from "react";
 import { DEFAULT_MEAL_STARTS } from "../domain/meals.ts";
+import { stampWeight } from "../domain/profileWeight.ts";
+import { todayISO } from "../lib/dates.ts";
 import type { Food } from "../nutrition/types.ts";
 import { deleteRecord, getAll, getValue, putRecord, replaceEverything, setValue, STORE } from "./db.ts";
 import type { Backup, Entry, LastUsed, Profile, Settings } from "./types.ts";
@@ -76,7 +78,8 @@ export async function initStore(): Promise<void> {
   }
 }
 
-export function saveProfile(profile: Profile): void {
+export function saveProfile(next: Profile): void {
+  const profile = stampWeight(next, state.profile, todayISO());
   set({ profile });
   persist(() => setValue(KEY.profile, profile));
 }

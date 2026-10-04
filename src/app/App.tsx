@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { onStorageError, useAppState } from "../data/store.ts";
 import { AddFood } from "../features/add/AddFood.tsx";
+import { BodyScreen } from "../features/body/BodyScreen.tsx";
 import { HistoryScreen } from "../features/history/HistoryScreen.tsx";
 import { InsightsScreen } from "../features/insights/InsightsScreen.tsx";
 import { Onboarding } from "../features/onboarding/Onboarding.tsx";
@@ -10,6 +11,7 @@ import { endInstantArrival } from "../lib/arrival.ts";
 import { loadFoods } from "../nutrition/registry.ts";
 import type { Food, MealType } from "../nutrition/types.ts";
 import { useToast } from "../ui/Toast";
+import { AddButton } from "./AddButton.tsx";
 import { Dock } from "./Dock.tsx";
 import type { TabId } from "./navItems.ts";
 import { Screen } from "./Screen.tsx";
@@ -72,10 +74,12 @@ export function App() {
               {tab === "today" && <TodayScreen profile={profile} date={date} today={today} onSelectDate={selectDate} onAdd={openAdd} />}
               {tab === "history" && <HistoryScreen profile={profile} today={today} onOpenDay={openDay} />}
               {tab === "insights" && <InsightsScreen profile={profile} today={today} onAdd={openAdd} />}
+              {tab === "body" && <BodyScreen profile={profile} today={today} />}
               {tab === "profile" && <ProfileScreen profile={profile} today={today} />}
             </Screen>
           </main>
-          <Dock active={tab} onSelect={selectTab} onAdd={() => openAdd(null)} />
+          <Dock active={tab} onSelect={selectTab} />
+          <AddButton onClick={() => openAdd(null)} />
           {adding && <AddFood date={adding.date} initialMeal={adding.meal} initialFood={adding.food} onClose={() => setAdding(null)} />}
           <UpdatePrompt />
         </>

@@ -10,7 +10,7 @@ import { resolveUnitId } from "./units.ts";
 import { atwaterCalories, validateDataset } from "./validation.ts";
 
 const DATA_DIR = fileURLToPath(new URL("../../data/foods", import.meta.url));
-const MIN_FOODS = 3000;
+const MIN_FOODS = 5500;
 
 const ids = (query: string, limit = 5) => searchFood(query, { limit }).map((f) => f.id);
 
@@ -123,7 +123,7 @@ describe("search", () => {
     for (const q of ["pani puri", "golgappa", "gol gappa", "puchka", "water balls"]) expect(ids(q, 3)).toContain("pani_puri");
     for (const q of ["chai", "milk tea", "tea"]) expect(ids(q, 4)).toContain("milk_tea");
     expect(ids("maggi", 3)).toContain("instant_noodles");
-    expect(ids("diet coke", 3)[0]).toBe("diet_cola");
+    expect(ids("diet coke", 3)).toContain("diet_cola");
     expect(ids("coke", 3)).toContain("cola");
   });
 

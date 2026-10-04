@@ -1,0 +1,12 @@
+.readout {
+  min-height: 56px;
+}
+
+.sub {
+  margin-top: 4px;
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}

@@ -1,0 +1,50 @@
+.empty {
+  padding: 8px 0 4px;
+  font-size: 14.5px;
+  color: var(--ink-3);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.list li {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.line,
+.row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.row {
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.name {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.amount {
+  font-size: 15px;
+  font-weight: 800;
+  text-align: right;
+}
+
+.amount small {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-3);
+}

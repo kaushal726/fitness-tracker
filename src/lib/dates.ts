@@ -22,6 +22,13 @@ export function addDays(iso: string, days: number): string {
   return toISODate(d);
 }
 
+/** Whole days from `from` to `to` (negative when `to` is earlier). Calendar days, so a clock change does not matter. */
+export function daysBetween(from: string, to: string): number {
+  const a = parseISODate(from);
+  const b = parseISODate(to);
+  return Math.round((Date.UTC(b.getFullYear(), b.getMonth(), b.getDate()) - Date.UTC(a.getFullYear(), a.getMonth(), a.getDate())) / 86_400_000);
+}
+
 export function formatDate(iso: string, opts: Intl.DateTimeFormatOptions = { day: "numeric", month: "short", year: "numeric" }): string {
   return iso ? parseISODate(iso).toLocaleDateString(LOCALE, opts) : "";
 }

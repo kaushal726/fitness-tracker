@@ -88,7 +88,7 @@
   /* Layout */
   --content-max: 640px;
   --sidenav-width: 248px;
-  --dock-h: 88px;
+  --dock-h: 60px;
   --touch: 44px;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);

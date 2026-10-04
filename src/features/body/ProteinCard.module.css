@@ -1,0 +1,6 @@
+.empty,
+.line {
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: var(--ink-3);
+}

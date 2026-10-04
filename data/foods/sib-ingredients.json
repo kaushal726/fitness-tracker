@@ -1,0 +1,6 @@
+{
+  "defaults": {"category": "vegetables", "cuisine": "south_indian", "nutritionConfidence": "medium", "dataSourceType": "estimated", "variability": "low"},
+  "foods": [
+    {"id": "raw_mango_unripe", "name": "Raw Mango (Unripe)", "aliases": ["kaccha aam", "green mango", "mangai", "manga", "raw mango"], "subCategory": "fruit_veg", "servingOptions": [{"label": "1 mango", "unit": "piece", "grams": 150}], "nutritionPer100g": {"calories": 70, "protein": 0.7, "carbohydrates": 16.8, "fat": 0.4, "fiber": 1.8, "sugar": 10.0, "sodium": 2.0}, "mealTypes": ["lunch", "snack"], "foodType": "vegan"}
+  ]
+}

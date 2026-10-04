@@ -26,3 +26,13 @@ export function slotAt(offsetX: number, width: number, count: number): number {
   if (count <= 0 || width <= 0) return 0;
   return Math.min(count - 1, Math.max(0, Math.floor((offsetX / width) * count)));
 }
+
+/** Round tick values inside [min, max]: about `count` of them, on a step of 1, 2 or 5 times a power of ten. */
+export function niceTicks(min: number, max: number, count: number): number[] {
+  const rough = (max - min || 1) / Math.max(1, count - 1);
+  const power = 10 ** Math.floor(Math.log10(rough));
+  const step = ([1, 2, 5, 10].find((m) => rough <= m * power + 1e-12) ?? 10) * power;
+  const ticks: number[] = [];
+  for (let t = Math.ceil(min / step - 1e-9) * step; t <= max + 1e-9; t += step) ticks.push(Math.round(t * 1e6) / 1e6);
+  return ticks;
+}

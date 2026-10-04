@@ -22,6 +22,12 @@ export function macroShares(t: Pick<NutritionTotals, "protein" | "carbs" | "fat"
   return total > 0 ? { protein: protein / total, carbs: carbs / total, fat: fat / total } : null;
 }
 
+/** The entries that fall on counted days: the ones the month's averages are made from. */
+export function countedEntries(entries: Entry[], days: DayStat[]): Entry[] {
+  const counted = new Set(days.filter(isCounted).map((d) => d.date));
+  return entries.filter((e) => counted.has(e.date));
+}
+
 /** Calories of one counted day that came from each meal, on average. */
 export function mealAverages(entries: Entry[], days: DayStat[]): Record<MealType, number> {
   const counted = new Set(days.filter(isCounted).map((d) => d.date));

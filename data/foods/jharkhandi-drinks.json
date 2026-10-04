@@ -1,0 +1,6 @@
+{
+  "defaults": {"category": "drinks", "cuisine": "jharkhandi", "nutritionConfidence": "low", "dataSourceType": "estimated", "variability": "high", "foodType": "vegan"},
+  "foods": [
+    {"id": "marua_beer_ragi_handia", "name": "Marua Beer (Ragi Handia)", "aliases": ["ragi handia", "madua daru", "marua handia", "ragi rice beer", "mandia pej"], "subCategory": "alcohol", "servingOptions": [{"label": "1 glass", "unit": "glass", "grams": 250}], "nutritionPer100g": {"calories": 45.0, "protein": 0.7, "carbohydrates": 7.0, "fat": 0.0, "fiber": 0.5, "sugar": 1.5, "sodium": 4.0}, "densityGPerMl": 1.0}
+  ]
+}

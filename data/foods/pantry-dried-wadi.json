@@ -1,0 +1,7 @@
+{
+  "defaults": {"category": "staples", "cuisine": "pan_indian", "nutritionConfidence": "low", "dataSourceType": "estimated", "variability": "medium", "foodType": "vegan"},
+  "foods": [
+    {"id": "dal_badi_dried", "name": "Dal Badi Dried (Urad Wadi)", "aliases": ["urad dal badi", "urad wadi", "dal ki badi", "sukhi badi", "badi dried"], "subCategory": "pulse_raw", "servingOptions": [{"label": "1 tbsp (about 4 badi)", "unit": "tbsp", "grams": 10}], "nutritionPer100g": {"calories": 314, "protein": 24.0, "carbohydrates": 56.0, "fat": 2.5, "fiber": 14.0, "sugar": 1.0, "sodium": 350.0}},
+    {"id": "mangodi_dried", "name": "Mangodi Dried (Moong Dal Wadi)", "aliases": ["moong dal wadi", "moong badi", "mangodi", "mongodi", "moong wadi dried"], "subCategory": "pulse_raw", "servingOptions": [{"label": "1 tbsp (about 4 pieces)", "unit": "tbsp", "grams": 10}], "nutritionPer100g": {"calories": 314, "protein": 24.0, "carbohydrates": 55.0, "fat": 2.0, "fiber": 10.0, "sugar": 1.0, "sodium": 330.0}}
+  ]
+}

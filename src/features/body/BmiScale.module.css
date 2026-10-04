@@ -1,0 +1,77 @@
+.scale {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 6px;
+}
+
+.bar {
+  position: relative;
+  display: flex;
+  gap: 2px;
+  height: 12px;
+}
+
+.band {
+  flex-basis: 0;
+  min-width: 0;
+  border-radius: 3px;
+}
+
+.band:first-of-type {
+  border-radius: 6px 3px 3px 6px;
+}
+
+.band:last-of-type {
+  border-radius: 3px 6px 6px 3px;
+}
+
+.under { background: var(--viz-protein); }
+.healthy { background: var(--primary); }
+.over { background: var(--viz-carbs); }
+.obese { background: var(--over); }
+
+/* Where this BMI is: a bar through the scale with a ring on top, so it reads on any band colour. */
+.marker {
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  width: 4px;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: var(--ink);
+  box-shadow: 0 0 0 2px var(--surface);
+}
+
+.target {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--ink-2);
+}
+
+.names {
+  display: flex;
+  gap: 2px;
+}
+
+.name {
+  flex-basis: 0;
+  min-width: 0;
+  font-size: 11.5px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+.current {
+  font-weight: 800;
+  color: var(--ink);
+}

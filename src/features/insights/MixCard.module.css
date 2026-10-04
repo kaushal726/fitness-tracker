@@ -1,0 +1,12 @@
+.empty {
+  padding: 8px 0 4px;
+  font-size: 14.5px;
+  color: var(--ink-3);
+}
+
+.more,
+.treats {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--ink-3);
+}

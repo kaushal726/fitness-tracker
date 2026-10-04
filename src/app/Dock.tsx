@@ -1,30 +1,22 @@
 import { cx } from "../lib/cx";
-import { IconPlus } from "../ui/icons";
 import { NAV_ITEMS, type TabId } from "./navItems";
 import styles from "./Dock.module.css";
 
 interface DockProps {
   active: TabId;
   onSelect: (tab: TabId) => void;
-  onAdd: () => void;
 }
 
-/** Phones: the places to go, and the one thing you do most, always within thumb reach. */
-export function Dock({ active, onSelect, onAdd }: DockProps) {
+/** Phones: the places to go, one equal slot each across the whole width. Adding food is the floating button, not part of the bar. */
+export function Dock({ active, onSelect }: DockProps) {
   return (
-    <nav className={cx(styles.dock, "mobile-only")} aria-label="Main">
-      <div className={styles.tabs}>
-        {NAV_ITEMS.map(({ id, label, icon: Icon }) => (
-          <button key={id} type="button" className={styles.tab} aria-current={id === active ? "page" : undefined} onClick={() => onSelect(id)}>
-            <Icon aria-hidden />
-            {label}
-          </button>
-        ))}
-      </div>
-      <button type="button" className={styles.add} onClick={onAdd} aria-label="Add food">
-        <IconPlus aria-hidden />
-        Add
-      </button>
+    <nav className={cx(styles.dock, "mobile-only")} aria-label="Main" style={{ gridTemplateColumns: `repeat(${NAV_ITEMS.length}, minmax(0, 1fr))` }}>
+      {NAV_ITEMS.map(({ id, label, icon: Icon }) => (
+        <button key={id} type="button" className={styles.tab} aria-current={id === active ? "page" : undefined} onClick={() => onSelect(id)}>
+          <Icon aria-hidden />
+          {label}
+        </button>
+      ))}
     </nav>
   );
 }

@@ -15,6 +15,10 @@ export interface Profile {
   targetWeightKg: number | null;
   weeks: number | null;
   activity: ActivityId;
+  /** The day `weightKg` was entered (YYYY-MM-DD). Profiles saved before this field existed do not have it. */
+  weightDate?: string;
+  /** The first weight ever entered; it stays when the weight is updated. */
+  startWeightKg?: number;
 }
 
 /** Daily targets in grams, calories in kcal. */
