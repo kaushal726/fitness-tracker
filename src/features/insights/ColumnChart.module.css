@@ -1,0 +1,98 @@
+/* The right edge is left free for the goal's label, so a tall last column never covers it. */
+.figure {
+  margin: 0;
+  padding-right: 40px;
+}
+
+.chart {
+  position: relative;
+  touch-action: pan-y;
+  border-bottom: 1px solid var(--line-strong);
+  outline-offset: 4px;
+}
+
+/* The goal is a threshold, not a grid line, so it is the one dashed line. */
+.line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1.5px dashed var(--line-strong);
+  pointer-events: none;
+}
+
+.lineLabel {
+  position: absolute;
+  left: calc(100% + 6px);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ink-3);
+}
+
+.columns {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.slot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 100%;
+}
+
+/* Thin marks: never wider than 24px, round at the top, flat where they stand. */
+.bar {
+  width: 100%;
+  max-width: 24px;
+  border-radius: 4px 4px 0 0;
+  transition: height 0.5s var(--ease-out), filter var(--dur-fast) ease;
+}
+
+.empty {
+  width: 100%;
+  max-width: 24px;
+  height: 2px;
+  background: var(--line);
+}
+
+.primary { background: var(--primary); }
+.over { background: var(--over); }
+.muted { background: var(--surface-3); }
+.soft { background: color-mix(in srgb, var(--primary) 55%, transparent); }
+
+.current {
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--primary);
+}
+
+.active .bar {
+  filter: brightness(1.12);
+}
+
+.active .empty {
+  background: var(--ink-3);
+}
+
+.labels {
+  display: grid;
+  gap: 2px;
+  margin-top: 6px;
+}
+
+.label {
+  min-width: 0;
+  text-align: center;
+  font-size: 11.5px;
+  font-weight: 650;
+  color: var(--ink-3);
+  white-space: nowrap;
+  overflow: visible;
+}
+
+.labelCurrent {
+  color: var(--primary);
+  font-weight: 800;
+}

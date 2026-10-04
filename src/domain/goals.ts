@@ -10,7 +10,7 @@ import { isValidWeeks } from "./timeline.ts";
 
 export const KCAL_PER_KG = 7700;
 const DAYS_PER_WEEK = 7;
-const KCAL_PER_G = { protein: 4, carbs: 4, fat: 9 } as const;
+export const KCAL_PER_G = { protein: 4, carbs: 4, fat: 9 } as const;
 
 const MIN_CALORIES: Record<Gender, number> = { female: 1200, male: 1500 };
 const MAX_DEFICIT_KCAL = 1000;
@@ -66,6 +66,11 @@ export interface Plan {
   adjusted: boolean;
   /** True when a hand-set calorie target replaced the calculated one. */
   custom: boolean;
+}
+
+/** The least a day should come to, whatever the plan: the safe floor for this body. */
+export function calorieFloor(gender: Gender): number {
+  return MIN_CALORIES[gender];
 }
 
 export function goalDef(id: GoalId): GoalDef {

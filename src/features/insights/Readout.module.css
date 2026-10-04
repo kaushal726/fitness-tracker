@@ -1,0 +1,27 @@
+.readout {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 56px;
+}
+
+/* A large figure keeps proportional digits; tabular ones are for columns of numbers. */
+.value {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  font-variant-numeric: proportional-nums;
+}
+
+.value small {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--ink-3);
+}
+
+.caption {
+  font-size: 13.5px;
+  color: var(--ink-3);
+}

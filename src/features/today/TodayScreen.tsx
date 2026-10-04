@@ -5,10 +5,12 @@ import type { Entry, Profile } from "../../data/types.ts";
 import { computePlan } from "../../domain/goals.ts";
 import { dayInsight } from "../../domain/insights.ts";
 import { mealForTime } from "../../domain/meals.ts";
-import type { MealType } from "../../nutrition/types.ts";
+import type { Food, MealType } from "../../nutrition/types.ts";
 import { CalorieHero } from "./CalorieHero.tsx";
 import { DayHeader } from "./DayHeader.tsx";
 import { EditEntrySheet } from "../add/EditEntrySheet.tsx";
+import { IdeasSheet } from "../ideas/IdeasSheet.tsx";
+import { useDayIdeas } from "../ideas/useDayIdeas.ts";
 import { InsightPill } from "./InsightPill.tsx";
 import { MealList } from "./MealList.tsx";
 import { WeekStrip } from "./WeekStrip.tsx";
@@ -20,13 +22,15 @@ interface Props {
   date: string;
   today: string;
   onSelectDate: (date: string) => void;
-  onAdd: (meal: MealType | null) => void;
+  /** Opens the add page: for a meal, or straight to a food that was suggested. */
+  onAdd: (meal: MealType | null, food?: Food) => void;
 }
 
 /** Home: how the day is going, and its meals. Adding food is always one tap away in the dock. */
 export function TodayScreen({ profile, date, today, onSelectDate, onAdd }: Props) {
   const { entries, settings } = useAppState();
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [ideasOpen, setIdeasOpen] = useState(false);
 
   const plan = useMemo(() => computePlan(profile, settings.customCalories), [profile, settings.customCalories]);
   const dayEntries = useMemo(() => entriesOn(entries, date), [entries, date]);
@@ -36,6 +40,9 @@ export function TodayScreen({ profile, date, today, onSelectDate, onAdd }: Props
   const editing: Entry | undefined = dayEntries.find((e) => e.id === editingId);
   const insight = dayInsight(totals, plan.targets, dayEntries.length > 0, new Date().getHours());
   const currentMeal = date === today ? mealForTime(new Date(), settings.mealStartHours) : null;
+  const ideas = useDayIdeas(totals, plan.targets, date === today);
+  // Only a line that is a warning has more to say; a day that is fine stays a quiet sentence.
+  const canSuggest = insight?.tone === "warn" && ideas.length > 0;
 
   return (
     <>
@@ -44,7 +51,7 @@ export function TodayScreen({ profile, date, today, onSelectDate, onAdd }: Props
       <div className={styles.layout}>
         <div className={styles.aside}>
           <CalorieHero totals={totals} targets={plan.targets} />
-          {insight && <InsightPill insight={insight} />}
+          {insight && <InsightPill insight={insight} onOpen={canSuggest ? () => setIdeasOpen(true) : undefined} />}
         </div>
         <div className={styles.meals}>
           <MealList key={date} byMeal={byMeal} currentMeal={currentMeal} onOpenEntry={(e) => setEditingId(e.id)} onAdd={onAdd} />
@@ -52,6 +59,16 @@ export function TodayScreen({ profile, date, today, onSelectDate, onAdd }: Props
       </div>
 
       {editing && <EditEntrySheet entry={editing} onClose={() => setEditingId(null)} />}
+      {ideasOpen && (
+        <IdeasSheet
+          groups={ideas}
+          onClose={() => setIdeasOpen(false)}
+          onPick={(food) => {
+            setIdeasOpen(false);
+            onAdd(null, food);
+          }}
+        />
+      )}
     </>
   );
 }

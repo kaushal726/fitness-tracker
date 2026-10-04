@@ -9,7 +9,7 @@ interface DockProps {
   onAdd: () => void;
 }
 
-/** Phones: the three places to go, and the one thing you do most, always within thumb reach. */
+/** Phones: the places to go, and the one thing you do most, always within thumb reach. */
 export function Dock({ active, onSelect, onAdd }: DockProps) {
   return (
     <nav className={cx(styles.dock, "mobile-only")} aria-label="Main">
@@ -21,9 +21,9 @@ export function Dock({ active, onSelect, onAdd }: DockProps) {
           </button>
         ))}
       </div>
-      <button type="button" className={styles.add} onClick={onAdd}>
+      <button type="button" className={styles.add} onClick={onAdd} aria-label="Add food">
         <IconPlus aria-hidden />
-        Add food
+        Add
       </button>
     </nav>
   );

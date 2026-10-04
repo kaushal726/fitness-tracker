@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { onStorageError, useAppState } from "../data/store.ts";
 import { AddFood } from "../features/add/AddFood.tsx";
 import { HistoryScreen } from "../features/history/HistoryScreen.tsx";
+import { InsightsScreen } from "../features/insights/InsightsScreen.tsx";
 import { Onboarding } from "../features/onboarding/Onboarding.tsx";
 import { ProfileScreen } from "../features/profile/ProfileScreen.tsx";
 import { TodayScreen } from "../features/today/TodayScreen.tsx";
 import { endInstantArrival } from "../lib/arrival.ts";
 import { loadFoods } from "../nutrition/registry.ts";
-import type { MealType } from "../nutrition/types.ts";
+import type { Food, MealType } from "../nutrition/types.ts";
 import { useToast } from "../ui/Toast";
 import { Dock } from "./Dock.tsx";
 import type { TabId } from "./navItems.ts";
@@ -20,6 +21,8 @@ import styles from "./App.module.css";
 interface AddRequest {
   meal: MealType | null;
   date: string;
+  /** Set when the add page should open on a food, as when one was suggested. */
+  food?: Food;
 }
 
 export function App() {
@@ -57,7 +60,7 @@ export function App() {
     selectTab("today");
   };
   /** Adds go to the day on screen when that is Today's screen, otherwise to today. */
-  const openAdd = (meal: MealType | null) => setAdding({ meal, date: tab === "today" ? date : today });
+  const openAdd = (meal: MealType | null, food?: Food) => setAdding({ meal, food, date: tab === "today" ? date : today });
 
   return (
     <>
@@ -68,11 +71,12 @@ export function App() {
             <Screen key={tab}>
               {tab === "today" && <TodayScreen profile={profile} date={date} today={today} onSelectDate={selectDate} onAdd={openAdd} />}
               {tab === "history" && <HistoryScreen profile={profile} today={today} onOpenDay={openDay} />}
+              {tab === "insights" && <InsightsScreen profile={profile} today={today} onAdd={openAdd} />}
               {tab === "profile" && <ProfileScreen profile={profile} today={today} />}
             </Screen>
           </main>
           <Dock active={tab} onSelect={selectTab} onAdd={() => openAdd(null)} />
-          {adding && <AddFood date={adding.date} initialMeal={adding.meal} onClose={() => setAdding(null)} />}
+          {adding && <AddFood date={adding.date} initialMeal={adding.meal} initialFood={adding.food} onClose={() => setAdding(null)} />}
           <UpdatePrompt />
         </>
       )}

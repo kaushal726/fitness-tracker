@@ -50,6 +50,14 @@ export function sumTotals(list: NutritionTotals[]): NutritionTotals {
   return list.reduce(addTotals, ZERO_TOTALS);
 }
 
+/** The mean of several totals, or null when there are none. */
+export function averageTotals(list: NutritionTotals[]): NutritionTotals | null {
+  if (list.length === 0) return null;
+  const sum = sumTotals(list);
+  const n = list.length;
+  return { calories: sum.calories / n, protein: sum.protein / n, carbs: sum.carbs / n, fat: sum.fat / n, fiber: sum.fiber / n, sugar: sum.sugar / n, sodium: sum.sodium / n };
+}
+
 /** Back from totals to the stored shape, rounded the way the data files are. */
 export function fromTotals(t: NutritionTotals): Nutrition {
   const r = roundTotals(t);

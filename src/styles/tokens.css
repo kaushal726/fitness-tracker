@@ -47,6 +47,12 @@
   --track: color-mix(in srgb, var(--ink) 9%, transparent);
   --overlay: rgba(12, 18, 14, 0.48);
 
+  /* Chart marks. The nutrient colours as they are drawn in a chart: checked as a set for colour-blind separation
+   * (light and dark), with the amount always written beside the mark. Text on a chart wears the ink colours. */
+  --viz-protein: var(--n-protein);
+  --viz-carbs: var(--n-carbs);
+  --viz-fat: var(--n-fat);
+
   /* Sheets and dialogs sit above the page. In light mode they share the page colour, and the dimmed page behind
    * them shows where they start. Dimming a dark page shows nothing, so in dark mode a sheet is a lighter
    * colour, its cards lighter again, and it has a faint edge: each layer reads as a layer. */
@@ -132,6 +138,11 @@
 
   --track: color-mix(in srgb, var(--ink) 11%, transparent);
   --overlay: rgba(0, 0, 0, 0.62);
+
+  /* Deeper than the text versions of the same colours: a large fill in the pale ones glares on a dark card. */
+  --viz-protein: #6a86ee;
+  --viz-carbs: #bf841a;
+  --viz-fat: #d4587f;
 
   --sheet: #18211c;
   --sheet-edge: rgba(255, 255, 255, 0.1);

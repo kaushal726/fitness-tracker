@@ -7,15 +7,15 @@ export interface Insight {
   text: string;
 }
 
-const OVER_SHARE = 1.1;
+export const OVER_SHARE = 1.1;
 const ON_TRACK_MIN_SHARE = 0.9;
-const LOW_PROTEIN_SHARE = 0.7;
-const PROTEIN_CHECK_HOUR = 17;
+export const LOW_PROTEIN_SHARE = 0.7;
+export const PROTEIN_CHECK_HOUR = 17;
 const PROTEIN_SOURCES = "Eggs, paneer, dal or chicken can help.";
 
 /** One short line about how the day is going, or null when there is nothing useful to say. */
 export function dayInsight(totals: NutritionTotals, targets: Targets, hasEntries: boolean, hour: number): Insight | null {
-  if (!hasEntries) return { tone: "info", text: "Nothing logged yet. Tap Add Food to begin." };
+  if (!hasEntries) return { tone: "info", text: "Nothing logged yet. Tap Add to begin." };
   if (totals.calories > targets.calories * OVER_SHARE) {
     return { tone: "warn", text: `${Math.round(totals.calories - targets.calories)} kcal over your goal today.` };
   }

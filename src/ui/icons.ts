@@ -6,6 +6,7 @@ export {
   LuCake as IconAge,
   LuCalendarClock as IconTimeline,
   LuCalendarDays as IconHistory,
+  LuChartColumn as IconInsights,
   LuCheck as IconCheck,
   LuChevronDown as IconChevronDown,
   LuChevronLeft as IconChevronLeft,
