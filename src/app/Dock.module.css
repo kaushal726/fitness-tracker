@@ -29,7 +29,7 @@
   align-items: center;
   justify-content: center;
   gap: 2px;
-  width: 58px;
+  width: 54px;
   height: 52px;
   border: 0;
   border-radius: var(--r-pill);
@@ -76,9 +76,15 @@
   transform: scale(0.97);
 }
 
+@media (min-width: 400px) {
+  .tab {
+    width: 60px;
+  }
+}
+
 @media (max-width: 359px) {
   .tab {
-    width: 52px;
+    width: 48px;
     font-size: 10.5px;
   }
 }

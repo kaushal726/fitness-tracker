@@ -1,0 +1,45 @@
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.swatch {
+  flex: none;
+}
+
+.box {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: currentColor;
+}
+
+.line,
+.dots {
+  width: 16px;
+  height: 0;
+  border-top: 2px solid currentColor;
+}
+
+.dots {
+  border-top-style: dotted;
+}
+
+.primary { color: var(--primary); }
+.over { color: var(--over); }
+.muted { color: var(--surface-3); }
+.soft { color: color-mix(in srgb, var(--primary) 55%, transparent); }
+.ink { color: var(--ink-3); }

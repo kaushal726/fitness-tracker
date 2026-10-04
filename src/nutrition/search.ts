@@ -4,7 +4,7 @@
  * user's favourites and recents, and shorter names first.
  */
 import popular from "../../data/popular-foods.json" with { type: "json" };
-import { getAllFoods } from "./registry.ts";
+import { getAllFoods, getFoodById } from "./registry.ts";
 import { boundedDistance, normalizeForSearch, stem, tokenizeForSearch } from "./text.ts";
 import type { Food } from "./types.ts";
 
@@ -106,6 +106,11 @@ function baseScore(ix: Indexed, query: string, tokens: string[]): number {
     total += level;
   }
   return SCORE.wordMatchBase + (total / tokens.length) * SCORE.wordMatchPerLevel;
+}
+
+/** The commonly eaten foods, most common first. Needs the food data loaded. */
+export function popularFoods(): Food[] {
+  return (popular.ids as string[]).map((id) => getFoodById(id)).filter((f): f is Food => f !== undefined);
 }
 
 /** Foods of one category, the commonly eaten ones first, then the rest by name. For browsing without typing. */

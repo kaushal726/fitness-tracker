@@ -70,7 +70,7 @@ function SheetPanel({ onClose, title, subtitle, children, footer, headerAction, 
   return createPortal(
     <div className={styles.root}>
       <div className={styles.backdrop} onClick={close} aria-hidden />
-      <div ref={panelRef} className={cx(styles.panel, size === "full" && styles.full, size === "page" && styles.page, stacked && styles.stacked)} role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1}>
+      <div ref={panelRef} className={cx(styles.panel, size === "full" && styles.full, size === "page" && styles.page, stacked && size !== "page" && styles.stacked)} role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1}>
         <div className={styles.grabber} aria-hidden />
         <header className={cx(styles.header, onBack && styles.headerBack)}>
           {onBack && <IconButton label="Back" icon={<IconBack />} onClick={onBack} />}

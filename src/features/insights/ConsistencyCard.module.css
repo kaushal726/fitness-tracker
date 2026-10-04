@@ -1,0 +1,75 @@
+.stats {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+}
+
+.stats div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+}
+
+.stats dt {
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--ink-3);
+}
+
+.stats dd {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.stats small {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--ink-3);
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ink-3);
+}
+
+.day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.ok { background: color-mix(in srgb, var(--primary) 24%, transparent); }
+.over { background: color-mix(in srgb, var(--over) 28%, transparent); }
+.partial { background: var(--surface-3); color: var(--ink-2); }
+.missed { background: var(--surface-2); color: var(--ink-3); }
+.future { color: var(--ink-3); font-weight: 600; }
+
+.today {
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  box-shadow: inset 0 0 0 2px var(--primary);
+  color: var(--primary);
+  font-weight: 800;
+}

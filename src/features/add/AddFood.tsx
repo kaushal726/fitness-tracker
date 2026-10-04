@@ -28,6 +28,8 @@ interface Props {
   date: string;
   /** Preselect a meal (from a meal's own + button); null = by the time of day. */
   initialMeal: MealType | null;
+  /** Open on this food's amount, as when a suggestion was tapped. */
+  initialFood?: Food;
 }
 
 /** The pages of the add flow. They replace each other inside one surface, so nothing opens on top of anything. */
@@ -37,7 +39,7 @@ type View = "add" | "review" | "custom";
  * Add food: search or pick a food, say how much, add. It stays open so several foods can be logged in a row;
  * the bar at the foot lists them for changes, and Done closes.
  */
-export function AddFood({ onClose, date, initialMeal }: Props) {
+export function AddFood({ onClose, date, initialMeal, initialFood }: Props) {
   const { settings, customFoods } = useAppState();
   const [view, setView] = useState<View>("add");
   const [query, setQuery] = useState("");
@@ -46,7 +48,7 @@ export function AddFood({ onClose, date, initialMeal }: Props) {
   /** Null leaves the meal to the time of day. */
   const [mealChoice, setMealChoice] = useState<MealType | null>(initialMeal);
   /** The amount page, when one is open. It takes the place of the page underneath, which stays exactly as it was. */
-  const [selected, setSelected] = useState<Selected | null>(null);
+  const [selected, setSelected] = useState<Selected | null>(initialFood ? { food: initialFood } : null);
   const browser = useFoodBrowser(query, category);
   const session = useAddSession(date);
   const lookup = useMemo(() => makeFoodLookup(customFoods), [customFoods]);

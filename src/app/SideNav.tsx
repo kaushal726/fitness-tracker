@@ -12,7 +12,7 @@ interface SideNavProps {
   onAdd: () => void;
 }
 
-/** Wide screens: the same three places and the same one big action, down the left side. */
+/** Wide screens: the same places and the same one big action, down the left side. */
 export function SideNav({ active, onSelect, onAdd }: SideNavProps) {
   return (
     <nav className={cx(styles.nav, "desktop-only")} aria-label="Main">
@@ -20,9 +20,9 @@ export function SideNav({ active, onSelect, onAdd }: SideNavProps) {
         <span className={styles.logo} aria-hidden><BrandMark className={styles.mark} /></span>
         <span className={styles.brandName}>{APP_NAME}</span>
       </div>
-      <button type="button" className={styles.add} onClick={onAdd}>
+      <button type="button" className={styles.add} onClick={onAdd} aria-label="Add food">
         <IconPlus aria-hidden />
-        Add food
+        Add
       </button>
       <div className={styles.items}>
         {NAV_ITEMS.map(({ id, label, icon: Icon }) => (
