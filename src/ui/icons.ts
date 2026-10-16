@@ -29,6 +29,7 @@ export {
   LuRuler as IconRuler,
   LuScale as IconScale,
   LuSearch as IconSearch,
+  LuShare2 as IconShare,
   LuShieldCheck as IconShield,
   LuSmartphone as IconPhone,
   LuSparkles as IconSparkles,

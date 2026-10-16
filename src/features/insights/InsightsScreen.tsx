@@ -6,9 +6,11 @@ import { countedEntries } from "../../domain/breakdowns.ts";
 import { monthOf, type MonthId } from "../../domain/month.ts";
 import type { Food, MealType } from "../../nutrition/types.ts";
 import { EmptyState } from "../../ui/EmptyState";
-import { IconInsights } from "../../ui/icons";
+import { IconButton } from "../../ui/Button";
+import { IconInsights, IconShare } from "../../ui/icons";
 import { ScreenHeader } from "../../ui/ScreenHeader";
 import { DayIdeasList } from "../ideas/DayIdeasList.tsx";
+import { ShareSheet } from "../share/ShareSheet.tsx";
 import { useFoods } from "../add/useFoods.ts";
 import { useDayIdeas } from "../ideas/useDayIdeas.ts";
 import { ClockCard } from "./ClockCard.tsx";
@@ -41,6 +43,7 @@ export function InsightsScreen({ profile, today, onAdd }: Props) {
   const { status: foodsStatus } = useFoods();
   const current = monthOf(today);
   const [month, setMonth] = useState<MonthId>(current);
+  const [sharing, setSharing] = useState(false);
   const { insights, targets, direction } = useMonthInsights(profile, today, month);
   const earliest = useMemo(() => entries.reduce((first, e) => (e.date < first ? e.date : first), today).slice(0, 7), [entries, today]);
   const todayTotals = useMemo(() => sumEntries(entriesOn(entries, today)), [entries, today]);
@@ -61,7 +64,8 @@ export function InsightsScreen({ profile, today, onAdd }: Props) {
 
   return (
     <>
-      <ScreenHeader eyebrow="Your progress" title="Insights" />
+      <ScreenHeader eyebrow="Your progress" title="Insights" actions={<IconButton label="Share your progress" icon={<IconShare />} variant="soft" onClick={() => setSharing(true)} />} />
+      {sharing && <ShareSheet profile={profile} today={today} onClose={() => setSharing(false)} />}
       <MonthSwitcher month={month} current={current} earliest={earliest} onChange={setMonth} />
       <div className={styles.grid}>
         <div className={styles.wide}><MonthGoalCard month={insights} direction={direction} /></div>

@@ -12,12 +12,13 @@ import { downloadBlob } from "../../lib/files.ts";
 import { formatNumber } from "../../lib/format.ts";
 import { Avatar } from "../../ui/Avatar";
 import { useConfirm } from "../../ui/Confirm";
-import { IconBook, IconClock, IconDownload, IconFlame, IconInfo, IconPalette, IconPhone, IconTarget, IconTrash, IconUpload } from "../../ui/icons";
+import { IconBook, IconClock, IconDownload, IconFlame, IconInfo, IconPalette, IconPhone, IconShare, IconTarget, IconTrash, IconUpload } from "../../ui/icons";
 import { MadeWithLove } from "../../ui/MadeWithLove";
 import { Segmented } from "../../ui/Segmented";
 import { SettingsGroup, SettingsRow } from "../../ui/SettingsList";
 import { useToast } from "../../ui/Toast";
 import { PlanPreview } from "../onboarding/PlanPreview.tsx";
+import { ShareSheet } from "../share/ShareSheet.tsx";
 import { AboutSheet } from "./AboutSheet.tsx";
 import { CalorieTargetSheet } from "./CalorieTargetSheet.tsx";
 import { DailyThought } from "./DailyThought.tsx";
@@ -26,7 +27,7 @@ import { MealTimesSheet } from "./MealTimesSheet.tsx";
 import { MyFoodsSheet } from "./MyFoodsSheet.tsx";
 import styles from "./profile.module.css";
 
-type OpenSheet = "profile" | "target" | "meals" | "foods" | "about" | null;
+type OpenSheet = "profile" | "target" | "meals" | "foods" | "share" | "about" | null;
 
 const THEMES: { value: ThemeChoice; label: string }[] = [
   { value: "system", label: "Auto" },
@@ -89,6 +90,10 @@ export function ProfileScreen({ profile, today }: { profile: Profile; today: str
         <SettingsRow icon={<IconBook />} tone="rose" title="My foods" subtitle="Foods you added yourself" value={customFoods.length ? String(customFoods.length) : undefined} onClick={() => setOpen("foods")} />
       </SettingsGroup>
 
+      <SettingsGroup label="Share">
+        <SettingsRow icon={<IconShare />} tone="blue" title="Share your progress" subtitle="Today as a picture, a month for an AI" onClick={() => setOpen("share")} />
+      </SettingsGroup>
+
       <SettingsGroup label="Appearance">
         <div className={styles.themeRow}>
           <div className={styles.themeHead}>
@@ -123,6 +128,7 @@ export function ProfileScreen({ profile, today }: { profile: Profile; today: str
       {open === "target" && <CalorieTargetSheet profile={profile} settings={settings} onClose={close} />}
       {open === "meals" && <MealTimesSheet settings={settings} onClose={close} />}
       {open === "foods" && <MyFoodsSheet onClose={close} />}
+      {open === "share" && <ShareSheet profile={profile} today={today} onClose={close} />}
       {open === "about" && <AboutSheet onClose={close} />}
     </>
   );
