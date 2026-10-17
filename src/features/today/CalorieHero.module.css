@@ -1,8 +1,20 @@
 .hero {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 22px;
   padding: 22px 20px 20px;
+}
+
+.share {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.hero .share {
+  background: var(--surface);
+  border-color: var(--primary-line);
 }
 
 .top {
@@ -12,7 +24,7 @@
 }
 
 .leftValue {
-  font-size: 34px;
+  font-size: calc(34px * var(--fs-scale));
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 1;
@@ -24,7 +36,7 @@
 
 .leftLabel {
   margin-top: 5px;
-  font-size: 12.5px;
+  font-size: max(11px, calc(12.5px * var(--fs-scale)));
   font-weight: 700;
   color: var(--ink-2);
 }
@@ -45,14 +57,14 @@
 }
 
 .figures dt {
-  font-size: 12.5px;
+  font-size: max(11px, calc(12.5px * var(--fs-scale)));
   font-weight: 700;
   color: var(--ink-2);
 }
 
 .figures dd {
   margin: 0;
-  font-size: 25px;
+  font-size: calc(25px * var(--fs-scale));
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.1;
@@ -76,7 +88,7 @@
 }
 
 .macroLabel {
-  font-size: 12px;
+  font-size: max(11px, calc(12px * var(--fs-scale)));
   font-weight: 800;
 }
 
@@ -86,14 +98,14 @@
 .fiber { color: var(--n-fiber); }
 
 .macroValue {
-  font-size: 17px;
+  font-size: calc(17px * var(--fs-scale));
   font-weight: 800;
   letter-spacing: -0.02em;
   white-space: nowrap;
 }
 
 .macroValue small {
-  font-size: 11.5px;
+  font-size: max(11px, calc(11.5px * var(--fs-scale)));
   font-weight: 600;
   letter-spacing: 0;
   color: var(--ink-3);

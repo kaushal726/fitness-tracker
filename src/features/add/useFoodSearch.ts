@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 import { makeFoodLookup, recentFoodIds } from "../../data/selectors.ts";
 import { useAppState } from "../../data/store.ts";
-import { browseCategory, searchFood } from "../../nutrition/index.ts";
+import { browseCategory, searchFoodDetailed, type SearchOutcome } from "../../nutrition/index.ts";
 import type { Food } from "../../nutrition/types.ts";
 import { useFoods, type FoodsStatus } from "./useFoods.ts";
 
 const RECENT_LIMIT = 8;
-const SUGGESTED_LIMIT = 10;
+const SUGGESTED_LIMIT = 12;
 const SEARCH_LIMIT = 60;
 /** Shown to a new person until their own habits take over. */
 const COMMON_IDS = ["egg_boiled", "banana", "milk_tea", "protein_shake", "roti", "steamed_rice", "chicken_breast"];
@@ -24,6 +24,8 @@ export interface FoodBrowser {
   suggestions: Suggestions;
   /** Ranked matches for the query, inside the chosen category if there is one. Empty for an empty query. */
   results: Food[];
+  /** True when no food has every word typed, so `results` are only the closest. */
+  closestMatches: boolean;
   /** Every food of the chosen category, commonly eaten first. */
   inCategory: Food[];
 }
@@ -40,15 +42,16 @@ export function useFoodBrowser(query: string, category: string | null): FoodBrow
   const suggestions = useMemo<Suggestions>(() => {
     if (!ready) return { title: "", foods: [] };
     const toFoods = (ids: string[]) => ids.map(lookup).filter((f): f is Food => f !== undefined);
-    const own = [...new Set([...favorites, ...recentIds])];
-    return own.length > 0 ? { title: "Your foods", foods: toFoods(own).slice(0, SUGGESTED_LIMIT) } : { title: "Popular", foods: toFoods(COMMON_IDS) };
-  }, [ready, lookup, favorites, recentIds]);
+    // Resolved before choosing: a food that was deleted still sits in the recents and must not leave an empty list.
+    const own = toFoods([...new Set([...favorites, ...recentIds, ...customFoods.map((f) => f.id)])]);
+    return own.length > 0 ? { title: "Your foods", foods: own.slice(0, SUGGESTED_LIMIT) } : { title: "Popular", foods: toFoods(COMMON_IDS) };
+  }, [ready, lookup, favorites, recentIds, customFoods]);
 
-  const results = useMemo(
-    () => (ready && searching ? searchFood(query, { limit: SEARCH_LIMIT, category: category ?? undefined, recentIds, favoriteIds: favorites, extraFoods: customFoods }) : []),
+  const found = useMemo<SearchOutcome>(
+    () => (ready && searching ? searchFoodDetailed(query, { limit: SEARCH_LIMIT, category: category ?? undefined, recentIds, favoriteIds: favorites, extraFoods: customFoods }) : { foods: [], closest: false }),
     [ready, searching, query, category, recentIds, favorites, customFoods],
   );
   const inCategory = useMemo(() => (ready && category ? browseCategory(category, customFoods) : []), [ready, category, customFoods]);
 
-  return { status, retry, suggestions, results, inCategory };
+  return { status, retry, suggestions, results: found.foods, closestMatches: found.closest, inCategory };
 }

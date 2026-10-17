@@ -27,7 +27,7 @@
   border: 0;
   outline: none;
   background: none;
-  font-size: 46px;
+  font-size: calc(46px * var(--fs-scale));
   font-weight: 800;
   letter-spacing: -0.03em;
   color: var(--ink);
@@ -51,13 +51,13 @@
 }
 
 .unit {
-  font-size: 20px;
+  font-size: calc(20px * var(--fs-scale));
   font-weight: 700;
   color: var(--ink-3);
 }
 
 .md .input {
-  font-size: 34px;
+  font-size: calc(34px * var(--fs-scale));
 }
 
 .md .unit {
@@ -66,7 +66,7 @@
 
 .hint {
   margin: 12px 2px 0;
-  font-size: 14px;
+  font-size: calc(14px * var(--fs-scale));
   color: var(--ink-3);
 }
 

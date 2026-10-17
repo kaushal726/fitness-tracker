@@ -61,6 +61,18 @@ describe("monthExport", () => {
     expect(x.summary).toMatchObject({ daysLogged: 3, daysCounted: 2, daysInMonth: 31 });
   });
 
+  it("leaves every food out when asked, and keeps the totals", () => {
+    const totals = monthExport({ profile, plan, entries, month: "2026-10", today: TODAY, now: new Date("2026-10-06T10:30:00Z"), includeFoods: false });
+    expect(totals.foodsIncluded).toBe(false);
+    expect(totals.entries).toEqual([]);
+    expect(totals.summary.topFoodsByCalories).toEqual([]);
+    expect(JSON.stringify(totals)).not.toMatch(/Poha|Roti|Rice/);
+    expect(totals.summary.eatenKcal).toBe(x.summary.eatenKcal);
+    expect(totals.days).toEqual(x.days);
+    expect(x.foodsIncluded).toBe(true);
+    expect(exportFileName("2026-10", false)).toBe("eatright-2026-10-totals.json");
+  });
+
   it("survives being written out and read back", () => {
     expect(JSON.parse(JSON.stringify(x))).toEqual(x);
   });

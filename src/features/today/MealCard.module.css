@@ -51,7 +51,7 @@
   width: 44px;
   height: 44px;
   border-radius: 15px;
-  font-size: 22px;
+  font-size: calc(22px * var(--fs-scale));
 }
 
 .amber { background: var(--n-carbs-soft); color: var(--n-carbs); }
@@ -67,14 +67,14 @@
 }
 
 .name {
-  font-size: 17px;
+  font-size: calc(17px * var(--fs-scale));
   font-weight: 800;
   letter-spacing: -0.02em;
 }
 
 .count {
   margin-top: 1px;
-  font-size: 13px;
+  font-size: calc(13px * var(--fs-scale));
   font-weight: 500;
   color: var(--ink-3);
   overflow: hidden;
@@ -84,14 +84,14 @@
 
 .total {
   flex: none;
-  font-size: 16px;
+  font-size: calc(16px * var(--fs-scale));
   font-weight: 800;
   letter-spacing: -0.02em;
 }
 
 .total small,
 .entryKcal small {
-  font-size: 12px;
+  font-size: max(11px, calc(12px * var(--fs-scale)));
   font-weight: 600;
   letter-spacing: 0;
   color: var(--ink-3);
@@ -100,7 +100,7 @@
 .chevron {
   flex: none;
   color: var(--ink-3);
-  font-size: 20px;
+  font-size: calc(20px * var(--fs-scale));
   transition: transform var(--dur) var(--ease-out);
 }
 
@@ -165,7 +165,7 @@
 }
 
 .entryName {
-  font-size: 15.5px;
+  font-size: calc(15.5px * var(--fs-scale));
   font-weight: 700;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -173,7 +173,7 @@
 }
 
 .entryMeta {
-  font-size: 13px;
+  font-size: calc(13px * var(--fs-scale));
   color: var(--ink-3);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -182,6 +182,6 @@
 
 .entryKcal {
   flex: none;
-  font-size: 15.5px;
+  font-size: calc(15.5px * var(--fs-scale));
   font-weight: 800;
 }

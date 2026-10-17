@@ -1,5 +1,5 @@
 .empty {
   padding: 8px 0 4px;
-  font-size: 14.5px;
+  font-size: calc(14.5px * var(--fs-scale));
   color: var(--ink-3);
 }

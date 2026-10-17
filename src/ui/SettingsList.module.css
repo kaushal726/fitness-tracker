@@ -4,7 +4,7 @@
 
 .label {
   margin: 0 4px 10px;
-  font-size: 12.5px;
+  font-size: max(11px, calc(12.5px * var(--fs-scale)));
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -59,7 +59,7 @@ button.row:active {
   width: 40px;
   height: 40px;
   border-radius: 13px;
-  font-size: 19px;
+  font-size: calc(19px * var(--fs-scale));
 }
 
 .green { background: var(--n-fiber-soft); color: var(--n-fiber); }
@@ -78,7 +78,7 @@ button.row:active {
 }
 
 .title {
-  font-size: 15.5px;
+  font-size: calc(15.5px * var(--fs-scale));
   font-weight: 700;
 }
 
@@ -87,7 +87,7 @@ button.row:active {
 }
 
 .subtitle {
-  font-size: 13.5px;
+  font-size: calc(13.5px * var(--fs-scale));
   font-weight: 500;
   color: var(--ink-3);
   overflow: hidden;
@@ -98,7 +98,7 @@ button.row:active {
 .value {
   flex: none;
   max-width: 45%;
-  font-size: 14.5px;
+  font-size: calc(14.5px * var(--fs-scale));
   font-weight: 600;
   color: var(--ink-3);
   overflow: hidden;
@@ -113,5 +113,5 @@ button.row:active {
 .chevron {
   flex: none;
   color: var(--ink-3);
-  font-size: 18px;
+  font-size: calc(18px * var(--fs-scale));
 }

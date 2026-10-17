@@ -8,7 +8,7 @@
   gap: 6px;
   min-height: 44px;
   cursor: pointer;
-  font-size: 14.5px;
+  font-size: calc(14.5px * var(--fs-scale));
   font-weight: 700;
   color: var(--primary);
   list-style: none;
@@ -34,4 +34,29 @@
 
 .save {
   margin-top: 20px;
+}
+
+/* "Use it" inside a hint: reads as a link, with a touch target that is not tiny. */
+.use {
+  padding: 6px 4px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 800;
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+/* Calories and what one serving is, side by side: the number means nothing without the second. */
+.pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: 12px;
+}
+
+.note {
+  margin: -6px 2px 12px;
+  font-size: calc(13px * var(--fs-scale));
+  line-height: 1.4;
+  color: var(--warn);
 }

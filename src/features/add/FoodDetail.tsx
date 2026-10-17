@@ -5,7 +5,7 @@ import { formatNumber } from "../../lib/format.ts";
 import { scrollParent } from "../../lib/scroll.ts";
 import type { Food, MealType } from "../../nutrition/types.ts";
 import { Button, IconButton } from "../../ui/Button";
-import { IconTrash } from "../../ui/icons";
+import { IconEdit, IconTrash } from "../../ui/icons";
 import { SectionLabel } from "../../ui/SectionLabel";
 import { MealChips } from "./MealChips.tsx";
 import { NutritionLine } from "./NutritionLine.tsx";
@@ -28,13 +28,15 @@ interface Props {
   onSubmit: (choice: PortionChoice) => void;
   /** Given when changing something already logged: its meal can change too, and it can be taken out. */
   edit?: { meal: MealType; onRemove: () => void };
+  /** Given for a food the person made: opens it to change its numbers. */
+  onEditFood?: () => void;
 }
 
 /**
  * The one question left once a food is picked: how much. The amount, what it comes to, and one button.
  * It fills the page it is on, so it never needs a sheet of its own.
  */
-export function FoodDetail({ food, initial, actionLabel, onSubmit, edit }: Props) {
+export function FoodDetail({ food, initial, actionLabel, onSubmit, edit, onEditFood }: Props) {
   const portion = usePortion(food, initial);
   const [meal, setMeal] = useState(edit?.meal);
   const top = useRef<HTMLFormElement>(null);
@@ -72,6 +74,7 @@ export function FoodDetail({ food, initial, actionLabel, onSubmit, edit }: Props
       </div>
       <div className={styles.bar}>
         {edit && <IconButton label="Remove" icon={<IconTrash />} variant="danger" onClick={edit.onRemove} />}
+        {onEditFood && <IconButton label="Edit this food" icon={<IconEdit />} variant="soft" onClick={onEditFood} />}
         <Button type="submit" variant="primary" size="lg" block disabled={!nutrition}>
           {actionLabel}{nutrition ? ` · ${formatNumber(nutrition.calories)} kcal` : ""}
         </Button>

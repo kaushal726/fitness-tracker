@@ -16,21 +16,21 @@
 }
 
 .stats dt {
-  font-size: 12px;
+  font-size: max(11px, calc(12px * var(--fs-scale)));
   font-weight: 650;
   color: var(--ink-3);
 }
 
 .stats dd {
   margin: 0;
-  font-size: 24px;
+  font-size: calc(24px * var(--fs-scale));
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.1;
 }
 
 .stats small {
-  font-size: 12px;
+  font-size: max(11px, calc(12px * var(--fs-scale)));
   font-weight: 600;
   letter-spacing: 0;
   color: var(--ink-3);
@@ -44,7 +44,7 @@
 
 .weekday {
   text-align: center;
-  font-size: 11.5px;
+  font-size: max(11px, calc(11.5px * var(--fs-scale)));
   font-weight: 700;
   color: var(--ink-3);
 }
@@ -55,7 +55,7 @@
   justify-content: center;
   height: 34px;
   border-radius: 10px;
-  font-size: 13px;
+  font-size: calc(13px * var(--fs-scale));
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   color: var(--ink);

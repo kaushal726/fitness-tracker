@@ -1,6 +1,6 @@
 import type { IconType } from "react-icons";
 import {
-  IconBakery, IconBreakfast, IconCookie, IconDairy, IconDessert, IconDrink, IconEdit, IconFastFood, IconFruit, IconGrain, IconMeal,
+  IconBakery, IconBreakfast, IconCookie, IconDairy, IconDessert, IconDrink, IconBook, IconFastFood, IconFruit, IconGrain, IconMeal,
   IconMeat, IconNut, IconPackage, IconSalad, IconSoup, IconSupplement, IconSweet, IconVegetable,
 } from "../../ui/icons";
 
@@ -31,7 +31,7 @@ const STYLES: Record<string, CategoryStyle> = {
   supplements: { icon: IconSupplement, tone: "blue" },
   packaged: { icon: IconPackage, tone: "slate" },
   staples: { icon: IconGrain, tone: "amber" },
-  custom: { icon: IconEdit, tone: "slate" },
+  custom: { icon: IconBook, tone: "slate" },
 };
 
 const FALLBACK: CategoryStyle = { icon: IconMeal, tone: "slate" };

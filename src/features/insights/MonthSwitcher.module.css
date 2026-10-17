@@ -14,7 +14,7 @@
 }
 
 .month {
-  font-size: 18px;
+  font-size: calc(18px * var(--fs-scale));
   font-weight: 800;
   letter-spacing: -0.02em;
 }
@@ -22,6 +22,6 @@
 .back {
   min-height: 32px;
   padding: 0 10px;
-  font-size: 13px;
+  font-size: calc(13px * var(--fs-scale));
   color: var(--primary);
 }

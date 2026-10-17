@@ -28,7 +28,7 @@
   border-radius: 50%;
   background: var(--primary-soft);
   color: var(--primary);
-  font-size: 24px;
+  font-size: calc(24px * var(--fs-scale));
   transition: transform var(--dur-fast) var(--ease-out), background var(--dur-fast) ease;
 }
 
@@ -44,7 +44,7 @@
   outline: none;
   background: none;
   text-align: center;
-  font-size: 40px;
+  font-size: calc(40px * var(--fs-scale));
   font-weight: 800;
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
@@ -55,7 +55,7 @@
   margin: 4px 0 14px;
   min-height: 20px;
   text-align: center;
-  font-size: 13.5px;
+  font-size: calc(13.5px * var(--fs-scale));
   font-weight: 600;
   color: var(--ink-3);
 }

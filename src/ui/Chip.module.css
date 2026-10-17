@@ -7,7 +7,7 @@
   border: 1px solid var(--line);
   border-radius: var(--r-pill);
   background: var(--surface);
-  font-size: 14.5px;
+  font-size: calc(14.5px * var(--fs-scale));
   font-weight: 650;
   color: var(--ink-2);
   white-space: nowrap;
@@ -26,5 +26,5 @@
 
 .icon {
   display: inline-flex;
-  font-size: 17px;
+  font-size: calc(17px * var(--fs-scale));
 }

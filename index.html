@@ -22,9 +22,11 @@
     <meta name="color-scheme" content="light dark" />
     <script>
       // Before first paint, so the page has the right colours from the start and a dark phone sees no white
-      // flash while the app loads. Mirrors src/app/theme.ts.
+      // flash while the app loads. Mirrors src/app/theme.ts and src/app/accent.ts.
       (function () {
         try {
+          var accent = localStorage.getItem("fitly_accent");
+          if (accent && accent !== "green") document.documentElement.dataset.accent = accent;
           var saved = localStorage.getItem("fitly_theme");
           var pinned = saved === "dark" || saved === "light";
           var theme = pinned ? saved : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";

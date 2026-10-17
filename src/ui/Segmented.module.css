@@ -13,7 +13,7 @@
   border: 0;
   border-radius: var(--r-pill);
   background: transparent;
-  font-size: 14px;
+  font-size: calc(14px * var(--fs-scale));
   font-weight: 650;
   color: var(--ink-3);
   white-space: nowrap;

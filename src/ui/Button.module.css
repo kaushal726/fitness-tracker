@@ -7,7 +7,7 @@
   padding: 0 22px;
   border: 1px solid transparent;
   border-radius: var(--r-pill);
-  font-size: 15.5px;
+  font-size: calc(15.5px * var(--fs-scale));
   font-weight: 700;
   letter-spacing: -0.005em;
   white-space: nowrap;
@@ -83,13 +83,13 @@
 .sm {
   min-height: 40px;
   padding: 0 16px;
-  font-size: 14px;
+  font-size: calc(14px * var(--fs-scale));
 }
 
 .lg {
   min-height: 56px;
   padding: 0 28px;
-  font-size: 16.5px;
+  font-size: calc(16.5px * var(--fs-scale));
 }
 
 .block {
@@ -98,7 +98,7 @@
 
 .icon {
   display: inline-flex;
-  font-size: 20px;
+  font-size: calc(20px * var(--fs-scale));
 }
 
 .iconOnly {

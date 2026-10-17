@@ -9,18 +9,18 @@
 .icon {
   flex: none;
   margin-top: 2px;
-  font-size: 20px;
+  font-size: calc(20px * var(--fs-scale));
 }
 
 .headline {
-  font-size: 15.5px;
+  font-size: calc(15.5px * var(--fs-scale));
   font-weight: 800;
   letter-spacing: -0.01em;
 }
 
 .detail {
   margin-top: 2px;
-  font-size: 14px;
+  font-size: calc(14px * var(--fs-scale));
   font-weight: 500;
   line-height: 1.4;
 }

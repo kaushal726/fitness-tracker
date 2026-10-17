@@ -5,7 +5,7 @@
 }
 
 .label {
-  font-size: 12.5px;
+  font-size: max(11px, calc(12.5px * var(--fs-scale)));
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -17,7 +17,7 @@
   align-items: baseline;
   gap: 8px;
   margin-bottom: 14px;
-  font-size: 56px;
+  font-size: calc(56px * var(--fs-scale));
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 1.1;
@@ -25,7 +25,7 @@
 }
 
 .calories small {
-  font-size: 18px;
+  font-size: calc(18px * var(--fs-scale));
   font-weight: 700;
   letter-spacing: 0;
   color: var(--ink-2);
@@ -50,12 +50,12 @@
 }
 
 .macroLabel {
-  font-size: 12px;
+  font-size: max(11px, calc(12px * var(--fs-scale)));
   font-weight: 700;
 }
 
 .macroValue {
-  font-size: 15.5px;
+  font-size: calc(15.5px * var(--fs-scale));
   font-weight: 800;
   font-variant-numeric: tabular-nums;
 }
@@ -67,7 +67,7 @@
 
 .note {
   margin-top: 14px;
-  font-size: 14.5px;
+  font-size: calc(14.5px * var(--fs-scale));
   line-height: 1.45;
   color: var(--ink-2);
 }

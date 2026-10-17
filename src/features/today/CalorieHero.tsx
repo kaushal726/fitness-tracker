@@ -2,15 +2,19 @@ import type { Targets } from "../../data/types.ts";
 import { cx } from "../../lib/cx.ts";
 import { formatNumber } from "../../lib/format.ts";
 import type { NutritionTotals } from "../../nutrition/types.ts";
+import { IconButton } from "../../ui/Button";
 import { Card } from "../../ui/Card";
 import { CountUp } from "../../ui/CountUp";
 import { ProgressBar, type BarTone } from "../../ui/ProgressBar";
+import { IconShare } from "../../ui/icons";
 import { Ring } from "../../ui/Ring";
 import styles from "./CalorieHero.module.css";
 
 interface Props {
   totals: NutritionTotals;
   targets: Targets;
+  /** Shows the share button in the corner; left out when there is nothing to share. */
+  onShare?: () => void;
 }
 
 const MACROS: { key: "protein" | "carbs" | "fat" | "fiber"; label: string; tone: BarTone }[] = [
@@ -21,11 +25,12 @@ const MACROS: { key: "protein" | "carbs" | "fat" | "fiber"; label: string; tone:
 ];
 
 /** Calories first, in a ring; then the four macros, quietly, in one row. */
-export function CalorieHero({ totals, targets }: Props) {
+export function CalorieHero({ totals, targets, onShare }: Props) {
   const left = targets.calories - totals.calories;
   const over = left < 0;
   return (
     <Card tone="hero" className={styles.hero}>
+      {onShare && <IconButton label="Share this day" icon={<IconShare />} variant="outline" className={styles.share} onClick={onShare} />}
       <div className={styles.top}>
         <Ring value={totals.calories} max={targets.calories} tone={over ? "over" : "primary"} label={`${formatNumber(totals.calories)} of ${formatNumber(targets.calories)} calories eaten`}>
           <span className={cx(styles.leftValue, over && styles.overValue, "num")}><CountUp value={Math.abs(left)} /></span>

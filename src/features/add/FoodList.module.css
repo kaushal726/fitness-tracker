@@ -45,7 +45,7 @@ button.main:active {
   border-radius: 50%;
   background: var(--primary-soft);
   color: var(--primary);
-  font-size: 20px;
+  font-size: calc(20px * var(--fs-scale));
   transition: background var(--dur-fast) ease;
 }
 
@@ -65,7 +65,7 @@ button.main:active {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 15.5px;
+  font-size: calc(15.5px * var(--fs-scale));
   font-weight: 700;
 }
 
@@ -79,13 +79,28 @@ button.main:active {
   flex: none;
   color: var(--n-carbs);
   fill: currentColor;
-  font-size: 14px;
+  font-size: calc(14px * var(--fs-scale));
 }
 
 .meta {
-  font-size: 13px;
+  font-size: calc(13px * var(--fs-scale));
   color: var(--ink-3);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* A food of your own also has a delete button at the end of its row. */
+.own {
+  display: flex;
+  align-items: center;
+}
+
+.own .main {
+  flex: 1;
+}
+
+.remove {
+  flex: none;
+  margin-right: 10px;
 }

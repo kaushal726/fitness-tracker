@@ -35,7 +35,7 @@
 }
 
 .brandName {
-  font-size: 19px;
+  font-size: calc(19px * var(--fs-scale));
   font-weight: 800;
   letter-spacing: -0.03em;
 }
@@ -50,7 +50,7 @@
   border-radius: var(--r-pill);
   background: var(--primary);
   color: var(--on-primary);
-  font-size: 15.5px;
+  font-size: calc(15.5px * var(--fs-scale));
   font-weight: 800;
   transition: background var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out);
 }
@@ -64,7 +64,7 @@
 }
 
 .add svg {
-  font-size: 20px;
+  font-size: calc(20px * var(--fs-scale));
 }
 
 .items {
@@ -83,14 +83,14 @@
   border-radius: var(--r-md);
   background: none;
   text-align: left;
-  font-size: 15px;
+  font-size: calc(15px * var(--fs-scale));
   font-weight: 700;
   color: var(--ink-2);
   transition: background var(--dur-fast) ease;
 }
 
 .item svg {
-  font-size: 20px;
+  font-size: calc(20px * var(--fs-scale));
 }
 
 .item:hover {
@@ -112,7 +112,7 @@
 
 .version {
   padding-left: 22px;
-  font-size: 12px;
+  font-size: max(11px, calc(12px * var(--fs-scale)));
   font-weight: 600;
   color: var(--ink-3);
   opacity: 0.8;

@@ -23,14 +23,14 @@
   height: var(--dock-h);
   border: 0;
   background: none;
-  font-size: 11px;
+  font-size: max(11px, calc(11px * var(--fs-scale)));
   font-weight: 700;
   color: var(--ink-3);
   transition: color var(--dur-fast) ease;
 }
 
 .tab svg {
-  font-size: 22px;
+  font-size: calc(22px * var(--fs-scale));
 }
 
 .tab[aria-current="page"] {
@@ -52,6 +52,6 @@
 
 @media (max-width: 359px) {
   .tab {
-    font-size: 10.5px;
+    font-size: max(11px, calc(10.5px * var(--fs-scale)));
   }
 }

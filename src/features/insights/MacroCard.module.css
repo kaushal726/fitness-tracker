@@ -1,6 +1,6 @@
 .empty {
   padding: 8px 0 4px;
-  font-size: 14.5px;
+  font-size: calc(14.5px * var(--fs-scale));
   color: var(--ink-3);
 }
 
@@ -11,7 +11,7 @@
 }
 
 .kcal {
-  font-size: 24px;
+  font-size: calc(24px * var(--fs-scale));
   font-weight: 800;
   letter-spacing: -0.035em;
   line-height: 1.05;
@@ -19,7 +19,7 @@
 
 .unit {
   margin-top: 2px;
-  font-size: 11.5px;
+  font-size: max(11px, calc(11.5px * var(--fs-scale)));
   font-weight: 650;
   color: var(--ink-3);
 }
@@ -49,12 +49,12 @@
 
 .name {
   flex: 1;
-  font-size: 14.5px;
+  font-size: calc(14.5px * var(--fs-scale));
   font-weight: 700;
 }
 
 .share {
-  font-size: 15px;
+  font-size: calc(15px * var(--fs-scale));
   font-weight: 800;
 }
 
@@ -81,13 +81,13 @@
 }
 
 .amount {
-  font-size: 13.5px;
+  font-size: calc(13.5px * var(--fs-scale));
   font-weight: 800;
   font-variant-numeric: tabular-nums;
 }
 
 .amount small {
-  font-size: 12px;
+  font-size: max(11px, calc(12px * var(--fs-scale)));
   font-weight: 600;
   color: var(--ink-3);
 }
@@ -95,7 +95,7 @@
 .pct {
   min-width: 40px;
   text-align: right;
-  font-size: 13px;
+  font-size: calc(13px * var(--fs-scale));
   font-weight: 800;
   color: var(--ink-2);
 }

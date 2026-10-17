@@ -21,7 +21,7 @@
 
 .meta {
   margin-top: 2px;
-  font-size: 14.5px;
+  font-size: calc(14.5px * var(--fs-scale));
   font-weight: 600;
   color: var(--ink-3);
   overflow: hidden;
@@ -51,12 +51,19 @@
   border-radius: 13px;
   background: var(--surface-2);
   color: var(--ink-2);
-  font-size: 19px;
+  font-size: calc(19px * var(--fs-scale));
 }
 
 .themeLabel {
-  font-size: 15.5px;
+  font-size: calc(15.5px * var(--fs-scale));
   font-weight: 700;
+}
+
+.themeValue {
+  margin-left: auto;
+  font-size: calc(14px * var(--fs-scale));
+  font-weight: 600;
+  color: var(--ink-3);
 }
 
 .hiddenInput {
@@ -72,7 +79,7 @@
 }
 
 .version {
-  font-size: 12.5px;
+  font-size: max(11px, calc(12.5px * var(--fs-scale)));
   font-weight: 600;
   color: var(--ink-3);
   opacity: 0.8;
@@ -83,7 +90,7 @@
 }
 
 .hintCard {
-  font-size: 14.5px;
+  font-size: calc(14.5px * var(--fs-scale));
   color: var(--ink-2);
 }
 
@@ -100,7 +107,7 @@
 
 .error {
   color: var(--danger);
-  font-size: 13.5px;
+  font-size: calc(13.5px * var(--fs-scale));
   font-weight: 600;
 }
 
@@ -122,6 +129,20 @@
   background: var(--surface);
 }
 
+/* The tile and the name are one button: tapping them opens the food to change it. */
+.foodMain {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  color: inherit;
+}
+
 .foodText {
   flex: 1;
   display: flex;
@@ -131,7 +152,7 @@
 }
 
 .foodName {
-  font-size: 15.5px;
+  font-size: calc(15.5px * var(--fs-scale));
   font-weight: 700;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -139,7 +160,7 @@
 }
 
 .foodMeta {
-  font-size: 13px;
+  font-size: calc(13px * var(--fs-scale));
   color: var(--ink-3);
 }
 
@@ -165,18 +186,18 @@
   border-radius: 15px;
   background: var(--primary-soft);
   color: var(--primary);
-  font-size: 21px;
+  font-size: calc(21px * var(--fs-scale));
 }
 
 .aboutTitle {
-  font-size: 16.5px;
+  font-size: calc(16.5px * var(--fs-scale));
   font-weight: 800;
   letter-spacing: -0.01em;
 }
 
 .aboutText {
   margin-top: 4px;
-  font-size: 15px;
+  font-size: calc(15px * var(--fs-scale));
   line-height: 1.55;
   color: var(--ink-2);
 }

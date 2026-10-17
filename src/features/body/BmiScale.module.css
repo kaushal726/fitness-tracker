@@ -62,7 +62,7 @@
 .name {
   flex-basis: 0;
   min-width: 0;
-  font-size: 11.5px;
+  font-size: max(11px, calc(11.5px * var(--fs-scale)));
   font-weight: 600;
   text-align: center;
   color: var(--ink-3);

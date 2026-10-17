@@ -7,7 +7,7 @@
 
 .label {
   padding-left: 2px;
-  font-size: 13px;
+  font-size: calc(13px * var(--fs-scale));
   font-weight: 700;
   color: var(--ink-2);
 }
@@ -58,7 +58,7 @@
 }
 
 .suffix {
-  font-size: 14px;
+  font-size: calc(14px * var(--fs-scale));
   font-weight: 600;
   color: var(--ink-3);
 }
@@ -66,7 +66,7 @@
 .hint,
 .error {
   padding-left: 2px;
-  font-size: 13px;
+  font-size: calc(13px * var(--fs-scale));
 }
 
 .hint {
@@ -76,4 +76,17 @@
 .error {
   color: var(--danger);
   font-weight: 600;
+}
+
+.select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.caret {
+  flex: none;
+  font-size: calc(20px * var(--fs-scale));
+  color: var(--ink-3);
+  pointer-events: none;
 }

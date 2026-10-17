@@ -45,6 +45,8 @@ export function AddFood({ onClose, date, initialMeal, initialFood }: Props) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string | null>(null);
   const [customName, setCustomName] = useState("");
+  /** A food of their own that is being changed, or null while a new one is made. */
+  const [customEditing, setCustomEditing] = useState<Food | null>(null);
   /** Null leaves the meal to the time of day. */
   const [mealChoice, setMealChoice] = useState<MealType | null>(initialMeal);
   /** The amount page, when one is open. It takes the place of the page underneath, which stays exactly as it was. */
@@ -95,10 +97,17 @@ export function AddFood({ onClose, date, initialMeal, initialFood }: Props) {
   };
   const openCustom = (name: string) => {
     setCustomName(name);
+    setCustomEditing(null);
+    setView("custom");
+  };
+  const editCustom = (food: Food) => {
+    setCustomEditing(food);
+    setSelected(null);
     setView("custom");
   };
   /** The food they just made goes straight to its amount. */
   const created = (food: Food) => {
+    setCustomEditing(null);
     setQuery(food.name);
     setCategory(null);
     setView("add");
@@ -108,7 +117,7 @@ export function AddFood({ onClose, date, initialMeal, initialFood }: Props) {
   const header = () => {
     if (selected) return { title: selected.food.name, subtitle: categoryLabel(selected.food.category) };
     if (view === "review") return { title: "Added", subtitle: `${count} ${count === 1 ? "item" : "items"} · ${formatNumber(kcal)} kcal` };
-    if (view === "custom") return { title: "Add your own food", subtitle: "Numbers for one serving" };
+    if (view === "custom") return { title: customEditing ? "Edit your food" : "Add your own food", subtitle: "Numbers for one serving" };
     return { title: "Add food", subtitle: <MealPicker value={meal} onChange={setMealChoice} /> };
   };
   const { title, subtitle } = header();
@@ -128,9 +137,9 @@ export function AddFood({ onClose, date, initialMeal, initialFood }: Props) {
       <div ref={pages} hidden={selected !== null}>
         {view === "add" && <FoodFinder browser={browser} query={query} category={category} onCategory={setCategory} onSelect={(food) => open({ food })} onCustom={openCustom} />}
         {view === "review" && <ReviewView session={session} onEdit={edit} />}
-        {view === "custom" && <CustomFoodForm initialName={customName} onCreated={created} />}
+        {view === "custom" && <CustomFoodForm key={customEditing?.id ?? "new"} initialName={customName} editing={customEditing ?? undefined} onCreated={created} onUseExisting={created} />}
       </div>
-      {selected && <SelectedFood selected={selected} addLabel={`Add to ${MEAL_LABELS[meal]}`} onAdd={add} onSave={save} onRemove={remove} />}
+      {selected && <SelectedFood selected={selected} addLabel={`Add to ${MEAL_LABELS[meal]}`} onAdd={add} onSave={save} onRemove={remove} onEditFood={editCustom} />}
     </Sheet>
   );
 }

@@ -21,6 +21,7 @@
 
   /* Brand */
   --brand: #1f6f54;
+  --brand-leaf: #b9e6cf;
   --primary: #1b7a56;
   --primary-strong: #145f43;
   --primary-soft: #e1f1e8;
@@ -78,12 +79,14 @@
   --shadow-sheet: 0 -10px 40px rgba(21, 32, 26, 0.16);
 
   /* Type scale */
-  --fs-caption: 12.5px;
-  --fs-small: 14px;
-  --fs-body: 16px;
-  --fs-lead: 18px;
-  --fs-h2: 20px;
-  --fs-h1: 28px;
+  /* Every text size is its design size times this: one place to make the whole app's text smaller or larger. */
+  --fs-scale: 0.9;
+  --fs-caption: calc(12.5px * var(--fs-scale));
+  --fs-small: calc(14px * var(--fs-scale));
+  --fs-body: calc(16px * var(--fs-scale));
+  --fs-lead: calc(18px * var(--fs-scale));
+  --fs-h2: calc(20px * var(--fs-scale));
+  --fs-h1: calc(28px * var(--fs-scale));
 
   /* Layout */
   --content-max: 640px;
@@ -164,4 +167,102 @@
   :root {
     --dock-h: 0px;
   }
+}
+
+/* Accent colours (src/app/accent.ts). Green, the default, is the set above; each of these restates only what makes the app
+ * its colour: the light set, then the dark one, with the brighter tints a dark surface asks for. The `color` of each accent in
+ * accent.ts is its light --primary, and accent.test.ts keeps the two in step. */
+:root[data-accent="blue"] {
+  --brand: #1c5fb0;
+  --brand-leaf: #bfd8f7;
+  --primary: #1a66c0;
+  --primary-strong: #134f9a;
+  --primary-soft: #e3eefb;
+  --primary-line: #c2d9f5;
+  --toast-action: #9ccbfa;
+}
+
+:root[data-theme="dark"][data-accent="blue"] {
+  --primary: #6eb0f5;
+  --primary-strong: #9ccbfa;
+  --primary-soft: #12273f;
+  --primary-line: #1f3f66;
+  --on-primary: #06192e;
+  --toast-action: #134f9a;
+}
+
+:root[data-accent="purple"] {
+  --brand: #5f3dbd;
+  --brand-leaf: #d4c9f6;
+  --primary: #6a46cc;
+  --primary-strong: #5232ab;
+  --primary-soft: #ede8fb;
+  --primary-line: #d3c9f3;
+  --toast-action: #c1b4f9;
+}
+
+:root[data-theme="dark"][data-accent="purple"] {
+  --primary: #a592f5;
+  --primary-strong: #c1b4f9;
+  --primary-soft: #211c3f;
+  --primary-line: #352d66;
+  --on-primary: #120c2e;
+  --toast-action: #5232ab;
+}
+
+:root[data-accent="orange"] {
+  --brand: #a14707;
+  --brand-leaf: #f7d3b0;
+  --primary: #b04f08;
+  --primary-strong: #8f3f05;
+  --primary-soft: #fcefe2;
+  --primary-line: #f2d3b4;
+  --toast-action: #f9bd8a;
+}
+
+:root[data-theme="dark"][data-accent="orange"] {
+  --primary: #f5a05a;
+  --primary-strong: #f9bd8a;
+  --primary-soft: #35210f;
+  --primary-line: #5a3a1c;
+  --on-primary: #2a1305;
+  --toast-action: #8f3f05;
+}
+
+:root[data-accent="pink"] {
+  --brand: #a82958;
+  --brand-leaf: #f5c8d9;
+  --primary: #b82e62;
+  --primary-strong: #962250;
+  --primary-soft: #fbe8ef;
+  --primary-line: #f2c6d6;
+  --toast-action: #f7a0bf;
+}
+
+:root[data-theme="dark"][data-accent="pink"] {
+  --primary: #f27aa3;
+  --primary-strong: #f7a0bf;
+  --primary-soft: #381523;
+  --primary-line: #5e2a40;
+  --on-primary: #2e0715;
+  --toast-action: #962250;
+}
+
+:root[data-accent="teal"] {
+  --brand: #0d6b75;
+  --brand-leaf: #b7e0e5;
+  --primary: #0f7681;
+  --primary-strong: #0a5a63;
+  --primary-soft: #e0f1f3;
+  --primary-line: #bfdfe3;
+  --toast-action: #7fdfe8;
+}
+
+:root[data-theme="dark"][data-accent="teal"] {
+  --primary: #4fd0dc;
+  --primary-strong: #7fdfe8;
+  --primary-soft: #0f2f33;
+  --primary-line: #1b4b51;
+  --on-primary: #03232a;
+  --toast-action: #0a5a63;
 }

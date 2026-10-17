@@ -1,6 +1,7 @@
 import { useAppState } from "../../data/store.ts";
 import type { Entry } from "../../data/types.ts";
 import { defaultPortion } from "../../domain/portions.ts";
+import { CUSTOM_CATEGORY } from "../../nutrition/custom.ts";
 import type { Food } from "../../nutrition/types.ts";
 import { FoodDetail, type PortionChoice } from "./FoodDetail.tsx";
 
@@ -17,10 +18,12 @@ interface Props {
   onAdd: (food: Food, choice: PortionChoice) => void;
   onSave: (entry: Entry, food: Food, choice: PortionChoice) => void;
   onRemove: (entry: Entry) => void;
+  /** Opens a food the person made, to change it. */
+  onEditFood: (food: Food) => void;
 }
 
 /** The amount page for whichever of the two was picked. */
-export function SelectedFood({ selected: { food, entry }, addLabel, onAdd, onSave, onRemove }: Props) {
+export function SelectedFood({ selected: { food, entry }, addLabel, onAdd, onSave, onRemove, onEditFood }: Props) {
   const { lastUsed } = useAppState();
   if (entry) {
     return (
@@ -34,5 +37,6 @@ export function SelectedFood({ selected: { food, entry }, addLabel, onAdd, onSav
       />
     );
   }
-  return <FoodDetail key={food.id} food={food} initial={defaultPortion(food, lastUsed[food.id])} actionLabel={addLabel} onSubmit={(choice) => onAdd(food, choice)} />;
+  const editFood = food.category === CUSTOM_CATEGORY ? () => onEditFood(food) : undefined;
+  return <FoodDetail key={food.id} food={food} initial={defaultPortion(food, lastUsed[food.id])} actionLabel={addLabel} onSubmit={(choice) => onAdd(food, choice)} onEditFood={editFood} />;
 }

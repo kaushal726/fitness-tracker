@@ -140,29 +140,65 @@ function passesFilters(food: Food, o: SearchOptions): boolean {
     && (!o.tag || food.tags.includes(o.tag));
 }
 
-export function searchFood(query: string, options: SearchOptions = {}): Food[] {
+/** Words that say how a food was made or how much of it, not what it is: "homemade curd", "1 katori dal". Only dropped when nothing matched them. */
+const SKIPPABLE_WORDS: ReadonlySet<string> = new Set(
+  ["home", "homemade", "made", "fresh", "plain", "normal", "regular", "extra", "some", "my", "own", "the", "a", "an", "of", "with", "and", "small", "medium", "large", "big", "bowl", "katori", "cup", "glass", "plate", "piece", "slice", "spoon", "tbsp", "tsp", "gram", "g", "ml", "kg", "litre", "liter", "serving", "portion"].map(stem),
+);
+const QUANTITY = /^\d+(?:[.,]\d+)?$/;
+const isSkippable = (token: string): boolean => SKIPPABLE_WORDS.has(token) || QUANTITY.test(token);
+
+export interface SearchOutcome {
+  foods: Food[];
+  /** True when no food matched every word, so these are the closest matches instead. */
+  closest: boolean;
+}
+
+export function searchFoodDetailed(query: string, options: SearchOptions = {}): SearchOutcome {
   const q = normalizeForSearch(query);
-  if (!q) return [];
+  if (!q) return { foods: [], closest: false };
   const tokens = q.split(" ").map(stem);
   const favorites = new Set(options.favoriteIds);
   const recents = new Map((options.recentIds ?? []).map((id, i) => [id, i]));
   const pool = options.extraFoods?.length ? [...registryIndex(), ...options.extraFoods.map(index)] : registryIndex();
+  const allowed = (ix: Indexed): boolean => passesFilters(ix.food, options);
 
-  const scored: { food: Food; score: number }[] = [];
-  for (const ix of pool) {
-    if (!passesFilters(ix.food, options)) continue;
-    const base = baseScore(ix, q, tokens);
-    if (base === 0) continue;
-    const recentRank = recents.get(ix.food.id);
-    const score = base
-      + (POPULARITY.get(ix.food.id) ?? 0)
-      + (favorites.has(ix.food.id) ? SCORE.favorite : 0)
-      + (recentRank === undefined ? 0 : Math.max(0, SCORE.recentMax - recentRank * SCORE.recentStep))
-      + (tokens.some((t) => ix.categoryWords.has(t)) ? SCORE.categoryHit : 0)
-      - (ix.food.type === "composite" ? SCORE.composite : 0)
-      - ix.name.length * SCORE.perNameChar;
-    scored.push({ food: ix.food, score });
-  }
-  scored.sort((a, b) => b.score - a.score || a.food.name.localeCompare(b.food.name));
-  return scored.slice(0, options.limit ?? DEFAULT_LIMIT).map((s) => s.food);
+  /** The pool ranked by `base` (0 = no match), then by how common, favourite and recent a food is, and by a shorter name. */
+  const rank = (words: string[], base: (ix: Indexed) => number): Food[] => {
+    const scored: { food: Food; score: number }[] = [];
+    for (const ix of pool) {
+      if (!allowed(ix)) continue;
+      const b = base(ix);
+      if (b === 0) continue;
+      const recentRank = recents.get(ix.food.id);
+      const score = b
+        + (POPULARITY.get(ix.food.id) ?? 0)
+        + (favorites.has(ix.food.id) ? SCORE.favorite : 0)
+        + (recentRank === undefined ? 0 : Math.max(0, SCORE.recentMax - recentRank * SCORE.recentStep))
+        + (words.some((t) => ix.categoryWords.has(t)) ? SCORE.categoryHit : 0)
+        - (ix.food.type === "composite" ? SCORE.composite : 0)
+        - ix.name.length * SCORE.perNameChar;
+      scored.push({ food: ix.food, score });
+    }
+    scored.sort((a, b) => b.score - a.score || a.food.name.localeCompare(b.food.name));
+    return scored.slice(0, options.limit ?? DEFAULT_LIMIT).map((s) => s.food);
+  };
+  const everyWord = (text: string, words: string[]): Food[] => rank(words, (ix) => baseScore(ix, text, words));
+
+  const found = everyWord(q, tokens);
+  if (found.length > 0 || tokens.length < 2) return { foods: found, closest: false };
+
+  // Nothing matched every word ("homemade curd"): leave out words that only describe, and words no food has, and search the rest.
+  const known = tokens.filter((t) => !isSkippable(t) && pool.some((ix) => allowed(ix) && tokenLevel(ix, t) > 0));
+  if (known.length === 0) return { foods: [], closest: false };
+  const rest = everyWord(known.join(" "), known);
+  if (rest.length > 0) return { foods: rest, closest: true };
+  const some = rank(known, (ix) => {
+    const levels = known.map((t) => tokenLevel(ix, t)).filter((l) => l > 0);
+    return levels.length === 0 ? 0 : (levels.length / known.length) * SCORE.wordMatchBase + (levels.reduce((a, b) => a + b, 0) / levels.length) * SCORE.wordMatchPerLevel;
+  });
+  return { foods: some, closest: some.length > 0 };
+}
+
+export function searchFood(query: string, options: SearchOptions = {}): Food[] {
+  return searchFoodDetailed(query, options).foods;
 }

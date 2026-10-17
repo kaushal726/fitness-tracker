@@ -8,5 +8,5 @@
 .meals > button {
   justify-content: center;
   padding: 0 4px;
-  font-size: 13px;
+  font-size: calc(13px * var(--fs-scale));
 }

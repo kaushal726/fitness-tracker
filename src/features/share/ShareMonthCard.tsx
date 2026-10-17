@@ -8,6 +8,7 @@ import { downloadBlob } from "../../lib/files.ts";
 import { copyText } from "../../lib/share.ts";
 import { Button } from "../../ui/Button";
 import { Card } from "../../ui/Card";
+import { Segmented } from "../../ui/Segmented";
 import { useToast } from "../../ui/Toast";
 import { MonthSwitcher } from "../insights/MonthSwitcher.tsx";
 import styles from "./ShareSheet.module.css";
@@ -17,47 +18,60 @@ interface Props {
   today: string;
 }
 
-const BYTES_PER_KB = 1024;
+type Scope = "foods" | "totals";
 
-/** A month of food, with the goals and body numbers, as JSON to paste or attach in an AI chat. */
+const SCOPES: { value: Scope; label: string }[] = [
+  { value: "foods", label: "With foods" },
+  { value: "totals", label: "Totals only" },
+];
+const BYTES_PER_KB = 1024;
+const days = (n: number): string => `${n} ${n === 1 ? "day" : "days"}`;
+
+/** A month as a report for an AI chat: with every food, or with totals only. Copy it, or save it as a file. */
 export function ShareMonthCard({ profile, today }: Props) {
   const { entries, settings } = useAppState();
   const toast = useToast();
   const current = monthOf(today);
   const [month, setMonth] = useState<MonthId>(current);
+  const [scope, setScope] = useState<Scope>("foods");
+  const withFoods = scope === "foods";
   const earliest = useMemo(() => entries.reduce((first, e) => (e.date < first ? e.date : first), today).slice(0, 7), [entries, today]);
-  const data = useMemo(() => monthExport({ profile, plan: computePlan(profile, settings.customCalories), entries, month, today, now: new Date() }), [profile, settings.customCalories, entries, month, today]);
+  const data = useMemo(
+    () => monthExport({ profile, plan: computePlan(profile, settings.customCalories), entries, month, today, now: new Date(), includeFoods: withFoods }),
+    [profile, settings.customCalories, entries, month, today, withFoods],
+  );
   const json = useMemo(() => JSON.stringify(data, null, 1), [data]);
-  const empty = data.entries.length === 0;
+  const empty = data.summary.daysLogged === 0;
 
   const copy = async () => {
     const copied = await copyText(json);
-    toast(copied ? "Copied. Paste it into your AI chat." : "Could not copy: use Download instead", copied ? undefined : { tone: "error" });
+    toast(copied ? "Report copied. Paste it into your AI chat." : "Could not copy: use Save report instead", copied ? undefined : { tone: "error" });
   };
-  const download = () => {
-    downloadBlob(new Blob([json], { type: "application/json" }), exportFileName(month));
-    toast("File saved");
+  const save = () => {
+    downloadBlob(new Blob([json], { type: "application/json" }), exportFileName(month, withFoods));
+    toast("Report saved");
   };
 
   return (
-    <Card className={styles.card} role="region" aria-label="A month for an AI">
+    <Card className={styles.card} role="region" aria-label="Month report">
       <header className={styles.head}>
         <h3 className={styles.title}>Month</h3>
-        <p className={styles.lead}>Everything you ate, for an AI</p>
+        <p className={styles.lead}>A report of the whole month</p>
       </header>
       <MonthSwitcher month={month} current={current} earliest={earliest} onChange={setMonth} />
-      {empty ? (
-        <p className={styles.hint}>Nothing was logged in this month.</p>
-      ) : (
-        <p className={styles.hint}>
-          {data.summary.daysLogged} {data.summary.daysLogged === 1 ? "day" : "days"} logged, {data.entries.length} {data.entries.length === 1 ? "food" : "foods"}, about {Math.max(1, Math.round(json.length / BYTES_PER_KB))} KB. It has each food with its amount and nutrition, the totals day by day, your daily targets, and your body numbers and goal. Your name is not in it.
-        </p>
-      )}
+      <Segmented label="What to include" value={scope} onChange={setScope} options={SCOPES} />
+      <p className={styles.hint}>
+        {empty
+          ? "Nothing was logged in this month."
+          : withFoods
+            ? `${days(data.summary.daysLogged)} logged, ${data.entries.length} ${data.entries.length === 1 ? "food" : "foods"}, about ${Math.max(1, Math.round(json.length / BYTES_PER_KB))} KB. Every food with its amount and nutrition, day by day, plus your targets and body numbers. Your name is not in it.`
+            : `${days(data.summary.daysLogged)} logged. Day totals, your targets and body numbers. No food names.`}
+      </p>
       <div className={styles.actions}>
-        <Button variant="primary" size="lg" disabled={empty} onClick={() => void copy()}>Copy for AI</Button>
-        <Button variant="secondary" size="lg" disabled={empty} onClick={download}>Download file</Button>
+        <Button variant="primary" size="lg" disabled={empty} onClick={() => void copy()}>Copy report</Button>
+        <Button variant="secondary" size="lg" disabled={empty} onClick={save}>Save report</Button>
       </div>
-      <p className={styles.hint}>Paste it into an AI chat, or attach the file, then ask about your eating, your goal, or what to change.</p>
+      <p className={styles.hint}>Made for AI chats: paste it into ChatGPT, Claude or Gemini, or attach the saved file, then ask about your eating, your goal, or what to change.</p>
     </Card>
   );
 }

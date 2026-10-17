@@ -1,0 +1,10 @@
+.note {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 4px 4px 12px;
+  font-size: calc(13.5px * var(--fs-scale));
+  line-height: 1.4;
+  color: var(--ink-3);
+}

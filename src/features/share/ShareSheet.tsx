@@ -10,12 +10,12 @@ interface Props {
   onClose: () => void;
 }
 
-/** One place to share progress: today as a picture, any month as data for an AI. */
+/** One place to share progress: today as a picture, any month as a report for an AI. Either can leave the foods out. */
 export function ShareSheet({ profile, today, onClose }: Props) {
   return (
-    <Sheet open onClose={onClose} title="Share your progress" subtitle="A picture of today, or a month for an AI" size="full">
+    <Sheet open onClose={onClose} title="Share your progress" subtitle="A picture of today, or a report of the month" size="full">
       <div className={styles.stack}>
-        <ShareDayCard profile={profile} today={today} />
+        <ShareDayCard profile={profile} date={today} />
         <ShareMonthCard profile={profile} today={today} />
       </div>
     </Sheet>

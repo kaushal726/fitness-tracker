@@ -12,7 +12,7 @@
 }
 
 .eyebrow {
-  font-size: 14px;
+  font-size: calc(14px * var(--fs-scale));
   font-weight: 600;
   color: var(--ink-3);
   overflow: hidden;

@@ -10,6 +10,7 @@ import { CalorieHero } from "./CalorieHero.tsx";
 import { DayHeader } from "./DayHeader.tsx";
 import { EditEntrySheet } from "../add/EditEntrySheet.tsx";
 import { IdeasSheet } from "../ideas/IdeasSheet.tsx";
+import { ShareDaySheet } from "../share/ShareDaySheet.tsx";
 import { useDayIdeas } from "../ideas/useDayIdeas.ts";
 import { InsightPill } from "./InsightPill.tsx";
 import { MealList } from "./MealList.tsx";
@@ -31,6 +32,7 @@ export function TodayScreen({ profile, date, today, onSelectDate, onAdd }: Props
   const { entries, settings } = useAppState();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [ideasOpen, setIdeasOpen] = useState(false);
+  const [sharing, setSharing] = useState(false);
 
   const plan = useMemo(() => computePlan(profile, settings.customCalories), [profile, settings.customCalories]);
   const dayEntries = useMemo(() => entriesOn(entries, date), [entries, date]);
@@ -50,7 +52,7 @@ export function TodayScreen({ profile, date, today, onSelectDate, onAdd }: Props
       <WeekStrip selected={date} today={today} logged={logged} onSelect={onSelectDate} />
       <div className={styles.layout}>
         <div className={styles.aside}>
-          <CalorieHero totals={totals} targets={plan.targets} />
+          <CalorieHero totals={totals} targets={plan.targets} onShare={dayEntries.length > 0 ? () => setSharing(true) : undefined} />
           {insight && <InsightPill insight={insight} onOpen={canSuggest ? () => setIdeasOpen(true) : undefined} />}
         </div>
         <div className={styles.meals}>
@@ -58,6 +60,7 @@ export function TodayScreen({ profile, date, today, onSelectDate, onAdd }: Props
         </div>
       </div>
 
+      {sharing && <ShareDaySheet profile={profile} date={date} onClose={() => setSharing(false)} />}
       {editing && <EditEntrySheet entry={editing} onClose={() => setEditingId(null)} />}
       {ideasOpen && (
         <IdeasSheet

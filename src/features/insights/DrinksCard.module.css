@@ -1,6 +1,6 @@
 .empty {
   padding: 8px 0 4px;
-  font-size: 14.5px;
+  font-size: calc(14.5px * var(--fs-scale));
   color: var(--ink-3);
 }
 
@@ -33,18 +33,18 @@
 }
 
 .name {
-  font-size: 15px;
+  font-size: calc(15px * var(--fs-scale));
   font-weight: 700;
 }
 
 .amount {
-  font-size: 15px;
+  font-size: calc(15px * var(--fs-scale));
   font-weight: 800;
   text-align: right;
 }
 
 .amount small {
-  font-size: 12.5px;
+  font-size: max(11px, calc(12.5px * var(--fs-scale)));
   font-weight: 600;
   color: var(--ink-3);
 }

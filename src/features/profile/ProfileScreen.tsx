@@ -1,6 +1,8 @@
 import { useRef, useState } from "react";
 import { APP_NAME } from "../../app/brand";
 import { useInstallPrompt } from "../../app/installPrompt";
+import { accentOf, setAccent, useAccent } from "../../app/accent";
+import { setTextSize, useTextSize, type TextSize } from "../../app/textSize";
 import { setThemeChoice, useThemeChoice, type ThemeChoice } from "../../app/theme";
 import { backupFileName, parseBackup } from "../../data/backup.ts";
 import { exportBackup, resetAll, restoreBackup, useAppState } from "../../data/store.ts";
@@ -12,13 +14,14 @@ import { downloadBlob } from "../../lib/files.ts";
 import { formatNumber } from "../../lib/format.ts";
 import { Avatar } from "../../ui/Avatar";
 import { useConfirm } from "../../ui/Confirm";
-import { IconBook, IconClock, IconDownload, IconFlame, IconInfo, IconPalette, IconPhone, IconShare, IconTarget, IconTrash, IconUpload } from "../../ui/icons";
+import { IconBook, IconClock, IconColor, IconDownload, IconFlame, IconInfo, IconPalette, IconPhone, IconShare, IconText, IconTarget, IconTrash, IconUpload } from "../../ui/icons";
 import { MadeWithLove } from "../../ui/MadeWithLove";
 import { Segmented } from "../../ui/Segmented";
 import { SettingsGroup, SettingsRow } from "../../ui/SettingsList";
 import { useToast } from "../../ui/Toast";
 import { PlanPreview } from "../onboarding/PlanPreview.tsx";
 import { ShareSheet } from "../share/ShareSheet.tsx";
+import { AccentPicker } from "./AccentPicker.tsx";
 import { AboutSheet } from "./AboutSheet.tsx";
 import { CalorieTargetSheet } from "./CalorieTargetSheet.tsx";
 import { DailyThought } from "./DailyThought.tsx";
@@ -28,6 +31,12 @@ import { MyFoodsSheet } from "./MyFoodsSheet.tsx";
 import styles from "./profile.module.css";
 
 type OpenSheet = "profile" | "target" | "meals" | "foods" | "share" | "about" | null;
+
+const TEXT_SIZES: { value: TextSize; label: string }[] = [
+  { value: "small", label: "Small" },
+  { value: "medium", label: "Medium" },
+  { value: "large", label: "Large" },
+];
 
 const THEMES: { value: ThemeChoice; label: string }[] = [
   { value: "system", label: "Auto" },
@@ -39,6 +48,8 @@ export function ProfileScreen({ profile, today }: { profile: Profile; today: str
   const { settings, customFoods } = useAppState();
   const [open, setOpen] = useState<OpenSheet>(null);
   const theme = useThemeChoice();
+  const textSize = useTextSize();
+  const accent = useAccent();
   const install = useInstallPrompt();
   const confirm = useConfirm();
   const toast = useToast();
@@ -91,7 +102,7 @@ export function ProfileScreen({ profile, today }: { profile: Profile; today: str
       </SettingsGroup>
 
       <SettingsGroup label="Share">
-        <SettingsRow icon={<IconShare />} tone="blue" title="Share your progress" subtitle="Today as a picture, a month for an AI" onClick={() => setOpen("share")} />
+        <SettingsRow icon={<IconShare />} tone="blue" title="Share your progress" subtitle="Today as a picture, a month as a report" onClick={() => setOpen("share")} />
       </SettingsGroup>
 
       <SettingsGroup label="Appearance">
@@ -101,6 +112,21 @@ export function ProfileScreen({ profile, today }: { profile: Profile; today: str
             <span className={styles.themeLabel}>Theme</span>
           </div>
           <Segmented label="Theme" value={theme} onChange={setThemeChoice} options={THEMES} />
+        </div>
+        <div className={styles.themeRow}>
+          <div className={styles.themeHead}>
+            <span className={styles.themeTile} aria-hidden><IconColor /></span>
+            <span className={styles.themeLabel}>Color</span>
+            <span className={styles.themeValue}>{accentOf(accent).label}</span>
+          </div>
+          <AccentPicker value={accent} onChange={setAccent} />
+        </div>
+        <div className={styles.themeRow}>
+          <div className={styles.themeHead}>
+            <span className={styles.themeTile} aria-hidden><IconText /></span>
+            <span className={styles.themeLabel}>Text size</span>
+          </div>
+          <Segmented label="Text size" value={textSize} onChange={setTextSize} options={TEXT_SIZES} />
         </div>
       </SettingsGroup>
 

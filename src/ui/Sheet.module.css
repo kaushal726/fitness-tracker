@@ -99,7 +99,7 @@
 
 .subtitle {
   margin-top: 2px;
-  font-size: 13.5px;
+  font-size: calc(13.5px * var(--fs-scale));
   color: var(--ink-3);
 }
 

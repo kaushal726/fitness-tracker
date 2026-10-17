@@ -10,17 +10,26 @@ export interface Who {
   goalLabel: string;
 }
 
+export interface PictureOptions {
+  /** False leaves out the names of the foods: calories, macros and the total of each meal only. */
+  withFoods: boolean;
+  /** The app's accent colour as a hex, for the ring and the name. */
+  primary: string;
+}
+
 const W = 1080;
 const PAD = 56;
 const INNER = W - PAD * 2;
 const CARD_PAD = 40;
 const GAP = 28;
 const FONT = '"Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif';
-const MAX_ITEMS = 5;
+const ITEM_ROW = 48;
 const OVER_SHARE = 1.05;
-const WORKSPACE_HEIGHT = 4000;
+/** The most the picture can need besides one row for every food: the top, the cards and the footer. */
+const BASE_HEIGHT = 1400;
+const MEAL_EXTRA = 90;
 
-const C = { bg: "#f6f5f0", card: "#ffffff", line: "#e7e5dd", ink: "#15201a", ink2: "#4a5a50", ink3: "#78877d", primary: "#1b7a56", over: "#e2692f", track: "#ebe9e1", protein: "#4a6fe3", carbs: "#dc9518", fat: "#d8597a", fiber: "#2f9e6b" };
+const C = { bg: "#f6f5f0", card: "#ffffff", line: "#e7e5dd", ink: "#15201a", ink2: "#4a5a50", ink3: "#78877d", over: "#e2692f", track: "#ebe9e1", protein: "#4a6fe3", carbs: "#dc9518", fat: "#d8597a", fiber: "#2f9e6b" };
 const MACROS = [
   { key: "protein", label: "Protein", color: C.protein },
   { key: "carbs", label: "Carbs", color: C.carbs },
@@ -81,7 +90,7 @@ function bar(ctx: Ctx, x: number, y: number, w: number, share: number, color: st
   }
 }
 
-function hero(ctx: Ctx, report: DayReport, y: number): number {
+function hero(ctx: Ctx, report: DayReport, y: number, withFoods: boolean, primary: string): number {
   const height = 340;
   card(ctx, y, height);
   const { calories } = report.totals;
@@ -96,7 +105,7 @@ function hero(ctx: Ctx, report: DayReport, y: number): number {
   ctx.arc(cx, cy, 118, 0, Math.PI * 2);
   ctx.stroke();
   if (calories > 0) {
-    ctx.strokeStyle = over ? C.over : C.primary;
+    ctx.strokeStyle = over ? C.over : primary;
     ctx.beginPath();
     ctx.arc(cx, cy, 118, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.min(1, calories / goal));
     ctx.stroke();
@@ -108,8 +117,8 @@ function hero(ctx: Ctx, report: DayReport, y: number): number {
   const left = goal - calories;
   const rows: [string, string, string][] = [
     ["Goal", `${formatNumber(goal)} kcal`, C.ink],
-    [left >= 0 ? "Left" : "Over", `${formatNumber(Math.abs(left))} kcal`, left >= 0 ? C.primary : C.over],
-    ["Foods logged", String(report.itemCount), C.ink],
+    [left >= 0 ? "Left" : "Over", `${formatNumber(Math.abs(left))} kcal`, left >= 0 ? primary : C.over],
+    withFoods ? ["Foods logged", String(report.itemCount), C.ink] : ["Meals logged", String(report.meals.length), C.ink],
   ];
   rows.forEach(([label, value, color], i) => {
     const top = y + 72 + i * 82;
@@ -134,9 +143,12 @@ function macros(ctx: Ctx, report: DayReport, y: number): number {
   return y + height + GAP;
 }
 
-function meals(ctx: Ctx, report: DayReport, y: number): number {
-  const rows = report.meals.reduce((sum, m) => sum + 1 + Math.min(m.items.length, MAX_ITEMS) + (m.items.length > MAX_ITEMS ? 1 : 0), 0);
-  const height = CARD_PAD * 2 + Math.max(1, report.meals.length) * 28 + rows * 48;
+/** How many lines of food a meal shows under its name: every food, or none when the foods are left out. */
+const shownItems = (meal: DayReport["meals"][number], withFoods: boolean): number => (withFoods ? meal.items.length : 0);
+
+function meals(ctx: Ctx, report: DayReport, y: number, withFoods: boolean): number {
+  const blocks = report.meals.reduce((sum, m) => sum + 56 + shownItems(m, withFoods) * ITEM_ROW + 28, 0);
+  const height = report.meals.length === 0 ? CARD_PAD * 2 + 40 : CARD_PAD * 2 - 14 + blocks;
   card(ctx, y, height);
   const left = PAD + CARD_PAD;
   const right = W - PAD - CARD_PAD;
@@ -146,17 +158,15 @@ function meals(ctx: Ctx, report: DayReport, y: number): number {
     text(ctx, meal.label, left, top + 22, 800, 32, C.ink);
     text(ctx, `${formatNumber(meal.calories)} kcal`, right, top + 22, 800, 30, C.ink, "right");
     top += 56;
-    for (const item of meal.items.slice(0, MAX_ITEMS)) {
-      const amount = `${formatNumber(item.calories)} kcal`;
-      setFont(ctx, 500, 26);
-      const room = right - left - ctx.measureText(amount).width - 28;
-      text(ctx, fit(ctx, `${item.name}  ·  ${item.portion}`, room), left, top + 14, 500, 26, C.ink2);
-      text(ctx, amount, right, top + 14, 500, 26, C.ink3, "right");
-      top += 48;
-    }
-    if (meal.items.length > MAX_ITEMS) {
-      text(ctx, `+ ${meal.items.length - MAX_ITEMS} more`, left, top + 14, 600, 26, C.ink3);
-      top += 48;
+    if (withFoods) {
+      for (const item of meal.items) {
+        const amount = `${formatNumber(item.calories)} kcal`;
+        setFont(ctx, 500, 26);
+        const room = right - left - ctx.measureText(amount).width - 28;
+        text(ctx, fit(ctx, `${item.name}  \u00b7  ${item.portion}`, room), left, top + 14, 500, 26, C.ink2);
+        text(ctx, amount, right, top + 14, 500, 26, C.ink3, "right");
+        top += ITEM_ROW;
+      }
     }
     top += 28;
   }
@@ -164,28 +174,28 @@ function meals(ctx: Ctx, report: DayReport, y: number): number {
 }
 
 /** The day as a PNG, 1080 pixels wide and as tall as its content. */
-export async function renderDayImage(report: DayReport, who: Who): Promise<Blob> {
+export async function renderDayImage(report: DayReport, who: Who, { withFoods, primary }: PictureOptions): Promise<Blob> {
   await Promise.all([document.fonts.load(`800 40px ${FONT}`), document.fonts.load(`600 28px ${FONT}`)]).catch(() => undefined);
   const work = document.createElement("canvas");
   work.width = W;
-  work.height = WORKSPACE_HEIGHT;
+  work.height = BASE_HEIGHT + report.itemCount * ITEM_ROW + report.meals.length * MEAL_EXTRA;
   const ctx = work.getContext("2d");
   if (!ctx) throw new Error("Pictures are not available here");
 
-  text(ctx, "EatRight", PAD, PAD + 34, 800, 36, C.primary);
+  text(ctx, "EatRight", PAD, PAD + 34, 800, 36, primary);
   text(ctx, formatDate(report.date, { weekday: "long", day: "numeric", month: "short", year: "numeric" }), W - PAD, PAD + 34, 600, 28, C.ink3, "right");
   text(ctx, fit(ctx, who.name ? `${who.name}'s day` : "My day", INNER), PAD, PAD + 120, 800, 64, C.ink);
   text(ctx, `${who.goalLabel}  ·  ${formatNumber(report.targets.calories)} kcal a day`, PAD, PAD + 168, 600, 28, C.ink3);
 
   let y = PAD + 212;
-  y = hero(ctx, report, y);
+  y = hero(ctx, report, y, withFoods, primary);
   y = macros(ctx, report, y);
-  y = meals(ctx, report, y);
+  y = meals(ctx, report, y, withFoods);
   text(ctx, "Made with EatRight", W / 2, y + 24, 600, 24, C.ink3, "center");
 
   const out = document.createElement("canvas");
   out.width = W;
-  out.height = Math.min(WORKSPACE_HEIGHT, y + 24 + PAD);
+  out.height = Math.min(work.height, y + 24 + PAD);
   const outCtx = out.getContext("2d");
   if (!outCtx) throw new Error("Pictures are not available here");
   outCtx.fillStyle = C.bg;

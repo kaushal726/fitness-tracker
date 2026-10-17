@@ -19,6 +19,9 @@ export interface CustomFoodInput {
   carbs: number;
   fat: number;
   fiber: number;
+  /** Optional: grams and milligrams per serving. */
+  sugar?: number;
+  sodium?: number;
 }
 
 export function createCustomFood(input: CustomFoodInput): Food {
@@ -28,8 +31,8 @@ export function createCustomFood(input: CustomFoodInput): Food {
     carbohydrates: input.carbs,
     fat: input.fat,
     fiber: input.fiber,
-    sugar: 0,
-    sodium: 0,
+    sugar: input.sugar ?? 0,
+    sodium: input.sodium ?? 0,
   };
   const food: Food = {
     id: input.id,

@@ -36,7 +36,7 @@
   border-radius: 14px;
   background: var(--surface-2);
   color: var(--ink-2);
-  font-size: 20px;
+  font-size: calc(20px * var(--fs-scale));
 }
 
 .selected .icon {
@@ -53,13 +53,13 @@
 }
 
 .label {
-  font-size: 16.5px;
+  font-size: calc(16.5px * var(--fs-scale));
   font-weight: 750;
   letter-spacing: -0.01em;
 }
 
 .hint {
-  font-size: 13.5px;
+  font-size: calc(13.5px * var(--fs-scale));
   font-weight: 500;
   color: var(--ink-3);
 }
@@ -74,7 +74,7 @@
   border-radius: 50%;
   border: 2px solid var(--line-strong);
   color: var(--on-primary);
-  font-size: 15px;
+  font-size: calc(15px * var(--fs-scale));
   transition: background var(--dur-fast) ease, border-color var(--dur-fast) ease;
 }
 

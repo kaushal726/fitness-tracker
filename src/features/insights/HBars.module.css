@@ -21,7 +21,7 @@
 
 .name {
   min-width: 0;
-  font-size: 14.5px;
+  font-size: calc(14.5px * var(--fs-scale));
   font-weight: 700;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -30,14 +30,14 @@
 
 .hint {
   flex: none;
-  font-size: 12.5px;
+  font-size: max(11px, calc(12.5px * var(--fs-scale)));
   color: var(--ink-3);
 }
 
 .text {
   flex: none;
   margin-left: auto;
-  font-size: 13.5px;
+  font-size: calc(13.5px * var(--fs-scale));
   font-weight: 800;
   font-variant-numeric: tabular-nums;
 }

@@ -125,6 +125,11 @@ export function addCustomFood(food: Food): void {
   persist(() => putRecord(STORE.customFoods, food));
 }
 
+export function updateCustomFood(food: Food): void {
+  set({ customFoods: state.customFoods.map((f) => (f.id === food.id ? food : f)) });
+  persist(() => putRecord(STORE.customFoods, food));
+}
+
 export function deleteCustomFood(id: string): void {
   set({ customFoods: state.customFoods.filter((f) => f.id !== id), favorites: state.favorites.filter((f) => f !== id) });
   persist(async () => {

@@ -46,6 +46,8 @@ const nutrients = (n: { calories: number; protein: number; carbs: number; fat: n
 export interface MonthExport {
   format: typeof EXPORT_FORMAT;
   about: string;
+  /** False when the person chose to share totals only: no food names, no entries. */
+  foodsIncluded: boolean;
   generatedAt: string;
   month: MonthId;
   person: { age: number; gender: string; heightCm: number; weightKg: number; weightEnteredOn: string | null; bmiAtEnteredWeight: number; activity: string };
@@ -75,9 +77,11 @@ interface Input {
   month: MonthId;
   today: string;
   now: Date;
+  /** Defaults to true. False leaves out every food: the entries and the top foods. */
+  includeFoods?: boolean;
 }
 
-export function monthExport({ profile, plan, entries, month, today, now }: Input): MonthExport {
+export function monthExport({ profile, plan, entries, month, today, now, includeFoods = true }: Input): MonthExport {
   const goal = goalDef(profile.goal);
   const insights = monthInsights({ entries, goal: plan.targets.calories, floor: calorieFloor(profile.gender), month, today });
   const progress = bodyProgress({ entries, profile, tdee: plan.tdee, goalCalories: plan.targets.calories, today });
@@ -93,7 +97,8 @@ export function monthExport({ profile, plan, entries, month, today, now }: Input
 
   return {
     format: EXPORT_FORMAT,
-    about: ABOUT,
+    about: includeFoods ? ABOUT : `${ABOUT} Food names were left out at the person's request, so only totals are here.`,
+    foodsIncluded: includeFoods,
     generatedAt: now.toISOString(),
     month,
     person: { age: profile.age, gender: profile.gender, heightCm: profile.heightCm, weightKg: profile.weightKg, weightEnteredOn: profile.weightDate ?? null, bmiAtEnteredWeight: r1(bmi(profile.weightKg, profile.heightCm)), activity: profile.activity },
@@ -109,16 +114,16 @@ export function monthExport({ profile, plan, entries, month, today, now }: Input
       eatenKcal: r0(insights.eaten),
       balanceVsGoalKcal: r0(insights.balance),
       averageCountedDay: insights.average ? nutrients(insights.average) : null,
-      topFoodsByCalories: topFoods(entries, month, TOP_FOODS).map((f) => ({ food: f.name, times: f.times, kcal: r0(f.calories) })),
+      topFoodsByCalories: !includeFoods ? [] : topFoods(entries, month, TOP_FOODS).map((f) => ({ food: f.name, times: f.times, kcal: r0(f.calories) })),
     },
     body: { estimatedChangeKgSinceWeighIn: r1(progress.changeKg), estimatedWeightNowKg: r1(progress.currentKg), estimatedKgPerWeek: progress.kgPerWeek === null ? null : Math.round(progress.kgPerWeek * 100) / 100, targetReachedAround: eta },
     days: insights.days
       .filter((d) => d.phase !== "future")
       .map((d) => ({ date: d.date, logged: d.logged, counted: isCounted(d), ...nutrients(d.totals), meals: Object.fromEntries(MEAL_ORDER.filter((m) => mealKcal.get(d.date)?.[m] !== undefined).map((m) => [m, mealKcal.get(d.date)![m]])) })),
-    entries: own.map((e) => ({ date: e.date, time: clock(e.at), meal: e.meal, food: e.name, portion: e.portionText, grams: r0(e.grams), ...nutrients(e.nutrition) })),
+    entries: !includeFoods ? [] : own.map((e) => ({ date: e.date, time: clock(e.at), meal: e.meal, food: e.name, portion: e.portionText, grams: r0(e.grams), ...nutrients(e.nutrition) })),
   };
 }
 
-/** The file name a month's export is saved under. */
-export const exportFileName = (month: MonthId): string => `eatright-${month}.json`;
+/** The file name a month's report is saved under. */
+export const exportFileName = (month: MonthId, includeFoods = true): string => `eatright-${month}${includeFoods ? "" : "-totals"}.json`;
 
