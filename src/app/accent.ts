@@ -27,7 +27,6 @@ export const ACCENT_KEY = "fitly_accent";
 export const DEFAULT_ACCENT: AccentId = "green";
 
 const listeners = new Set<() => void>();
-let choice: AccentId = read();
 
 const isAccent = (value: string | null): value is AccentId => ACCENTS.some((a) => a.id === value);
 
@@ -39,6 +38,9 @@ function read(): AccentId {
     return DEFAULT_ACCENT;
   }
 }
+
+// After the helpers it reads with: a const used before its line has run throws, and read() would swallow that as "no saved choice".
+let choice: AccentId = read();
 
 function apply(): void {
   const root = document.documentElement;

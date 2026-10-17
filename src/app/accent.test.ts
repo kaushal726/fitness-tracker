@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
-import { describe, expect, it } from "vitest";
-import { ACCENTS, DEFAULT_ACCENT, type AccentId } from "./accent.ts";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { ACCENT_KEY, ACCENTS, DEFAULT_ACCENT, type AccentId } from "./accent.ts";
 
 const tokens = fs.readFileSync(fileURLToPath(new URL("../styles/tokens.css", import.meta.url)), "utf8");
 const MIN_TEXT_CONTRAST = 4.5;
@@ -57,5 +57,65 @@ describe("accent colours", () => {
       expect(contrast(dark["--on-primary"], dark["--primary"]), `${id} dark button`).toBeGreaterThanOrEqual(MIN_TEXT_CONTRAST);
       expect(contrast(dark["--primary-soft"], dark["--primary"]), `${id} dark tint`).toBeGreaterThanOrEqual(MIN_TEXT_CONTRAST);
     }
+  });
+});
+
+/** A phone's storage and <html>, standing in for the real ones (these tests run without a browser). */
+function stubBrowser(saved: Record<string, string>, blocked = false) {
+  const store = new Map(Object.entries(saved));
+  const root = { dataset: {} as Record<string, string | undefined> };
+  const guard = () => {
+    if (blocked) throw new Error("Storage is blocked");
+  };
+  vi.stubGlobal("localStorage", {
+    getItem: (key: string) => (guard(), store.get(key) ?? null),
+    setItem: (key: string, value: string) => (guard(), void store.set(key, value)),
+  });
+  vi.stubGlobal("document", { documentElement: root });
+  return { store, root };
+}
+
+/** The module as it is the moment the app starts: its choice is read from storage when it loads. */
+async function startApp() {
+  vi.resetModules();
+  const accent = await import("./accent.ts");
+  accent.initAccent();
+  return accent;
+}
+
+describe("remembering the colour", () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("puts the saved colour back when the app starts", async () => {
+    const { root } = stubBrowser({ [ACCENT_KEY]: "blue" });
+    await startApp();
+    expect(root.dataset.accent).toBe("blue");
+  });
+
+  it("starts in the default when nothing, or something unknown, was saved", async () => {
+    const cases: Record<string, string>[] = [{}, { [ACCENT_KEY]: "plaid" }];
+    for (const saved of cases) {
+      const { root } = stubBrowser(saved);
+      await startApp();
+      expect(root.dataset.accent).toBeUndefined();
+    }
+  });
+
+  it("saves a choice and applies it; the default takes the attribute away again", async () => {
+    const { store, root } = stubBrowser({});
+    const accent = await startApp();
+    accent.setAccent("teal");
+    expect(store.get(ACCENT_KEY)).toBe("teal");
+    expect(root.dataset.accent).toBe("teal");
+    accent.setAccent(DEFAULT_ACCENT);
+    expect(store.get(ACCENT_KEY)).toBe(DEFAULT_ACCENT);
+    expect(root.dataset.accent).toBeUndefined();
+  });
+
+  it("still works for the visit when storage is blocked", async () => {
+    const { root } = stubBrowser({}, true);
+    const accent = await startApp();
+    expect(() => accent.setAccent("pink")).not.toThrow();
+    expect(root.dataset.accent).toBe("pink");
   });
 });
