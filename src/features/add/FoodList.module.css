@@ -90,17 +90,44 @@ button.main:active {
   white-space: nowrap;
 }
 
-/* A food of your own also has a delete button at the end of its row. */
-.own {
+/* A row with a button of its own at the end: a food of yours (delete), or a usual one (add as it is). */
+.split {
   display: flex;
   align-items: center;
 }
 
-.own .main {
+.split .main {
   flex: 1;
 }
 
 .remove {
   flex: none;
   margin-right: 10px;
+}
+
+/* Solid, where the plain row's circle is only a sign: this one adds, right now, what the row says. */
+.quick {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-right: 10px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-size: calc(20px * var(--fs-scale));
+  transition: background var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out);
+}
+
+.quick:active:not(:disabled) {
+  background: var(--primary-strong);
+  transform: scale(0.94);
+}
+
+.added {
+  background: var(--primary-soft);
+  color: var(--primary);
 }

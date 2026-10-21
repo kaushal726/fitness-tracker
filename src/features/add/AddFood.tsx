@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useBackLayer } from "../../app/useBackLayer.ts";
 import { makeFoodLookup } from "../../data/selectors.ts";
 import { useAppState } from "../../data/store.ts";
-import type { Entry } from "../../data/types.ts";
+import type { Entry, LastUsed } from "../../data/types.ts";
 import { MEAL_LABELS, mealForTime } from "../../domain/meals.ts";
 import { hasFinePointer } from "../../lib/device.ts";
 import { formatNumber } from "../../lib/format.ts";
@@ -51,12 +51,12 @@ export function AddFood({ onClose, date, initialMeal, initialFood }: Props) {
   const [mealChoice, setMealChoice] = useState<MealType | null>(initialMeal);
   /** The amount page, when one is open. It takes the place of the page underneath, which stays exactly as it was. */
   const [selected, setSelected] = useState<Selected | null>(initialFood ? { food: initialFood } : null);
-  const browser = useFoodBrowser(query, category);
+  const meal = mealChoice ?? mealForTime(new Date(), settings.mealStartHours);
+  const browser = useFoodBrowser(query, category, { meal, date });
   const session = useAddSession(date);
   const lookup = useMemo(() => makeFoodLookup(customFoods), [customFoods]);
   const pages = useRef<HTMLDivElement>(null);
   const savedScroll = useRef(0);
-  const meal = mealChoice ?? mealForTime(new Date(), settings.mealStartHours);
 
   const count = session.entries.length;
   const kcal = session.entries.reduce((sum, e) => sum + e.nutrition.calories, 0);
@@ -87,6 +87,8 @@ export function AddFood({ onClose, date, initialMeal, initialFood }: Props) {
     session.add(food, { quantity, unit, meal: mealChoice });
     setSelected(null);
   };
+  /** A suggestion, added as it is: no amount page, and the list stays where it is for the next one. */
+  const quickAdd = (food: Food, { quantity, unit }: LastUsed) => session.add(food, { quantity, unit, meal: mealChoice });
   const save = (entry: Entry, food: Food, { quantity, unit, meal: chosen }: PortionChoice) => {
     session.revise(entry, food, { quantity, unit, meal: chosen ?? entry.meal });
     setSelected(null);
@@ -135,7 +137,7 @@ export function AddFood({ onClose, date, initialMeal, initialFood }: Props) {
       footer={!selected && view !== "custom" && count > 0 ? <CartBar count={count} kcal={kcal} reviewing={view === "review"} onToggleReview={() => setView(view === "review" ? "add" : "review")} onDone={onClose} /> : undefined}
     >
       <div ref={pages} hidden={selected !== null}>
-        {view === "add" && <FoodFinder browser={browser} query={query} category={category} onCategory={setCategory} onSelect={(food) => open({ food })} onCustom={openCustom} />}
+        {view === "add" && <FoodFinder browser={browser} query={query} category={category} addedFoodIds={session.addedFoodIds} onCategory={setCategory} onSelect={(food, portion) => open({ food, portion })} onQuickAdd={quickAdd} onCustom={openCustom} />}
         {view === "review" && <ReviewView session={session} onEdit={edit} />}
         {view === "custom" && <CustomFoodForm key={customEditing?.id ?? "new"} initialName={customName} editing={customEditing ?? undefined} onCreated={created} onUseExisting={created} />}
       </div>

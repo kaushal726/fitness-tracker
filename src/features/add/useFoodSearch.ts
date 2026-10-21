@@ -1,27 +1,27 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { makeFoodLookup, recentFoodIds } from "../../data/selectors.ts";
 import { useAppState } from "../../data/store.ts";
+import { todayISO } from "../../lib/dates.ts";
 import { browseCategory, searchFoodDetailed, type SearchOutcome } from "../../nutrition/index.ts";
-import type { Food } from "../../nutrition/types.ts";
+import type { Food, MealType } from "../../nutrition/types.ts";
+import { buildSuggestions, type SuggestionSection } from "./suggestions.ts";
 import { useFoods, type FoodsStatus } from "./useFoods.ts";
 
 const RECENT_LIMIT = 8;
-const SUGGESTED_LIMIT = 12;
 const SEARCH_LIMIT = 60;
-/** Shown to a new person until their own habits take over. */
-const COMMON_IDS = ["egg_boiled", "banana", "milk_tea", "protein_shake", "roti", "steamed_rice", "chicken_breast"];
 
-export interface Suggestions {
-  title: string;
-  foods: Food[];
+/** Where the foods being added are going: what is suggested is for this meal, on this day. */
+export interface AddTarget {
+  meal: MealType;
+  date: string;
 }
 
 export interface FoodBrowser {
   /** The food data is a lazy download; nothing below is filled until it is "ready". */
   status: FoodsStatus;
   retry: () => void;
-  /** What to show before anything is typed: the person's own foods, or common ones for a newcomer. */
-  suggestions: Suggestions;
+  /** What to show before anything is typed: what the person usually has for the meal, then their other foods; common ones for a newcomer. */
+  suggestions: SuggestionSection[];
   /** Ranked matches for the query, inside the chosen category if there is one. Empty for an empty query. */
   results: Food[];
   /** True when no food has every word typed, so `results` are only the closest. */
@@ -30,7 +30,7 @@ export interface FoodBrowser {
   inCategory: Food[];
 }
 
-export function useFoodBrowser(query: string, category: string | null): FoodBrowser {
+export function useFoodBrowser(query: string, category: string | null, { meal, date }: AddTarget): FoodBrowser {
   const { entries, customFoods, favorites } = useAppState();
   const { status, retry } = useFoods();
   const ready = status === "ready";
@@ -39,13 +39,13 @@ export function useFoodBrowser(query: string, category: string | null): FoodBrow
   const lookup = useMemo(() => makeFoodLookup(customFoods), [customFoods]);
   const recentIds = useMemo(() => recentFoodIds(entries, RECENT_LIMIT), [entries]);
 
-  const suggestions = useMemo<Suggestions>(() => {
-    if (!ready) return { title: "", foods: [] };
-    const toFoods = (ids: string[]) => ids.map(lookup).filter((f): f is Food => f !== undefined);
-    // Resolved before choosing: a food that was deleted still sits in the recents and must not leave an empty list.
-    const own = toFoods([...new Set([...favorites, ...recentIds, ...customFoods.map((f) => f.id)])]);
-    return own.length > 0 ? { title: "Your foods", foods: own.slice(0, SUGGESTED_LIMIT) } : { title: "Popular", foods: toFoods(COMMON_IDS) };
-  }, [ready, lookup, favorites, recentIds, customFoods]);
+  // Worked out from what was logged before the page opened: a food that was just added keeps its place in the list, ticked,
+  // instead of the rows moving under the finger.
+  const [history] = useState(entries);
+  const suggestions = useMemo(
+    () => (ready ? buildSuggestions({ history, meal, date, today: todayISO(), favorites, customFoods, lookup }) : []),
+    [ready, history, meal, date, favorites, customFoods, lookup],
+  );
 
   const found = useMemo<SearchOutcome>(
     () => (ready && searching ? searchFoodDetailed(query, { limit: SEARCH_LIMIT, category: category ?? undefined, recentIds, favoriteIds: favorites, extraFoods: customFoods }) : { foods: [], closest: false }),

@@ -32,7 +32,7 @@ export function FoodRow({ food, onSelect }: Props) {
     if (ok) deleteCustomFood(food.id);
   };
   return (
-    <li className={cx(styles.row, own && styles.own)}>
+    <li className={cx(styles.row, own && styles.split)}>
       <button type="button" className={styles.main} onClick={() => onSelect(food)}>
         <FoodTile category={food.category} />
         <span className={styles.text}>
