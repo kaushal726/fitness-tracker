@@ -1,0 +1,132 @@
+/* Shared motion: short, soft, and only where something just happened. A component opts in with one of the `motion-*` classes
+ * at the foot of this file. They are global, like `num`, so any component can use them. The app-wide reduced-motion rule
+ * in global.css stills all of them.
+ */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* A control that just did its job: it overshoots a little and settles. */
+@keyframes spring-pop {
+  0% {
+    transform: scale(0.6);
+  }
+  55% {
+    transform: scale(1.16);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* The tick of a check mark drawing itself; the path of a check icon is about 24 long. */
+@keyframes draw-check {
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* A ring that opens from a button and fades. */
+@keyframes ripple {
+  from {
+    opacity: 0.55;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2);
+  }
+}
+
+/* What was just added glows in the accent and settles back. */
+@keyframes glow-fade {
+  from {
+    background-color: var(--primary-soft);
+  }
+}
+
+/* A bar or a segment growing from its base. */
+@keyframes grow-y {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* A number that changed gives a small nudge. */
+@keyframes bump {
+  40% {
+    transform: scale(1.12);
+  }
+}
+
+/* An item arriving in a list. Give it `--i`, its place in the list, and the items come one after another. */
+.motion-rise {
+  animation: rise-in var(--dur) var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 36ms);
+}
+
+/* What was just added: it glows in the accent and settles back to its own background. */
+.motion-glow {
+  animation: glow-fade 1100ms var(--ease-out) both;
+}
+
+/* What has just arrived in a list: it rises into place and glows in the accent. */
+.motion-arrive {
+  animation: rise-in var(--dur) var(--ease-out) both, glow-fade 1100ms var(--ease-out) both;
+}
+
+/* A button that just did its job: it springs, and a ring opens from it. */
+.motion-pop {
+  animation: spring-pop 420ms var(--ease-out) both;
+}
+
+.motion-ripple {
+  position: relative;
+}
+
+.motion-ripple::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid var(--primary);
+  pointer-events: none;
+  animation: ripple 650ms var(--ease-out) both;
+}
+
+/* A check mark that draws itself. */
+.motion-check path {
+  stroke-dasharray: 24;
+  animation: draw-check 320ms 90ms var(--ease-out) both;
+}
+
+/* A number that changed. Re-mount it (a new `key`) to play it again. */
+.motion-bump {
+  display: inline-block;
+  animation: bump var(--dur) var(--ease-out);
+}
+
+/* A bar growing up from its base, or along from its left. Give it `--i` (and `--stagger` to change the step between them) and a row of them grows one after another. */
+.motion-grow-y {
+  transform-origin: bottom;
+  animation: grow-y 520ms var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * var(--stagger, 45ms));
+}
+
+.motion-grow-x {
+  transform-origin: left;
+  animation: grow-x 560ms var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * var(--stagger, 45ms));
+}

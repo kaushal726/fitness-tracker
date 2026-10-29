@@ -17,6 +17,7 @@ function log(daysAgo: number, meal: MealType, foodId: string, quantity = 1, unit
 /** The same food on each of these many days back. */
 const onDays = (days: number[], meal: MealType, foodId: string, quantity = 1, unit = "serving"): Entry[] => days.map((d) => log(d, meal, foodId, quantity, unit));
 
+const range = (from: number, to: number): number[] => Array.from({ length: to - from + 1 }, (_, i) => from + i);
 const usual = (entries: Entry[], meal: MealType | null, date = TODAY) => usualFoods({ entries, meal, date, today: TODAY });
 const ids = (entries: Entry[], meal: MealType | null, date = TODAY): string[] => usual(entries, meal, date).map((u) => u.foodId);
 
@@ -99,6 +100,26 @@ describe("usualFoods", () => {
       // One day of each: they differ only in how long ago they were, so the later day decides.
       const entries = [log(3, "lunch", "rice", 1, "katori"), log(2, "lunch", "rice", 2, "katori")];
       expect(usual(entries, "lunch")[0].portion).toEqual({ quantity: 2, unit: "katori" });
+    });
+  });
+
+  describe("why a food is offered", () => {
+    it("names the food in the meal that it keeps company with", () => {
+      const entries = [...onDays([1, 2, 3, 4, 5], "breakfast", "idli"), ...onDays([1, 2, 3, 4, 5], "breakfast", "sambar"), ...onDays([6, 7, 8, 9, 10, 11, 12], "breakfast", "poha"), log(0, "breakfast", "idli")];
+      const sambar = usual(entries, "breakfast").find((u) => u.foodId === "sambar");
+      expect(sambar?.partner).toBe("idli");
+    });
+
+    it("names no partner when company is only a small part of the reason", () => {
+      const entries = [...onDays(range(1, 20), "breakfast", "tea"), ...onDays([1], "breakfast", "idli"), log(0, "breakfast", "idli")];
+      expect(usual(entries, "breakfast").find((u) => u.foodId === "tea")?.partner).toBeUndefined();
+    });
+
+    it("knows a food that belongs to this weekday", () => {
+      const entries = [...onDays([7, 14, 21, 28], "breakfast", "upma"), ...onDays(range(1, 6), "breakfast", "poha")];
+      const found = usual(entries, "breakfast");
+      expect(found.find((u) => u.foodId === "upma")?.weekday).toBe(true);
+      expect(found.find((u) => u.foodId === "poha")?.weekday).toBe(false);
     });
   });
 

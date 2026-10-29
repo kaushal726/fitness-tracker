@@ -1,6 +1,7 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { deleteCustomFood, useAppState } from "../../data/store.ts";
 import { lastPortionSummary } from "../../domain/portions.ts";
+import { useAnimatesIn } from "../../lib/arrival.ts";
 import { cx } from "../../lib/cx.ts";
 import { formatNumber, formatPortionText } from "../../lib/format.ts";
 import { CUSTOM_CATEGORY } from "../../nutrition/custom.ts";
@@ -15,11 +16,14 @@ interface Props {
   food: Food;
   /** Opens the amount page. Nothing is logged until the person has said how much. */
   onSelect: (food: Food) => void;
+  /** Its place in a list whose rows arrive one after another; leave out for a list that should not move. */
+  index?: number;
 }
 
 /** "Roti — 3 × Roti · 318 kcal": enough to pick the right one. The whole row, plus included, asks for the amount. */
-export function FoodRow({ food, onSelect }: Props) {
+export function FoodRow({ food, onSelect, index }: Props) {
   const { favorites, lastUsed } = useAppState();
+  const animates = useAnimatesIn() && index !== undefined;
   const confirm = useConfirm();
   const own = food.category === CUSTOM_CATEGORY;
   const serving = food.servingOptions[0];
@@ -32,7 +36,7 @@ export function FoodRow({ food, onSelect }: Props) {
     if (ok) deleteCustomFood(food.id);
   };
   return (
-    <li className={cx(styles.row, own && styles.split)}>
+    <li className={cx(styles.row, own && styles.split, animates && "motion-rise")} style={animates ? ({ "--i": Math.min(index!, 8) } as CSSProperties) : undefined}>
       <button type="button" className={styles.main} onClick={() => onSelect(food)}>
         <FoodTile category={food.category} />
         <span className={styles.text}>

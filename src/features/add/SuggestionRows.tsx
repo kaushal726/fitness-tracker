@@ -15,8 +15,10 @@ interface Props {
 export function SuggestionRows({ items, addedFoodIds, onSelect, onQuickAdd }: Props) {
   return (
     <FoodList>
-      {items.map(({ food, portion }) =>
-        portion ? <UsualRow key={food.id} food={food} portion={portion} added={addedFoodIds.has(food.id)} onSelect={onSelect} onQuickAdd={onQuickAdd} /> : <FoodRow key={food.id} food={food} onSelect={onSelect} />,
+      {items.map(({ food, portion, reason }, index) =>
+        portion
+          ? <UsualRow key={food.id} food={food} portion={portion} reason={reason} index={index} added={addedFoodIds.has(food.id)} onSelect={onSelect} onQuickAdd={onQuickAdd} />
+          : <FoodRow key={food.id} food={food} index={index} onSelect={onSelect} />,
       )}
     </FoodList>
   );

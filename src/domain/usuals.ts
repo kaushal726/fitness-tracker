@@ -18,6 +18,11 @@ export const SAME_WEEKDAY_FACTOR = 1.3;
 export const WITH_MEAL_FACTOR = 1.5;
 /** A food eaten once, long ago, says nothing about today. */
 export const MIN_SCORE = 0.2;
+/** Company is named as the reason only when it is at least this share of the score. */
+export const PARTNER_SHARE = 0.3;
+/** Days on the same weekday needed, and the share of all its days, to say a food belongs to that weekday. */
+export const WEEKDAY_MIN_DAYS = 2;
+export const WEEKDAY_SHARE = 0.5;
 
 export interface Usual {
   foodId: string;
@@ -26,6 +31,10 @@ export interface Usual {
   /** How many days it was logged on. */
   days: number;
   score: number;
+  /** The food already in this meal that most of its score comes from keeping company with; set only when that is a good part of it. */
+  partner?: string;
+  /** Eaten mostly on this weekday: at least two such days, and half of all its days. */
+  weekday: boolean;
 }
 
 interface Input {
@@ -41,6 +50,8 @@ interface Input {
 interface FoodStats {
   /** Each day the food was logged on, with that day's weight. */
   days: Map<string, number>;
+  /** How many of those days were the same weekday as the day being logged. */
+  weekdayDays: Set<string>;
   portions: Map<string, { portion: LastUsed; weight: number; latest: string }>;
   latest: string;
 }
@@ -60,8 +71,9 @@ function statsByFood(entries: Entry[], today: string, date: string): Map<string,
   const byFood = new Map<string, FoodStats>();
   for (const e of entries) {
     const weight = dayWeight(e.date, today, date);
-    const stats = byFood.get(e.foodId) ?? { days: new Map(), portions: new Map(), latest: e.date };
+    const stats = byFood.get(e.foodId) ?? { days: new Map(), weekdayDays: new Set(), portions: new Map(), latest: e.date };
     stats.days.set(e.date, weight);
+    if (weekdayIndex(e.date) === weekdayIndex(date)) stats.weekdayDays.add(e.date);
     if (e.date > stats.latest) stats.latest = e.date;
     const key = `${e.quantity}|${e.unit}`;
     const seen = stats.portions.get(key) ?? { portion: { quantity: e.quantity, unit: e.unit }, weight: 0, latest: e.date };
@@ -80,20 +92,27 @@ function usualPortion(stats: FoodStats): LastUsed {
   return best.portion;
 }
 
-/** For every other food, how much of its time it shared a meal with the foods already in this one (weighted like any other day). */
-function withMealScores(entries: Entry[], already: Set<string>, today: string, date: string): Map<string, number> {
+/** For every other food, how much of its time it shared a meal with the foods already in this one (weighted like any other day), and with which. */
+function withMealScores(entries: Entry[], already: Set<string>, today: string, date: string): Map<string, { lift: number; partner: string }> {
   const lifts = new Map<string, number>();
-  if (already.size === 0) return lifts;
+  const partners = new Map<string, Map<string, number>>();
+  if (already.size === 0) return new Map();
   const byDay = new Map<string, Set<string>>();
   for (const e of entries) byDay.set(e.date, (byDay.get(e.date) ?? new Set()).add(e.foodId));
   for (const [day, foods] of byDay) {
     if (day === date) continue;
-    const shared = [...already].filter((id) => foods.has(id)).length;
-    if (shared === 0) continue;
-    const lift = dayWeight(day, today, date) * (shared / already.size);
-    for (const id of foods) if (!already.has(id)) lifts.set(id, (lifts.get(id) ?? 0) + lift);
+    const shared = [...already].filter((id) => foods.has(id));
+    if (shared.length === 0) continue;
+    const lift = dayWeight(day, today, date) * (shared.length / already.size);
+    for (const id of foods) {
+      if (already.has(id)) continue;
+      lifts.set(id, (lifts.get(id) ?? 0) + lift);
+      const own = partners.get(id) ?? new Map<string, number>();
+      for (const a of shared) own.set(a, (own.get(a) ?? 0) + lift);
+      partners.set(id, own);
+    }
   }
-  return lifts;
+  return new Map([...lifts].map(([id, lift]) => [id, { lift, partner: [...partners.get(id)!].sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1))[0][0] }]));
 }
 
 /** The foods this person eats for the meal, the likeliest first. */
@@ -105,9 +124,12 @@ export function usualFoods({ entries, meal, date, today }: Input): Usual[] {
   const ranked: { usual: Usual; latest: string }[] = [];
   for (const [foodId, stats] of statsByFood(scoped, today, date)) {
     if (already.has(foodId)) continue;
-    const score = [...stats.days.values()].reduce((sum, w) => sum + w, 0) + WITH_MEAL_FACTOR * (lifts.get(foodId) ?? 0);
+    const company = lifts.get(foodId);
+    const score = [...stats.days.values()].reduce((sum, w) => sum + w, 0) + WITH_MEAL_FACTOR * (company?.lift ?? 0);
     if (score < MIN_SCORE) continue;
-    ranked.push({ usual: { foodId, portion: usualPortion(stats), days: stats.days.size, score }, latest: stats.latest });
+    const partner = company && (WITH_MEAL_FACTOR * company.lift) / score >= PARTNER_SHARE ? company.partner : undefined;
+    const weekday = stats.weekdayDays.size >= WEEKDAY_MIN_DAYS && stats.weekdayDays.size / stats.days.size >= WEEKDAY_SHARE;
+    ranked.push({ usual: { foodId, portion: usualPortion(stats), days: stats.days.size, score, partner, weekday }, latest: stats.latest });
   }
   return ranked
     .sort((a, b) => b.usual.score - a.usual.score || newestFirst(a.latest, b.latest) || (a.usual.foodId < b.usual.foodId ? -1 : 1))

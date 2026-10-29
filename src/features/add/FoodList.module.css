@@ -17,6 +17,11 @@
   border-top: 1px solid var(--line);
 }
 
+/* A food that is already added keeps a faint tint, so a tick is not the only sign. */
+.done {
+  background: color-mix(in srgb, var(--primary-soft) 45%, transparent);
+}
+
 .main {
   display: flex;
   align-items: center;
