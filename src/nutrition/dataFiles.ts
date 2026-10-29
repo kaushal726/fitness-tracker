@@ -231,6 +231,8 @@ import chineseIndoChineseMenu from "../../data/foods/chinese-indo-chinese-menu.j
 import chineseMomosDimsumAsian from "../../data/foods/chinese-momos-dimsum-asian.json" with { type: "json" };
 import indianEverydayExpansion from "../../data/foods/indian-everyday-expansion.json" with { type: "json" };
 import indianSweetsSnacksDosaExtras from "../../data/foods/indian-sweets-snacks-dosa-extras.json" with { type: "json" };
+import northSouthChineseGapFill from "../../data/foods/north-south-chinese-gap-fill.json" with { type: "json" };
+import restaurantCombos from "../../data/foods/restaurant-combos.json" with { type: "json" };
 
 export const DATA_FILES: DataFile[] = [
   { name: "alcoholic-beverages", data: alcoholicBeverages as DataFile["data"] },
@@ -457,7 +459,9 @@ export const DATA_FILES: DataFile[] = [
   { name: "chinese-momos-dimsum-asian", data: chineseMomosDimsumAsian as DataFile["data"] },
   { name: "indian-everyday-expansion", data: indianEverydayExpansion as DataFile["data"] },
   { name: "indian-sweets-snacks-dosa-extras", data: indianSweetsSnacksDosaExtras as DataFile["data"] },
+  { name: "north-south-chinese-gap-fill", data: northSouthChineseGapFill as DataFile["data"] },
   { name: "composite", data: composite as DataFile["data"] },
   { name: "drinks-milk-sugar-variants", data: drinksMilkSugarVariants as DataFile["data"] },
   { name: "combos-everyday", data: combosEveryday as DataFile["data"] },
+  { name: "restaurant-combos", data: restaurantCombos as DataFile["data"] },
 ];

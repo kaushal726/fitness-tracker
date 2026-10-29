@@ -50,27 +50,27 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 <!-- stats:start -->
 
-**Total foods: 8214** (364 composite, 7850 simple)
+**Total foods: 8383** (467 composite, 7916 simple)
 
 **By category**
 
 | Category | Foods |
 |---|---|
-| Main Course | 2278 |
-| Chinese | 1095 |
+| Main Course | 2368 |
+| Chinese | 1141 |
 | Drinks | 788 |
-| Snacks | 620 |
+| Snacks | 621 |
+| Breakfast | 481 |
 | Fast Food | 477 |
-| Breakfast | 462 |
-| Desserts | 408 |
+| Desserts | 411 |
 | Sweets | 359 |
 | Vegetables | 285 |
-| Condiments & Cooking | 272 |
+| Condiments & Cooking | 275 |
 | Packaged Food | 220 |
 | Dairy & Eggs | 206 |
+| Protein Foods | 190 |
 | Staples & Grains | 188 |
-| Protein Foods | 185 |
-| Bakery | 169 |
+| Bakery | 171 |
 | Fruits | 143 |
 | Nuts & Seeds | 45 |
 | Supplements | 14 |
@@ -80,39 +80,39 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 | Cuisine | Foods |
 |---|---|
 | pan_indian | 2662 |
-| indo_chinese | 825 |
+| indo_chinese | 867 |
 | american | 531 |
+| north_indian | 504 |
 | global | 476 |
-| north_indian | 430 |
-| tamil | 294 |
+| tamil | 300 |
 | bengali | 249 |
-| kerala | 212 |
-| punjabi | 209 |
+| kerala | 220 |
+| punjabi | 210 |
 | maharashtrian | 205 |
 | nepali_tibetan | 186 |
+| south_indian | 167 |
 | karnataka | 166 |
-| south_indian | 154 |
-| andhra_telangana | 151 |
+| andhra_telangana | 155 |
 | jharkhandi | 132 |
 | gujarati | 128 |
 | italian | 114 |
 | continental | 98 |
-| chinese | 74 |
+| chinese | 84 |
+| mughlai | 76 |
 | goan | 74 |
 | hyderabadi | 74 |
-| mughlai | 68 |
 | odia | 58 |
-| bihari_jharkhand | 45 |
+| bihari_jharkhand | 46 |
+| rajasthani | 46 |
 | northeastern | 45 |
-| rajasthani | 45 |
 | mangalorean | 43 |
 | japanese_korean | 41 |
 | mexican | 40 |
 | middle_eastern | 38 |
 | assamese | 34 |
 | british | 31 |
+| chettinad | 31 |
 | malvani | 31 |
-| chettinad | 30 |
 | kashmiri | 29 |
 | french | 26 |
 | awadhi | 18 |
@@ -138,33 +138,33 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 | Food type | Foods |
 |---|---|
-| vegetarian | 3475 |
-| vegan | 2615 |
-| non_vegetarian | 1637 |
-| eggetarian | 487 |
+| vegetarian | 3556 |
+| vegan | 2644 |
+| non_vegetarian | 1685 |
+| eggetarian | 498 |
 
 **By confidence**
 
 | Confidence | Foods |
 |---|---|
-| medium | 4985 |
-| low | 2796 |
+| medium | 5088 |
+| low | 2862 |
 | high | 433 |
 
 **By variability**
 
 | Variability | Foods |
 |---|---|
-| medium | 4259 |
-| high | 2347 |
+| medium | 4373 |
+| high | 2402 |
 | low | 1608 |
 
 **By data source**
 
 | Data source | Foods |
 |---|---|
-| recipe_based | 4304 |
-| estimated | 3158 |
+| recipe_based | 4407 |
+| estimated | 3224 |
 | standard_reference | 752 |
 
 **Serving units:** `g` (mass), `kg` (mass), `ml` (volume), `litre` (volume), `tsp` (volume), `tbsp` (volume), `cup` (volume), `glass` (volume), `katori` (volume), `bowl` (volume), `bottle` (volume), `can` (volume), `peg` (volume), `piece` (count), `slice` (count), `plate` (count), `serving` (count), `handful` (count), `scoop` (count), `pinch` (count), `packet` (count), `roti` (count, = piece), `paratha` (count, = piece), `dosa` (count, = piece), `idli` (count, = piece), `vada` (count, = piece), `samosa` (count, = piece), `egg` (count, = piece), `banana` (count, = piece), `apple` (count, = piece), `orange` (count, = piece), `mango` (count, = piece), `breast` (count, = piece)
@@ -262,6 +262,8 @@ main ingredient, the vegetable, the way it is cooked), so a new dish stays in li
 | `chinese-momos-dimsum-asian.json` | momos by filling and style (steamed, fried, pan fried, tandoori, kurkure, jhol, afghani, schezwan, butter, peri peri, cheese, gravy), dumplings, wontons, gyoza, siu mai, bao, spring rolls, and authentic Chinese, Thai, Japanese, Korean, Malaysian, Tibetan and Burmese dishes written by hand |
 | `indian-everyday-expansion.json` | chicken, mutton, fish, prawn, egg, paneer, soya, mushroom and veg in the usual preparations (korma, handi, kadai, bhuna, jalfrezi, tikka masala, saagwala, rogan josh, vindaloo, chettinad, achari, hariyali, kolhapuri, xacuti, roast, sukha...); vegetable versions of paratha, pakora, raita, cutlet, tikki, chilla, sandwich, kofta, thepla, uttapam, wrap, pulao, biryani, masala, fry, sabzi, soup and salad |
 | `indian-sweets-snacks-dosa-extras.json` | dosa, idli, kachori, halwa, kheer, ladoo, barfi, chaat, pickle and chutney versions that were missing |
+| `north-south-chinese-gap-fill.json` | dishes still missing after audits of North Indian, South Indian and Chinese menus (garlic and khasta roti, besan and pizza paratha, aloo-lauki and achari sabzis, chole paneer, nargisi kofta, murgh musallam, tunday kebab, lababdar, nawabi and malai gravies, Andhra and Tamil pachadi, pulusu and podimas, lung fung and hot garlic soup, congee, tea egg, scallion pancake, Chinese sweets), each cloned from a close dish and moved by what differs |
+| `restaurant-combos.json` | plates as they are ordered, built from foods that already exist: fried rice or noodles with manchurian, chilli paneer or chilli chicken; momos with chutney; butter chicken, dal makhani, paneer gravies and kebabs with naan, roti or rice; stuffed parathas with curd; dosa, idli, pongal and upma with sambar and chutney; Kerala parotta, appam, puttu and idiyappam with curry; biryani with raita. Composites, so listed after `composite` |
 
 Variants are marked `nutritionConfidence: "low"` and `dataSourceType: "estimated"`: they are good for tracking, not
 for a label. A food that already is free of the thing asked for (a sandwich recipe with no mayonnaise) is repeated under
@@ -316,7 +318,7 @@ When no food has every word typed ("homemade curd", "1 katori dal"), words that 
 
 ## Loading the food data
 
-The foods are one lazy chunk (`src/nutrition/dataFiles.ts`, about 4.3 MB, 605 KB gzipped), so the app opens without waiting
+The foods are one lazy chunk (`src/nutrition/dataFiles.ts`, about 4.4 MB, 616 KB gzipped), so the app opens without waiting
 for them. The registry is empty until `await loadFoods()`: the app starts it in the background, and the Add page and the Edit sheet
 show a loading skeleton, or a "try again" button if the download failed, until it is ready. Scripts and tests call
 `loadFoods()` first; `getAllFoods`, `getFoodById` and the other getters throw if they are used before it finishes. In the
