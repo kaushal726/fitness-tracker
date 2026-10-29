@@ -16,7 +16,7 @@ export function InsightPill({ insight, onOpen }: Props) {
   const Icon = ICONS[insight.tone];
   const content = (
     <>
-      <Icon aria-hidden />
+      <span className={styles.chip} aria-hidden><Icon /></span>
       <span className={styles.text}>{insight.text}</span>
       {onOpen && <IconChevronRight className={styles.more} aria-hidden />}
     </>

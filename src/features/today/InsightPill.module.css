@@ -3,7 +3,7 @@
   align-items: center;
   gap: 10px;
   margin: 14px 0 0;
-  padding: 12px 16px;
+  padding: 10px 16px 10px 10px;
   border-radius: var(--r-md);
   font-size: calc(14.5px * var(--fs-scale));
   font-weight: 650;
@@ -13,6 +13,17 @@
 .pill svg {
   flex: none;
   font-size: calc(19px * var(--fs-scale));
+}
+
+/* The icon on a soft square of the pill's own colour. */
+.chip {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: color-mix(in srgb, currentColor 14%, transparent);
 }
 
 .info {

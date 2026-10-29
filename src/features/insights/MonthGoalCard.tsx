@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useAnimatesIn } from "../../lib/arrival.ts";
+import { cx } from "../../lib/cx.ts";
 import { balanceNote } from "../../domain/balanceNote.ts";
 import type { MonthInsights } from "../../domain/monthInsights.ts";
 import { formatDate } from "../../lib/dates.ts";
@@ -21,6 +23,7 @@ const phaseChip = (month: MonthInsights, elapsed: number): string =>
 
 /** The month's budget: how much of it is used, how that compares with an even pace, and the balance that carries over. */
 export function MonthGoalCard({ month, direction }: Props) {
+  const animates = useAnimatesIn();
   const [reading, setReading] = useState<BalanceReading | null>(null);
   const note = balanceNote(month, direction);
   const elapsed = month.days.filter((d) => d.phase !== "future").length;
@@ -41,7 +44,7 @@ export function MonthGoalCard({ month, direction }: Props) {
     <InsightCard label="Month goal" tag={phaseChip(month, elapsed)} className={styles.card}>
       {readout}
       <div className={styles.meter} role="progressbar" aria-label="Month budget eaten" aria-valuemin={0} aria-valuemax={Math.round(month.monthGoal)} aria-valuenow={Math.round(month.eaten)}>
-        <span className={styles.fill} style={{ width: `${Math.min(1, used) * 100}%` }} />
+        <span className={cx(styles.fill, animates && "motion-grow-x")} style={{ width: `${Math.min(1, used) * 100}%` }} />
         {month.phase === "current" && <span className={styles.pace} style={{ left: `${pace * 100}%` }} title="Where an even pace would be by now" />}
       </div>
       <InsightNote note={note} />

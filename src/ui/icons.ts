@@ -46,6 +46,7 @@ export {
   LuTrash2 as IconTrash,
   LuTriangleAlert as IconWarning,
   LuUpload as IconUpload,
+  LuUtensils as IconEaten,
   LuUser as IconUser,
   LuUserRound as IconProfile,
   LuX as IconClose,

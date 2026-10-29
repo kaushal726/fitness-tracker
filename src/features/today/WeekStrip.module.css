@@ -30,11 +30,11 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
-  width: 52px;
-  height: 74px;
+  gap: 5px;
+  width: 54px;
+  height: 82px;
   border: 1.5px solid transparent;
-  border-radius: 18px;
+  border-radius: 20px;
   background: var(--surface);
   color: var(--ink);
   scroll-snap-align: center;
@@ -52,20 +52,14 @@
 }
 
 .number {
-  font-size: calc(19px * var(--fs-scale));
+  font-size: calc(15px * var(--fs-scale));
   font-weight: 800;
   letter-spacing: -0.02em;
 }
 
-.dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: transparent;
-}
-
-.logged {
-  background: var(--primary);
+/* The ring of how far the day got: a faint circle on a day with nothing logged. */
+.day .dayRing {
+  --ring-track: var(--track);
 }
 
 .today {
@@ -82,8 +76,10 @@
   color: color-mix(in srgb, var(--on-primary) 78%, transparent);
 }
 
-.selected .logged {
-  background: var(--on-primary);
+.selected .dayRing {
+  --ring-from: var(--on-primary);
+  --ring-to: var(--on-primary);
+  --ring-track: color-mix(in srgb, var(--on-primary) 26%, transparent);
 }
 
 @media (min-width: 900px) {

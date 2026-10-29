@@ -1,5 +1,7 @@
 import type { Profile } from "../../data/types.ts";
 import { progressNote, formatKg } from "../../domain/progressNote.ts";
+import { useAnimatesIn } from "../../lib/arrival.ts";
+import { cx } from "../../lib/cx.ts";
 import { formatDate } from "../../lib/dates.ts";
 import { formatSpan, spanParts } from "../../lib/duration.ts";
 import { formatNumber } from "../../lib/format.ts";
@@ -35,6 +37,7 @@ function EtaSpan({ days }: { days: number }) {
  * estimate from the logged days against what the body uses.
  */
 export function ProgressCard({ profile, view, onUpdateWeight }: Props) {
+  const animates = useAnimatesIn();
   const { progress: p, plan, goal } = view;
   const target = p.target;
   const note = progressNote(p, { direction: goal.direction, tdee: plan.tdee, planCalories: plan.targets.calories });
@@ -54,7 +57,7 @@ export function ProgressCard({ profile, view, onUpdateWeight }: Props) {
       {target && (
         <div className={styles.way}>
           <div className={styles.meter} role="progressbar" aria-label="Way from your first weight to the target" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(target.fraction * 100)}>
-            <span className={styles.fill} style={{ width: `${target.fraction * 100}%` }} />
+            <span className={cx(styles.fill, animates && "motion-grow-x")} style={{ width: `${target.fraction * 100}%` }} />
           </div>
           <div className={styles.ends}>
             <span>{formatKg(p.startKg)}</span>

@@ -1,0 +1,45 @@
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  text-align: center;
+}
+
+.percent {
+  font-size: max(11px, calc(11.5px * var(--fs-scale)));
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink-2);
+}
+
+.check {
+  font-size: calc(19px * var(--fs-scale));
+  stroke-width: 3;
+}
+
+.label {
+  margin-top: 1px;
+  font-size: max(11px, calc(12px * var(--fs-scale)));
+  font-weight: 800;
+}
+
+.protein { color: var(--n-protein); }
+.carbs { color: var(--n-carbs); }
+.fat { color: var(--n-fat); }
+.fiber { color: var(--n-fiber); }
+
+.value {
+  font-size: calc(15.5px * var(--fs-scale));
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.value small {
+  font-size: max(11px, calc(11.5px * var(--fs-scale)));
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--ink-3);
+}

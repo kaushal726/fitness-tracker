@@ -13,7 +13,7 @@ export function Dock({ active, onSelect }: DockProps) {
     <nav className={cx(styles.dock, "mobile-only")} aria-label="Main" style={{ gridTemplateColumns: `repeat(${NAV_ITEMS.length}, minmax(0, 1fr))` }}>
       {NAV_ITEMS.map(({ id, label, icon: Icon }) => (
         <button key={id} type="button" className={styles.tab} aria-current={id === active ? "page" : undefined} onClick={() => onSelect(id)}>
-          <Icon aria-hidden />
+          <span className={styles.icon}><Icon aria-hidden /></span>
           {label}
         </button>
       ))}

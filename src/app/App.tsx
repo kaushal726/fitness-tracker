@@ -8,6 +8,7 @@ import { Onboarding } from "../features/onboarding/Onboarding.tsx";
 import { ProfileScreen } from "../features/profile/ProfileScreen.tsx";
 import { TodayScreen } from "../features/today/TodayScreen.tsx";
 import { endInstantArrival } from "../lib/arrival.ts";
+import { CoveredContext } from "../lib/covered.ts";
 import { loadFoods } from "../nutrition/registry.ts";
 import type { Food, MealType } from "../nutrition/types.ts";
 import { useToast } from "../ui/Toast";
@@ -71,13 +72,15 @@ export function App() {
         <>
           <SideNav active={tab} onSelect={selectTab} onAdd={() => openAdd(null)} />
           <main className={styles.main}>
-            <Screen key={tab}>
-              {tab === "today" && <TodayScreen profile={profile} date={date} today={today} onSelectDate={selectDate} onAdd={openAdd} />}
-              {tab === "history" && <HistoryScreen profile={profile} today={today} onOpenDay={openDay} />}
-              {tab === "insights" && <InsightsScreen profile={profile} today={today} onAdd={openAdd} />}
-              {tab === "body" && <BodyScreen profile={profile} today={today} onUpdateWeight={() => selectTab("profile")} />}
-              {tab === "profile" && <ProfileScreen profile={profile} today={today} />}
-            </Screen>
+            <CoveredContext.Provider value={adding !== null}>
+              <Screen key={tab}>
+                {tab === "today" && <TodayScreen profile={profile} date={date} today={today} onSelectDate={selectDate} onAdd={openAdd} />}
+                {tab === "history" && <HistoryScreen profile={profile} today={today} onOpenDay={openDay} />}
+                {tab === "insights" && <InsightsScreen profile={profile} today={today} onAdd={openAdd} />}
+                {tab === "body" && <BodyScreen profile={profile} today={today} onUpdateWeight={() => selectTab("profile")} />}
+                {tab === "profile" && <ProfileScreen profile={profile} today={today} />}
+              </Screen>
+            </CoveredContext.Provider>
           </main>
           <Dock active={tab} onSelect={selectTab} />
           <AddButton onClick={() => openAdd(null)} />

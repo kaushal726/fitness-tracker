@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+import { useAnimatesIn } from "../../lib/arrival.ts";
 import { addDays, parseISODate } from "../../lib/dates.ts";
 import { cx } from "../../lib/cx.ts";
 import { formatNumber } from "../../lib/format.ts";
@@ -18,6 +20,7 @@ interface Props {
 
 /** Seven small bars against the goal line: a glance at the week, nothing more. */
 export function WeekChart({ today, goal, caloriesByDate }: Props) {
+  const animates = useAnimatesIn();
   const days = Array.from({ length: DAYS }, (_, i) => addDays(today, i - (DAYS - 1)));
   const values = days.map((d) => caloriesByDate.get(d) ?? 0);
   const scaleMax = Math.max(goal * HEADROOM, ...values);
@@ -43,8 +46,8 @@ export function WeekChart({ today, goal, caloriesByDate }: Props) {
             <div key={d} className={styles.column}>
               <div className={styles.barArea}>
                 <div
-                  className={cx(styles.bar, over && styles.over, d === today && styles.today)}
-                  style={{ height: value > 0 ? `${Math.max(6, (value / scaleMax) * 100)}%` : 0 }}
+                  className={cx(styles.bar, over && styles.over, d === today && styles.today, animates && "motion-grow-y")}
+                  style={{ height: value > 0 ? `${Math.max(6, (value / scaleMax) * 100)}%` : 0, "--i": i } as CSSProperties}
                   title={`${formatNumber(value)} kcal`}
                 />
               </div>

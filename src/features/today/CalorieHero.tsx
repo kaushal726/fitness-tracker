@@ -1,13 +1,14 @@
 import type { Targets } from "../../data/types.ts";
+import { useAnimatesIn } from "../../lib/arrival.ts";
 import { cx } from "../../lib/cx.ts";
 import { formatNumber } from "../../lib/format.ts";
 import type { NutritionTotals } from "../../nutrition/types.ts";
 import { IconButton } from "../../ui/Button";
 import { Card } from "../../ui/Card";
 import { CountUp } from "../../ui/CountUp";
-import { ProgressBar, type BarTone } from "../../ui/ProgressBar";
-import { IconShare } from "../../ui/icons";
+import { IconEaten, IconFlame, IconShare, IconTarget } from "../../ui/icons";
 import { Ring } from "../../ui/Ring";
+import { MacroTile } from "./MacroTile.tsx";
 import styles from "./CalorieHero.module.css";
 
 interface Props {
@@ -17,44 +18,51 @@ interface Props {
   onShare?: () => void;
 }
 
-const MACROS: { key: "protein" | "carbs" | "fat" | "fiber"; label: string; tone: BarTone }[] = [
-  { key: "protein", label: "Protein", tone: "protein" },
-  { key: "carbs", label: "Carbs", tone: "carbs" },
-  { key: "fat", label: "Fat", tone: "fat" },
-  { key: "fiber", label: "Fiber", tone: "fiber" },
-];
+const RING_SIZE = 164;
+const RING_STROKE = 16;
 
-/** Calories first, in a ring; then the four macros, quietly, in one row. */
+const MACROS = [
+  { key: "protein", label: "Protein" },
+  { key: "carbs", label: "Carbs" },
+  { key: "fat", label: "Fat" },
+  { key: "fiber", label: "Fiber" },
+] as const;
+
+/** Calories first, in a ring; then the four macros, each in a ring of its own. */
 export function CalorieHero({ totals, targets, onShare }: Props) {
+  const animates = useAnimatesIn();
   const left = targets.calories - totals.calories;
   const over = left < 0;
   return (
-    <Card tone="hero" className={styles.hero}>
+    <Card tone="hero" className={cx(styles.hero, animates && "motion-rise")}>
       {onShare && <IconButton label="Share this day" icon={<IconShare />} variant="outline" className={styles.share} onClick={onShare} />}
       <div className={styles.top}>
-        <Ring value={totals.calories} max={targets.calories} tone={over ? "over" : "primary"} label={`${formatNumber(totals.calories)} of ${formatNumber(targets.calories)} calories eaten`}>
+        <Ring value={totals.calories} max={targets.calories} size={RING_SIZE} stroke={RING_STROKE} glow tone={over ? "over" : "primary"} label={`${formatNumber(totals.calories)} of ${formatNumber(targets.calories)} calories eaten`}>
+          <IconFlame className={cx(styles.flame, over && styles.overValue)} aria-hidden />
           <span className={cx(styles.leftValue, over && styles.overValue, "num")}><CountUp value={Math.abs(left)} /></span>
           <span className={styles.leftLabel}>{over ? "kcal over" : "kcal left"}</span>
         </Ring>
-        <dl className={styles.figures}>
-          <div>
-            <dt>Eaten</dt>
-            <dd className="num"><CountUp value={totals.calories} /></dd>
-          </div>
-          <div>
-            <dt>Goal</dt>
-            <dd className="num">{formatNumber(targets.calories)}</dd>
-          </div>
-        </dl>
+        <ul className={styles.figures}>
+          <li>
+            <span className={styles.chip} aria-hidden><IconEaten /></span>
+            <span className={styles.figure}>
+              <span className={styles.figureLabel}>Eaten</span>
+              <span className={cx(styles.figureValue, "num")}><CountUp value={totals.calories} /></span>
+            </span>
+          </li>
+          <li>
+            <span className={styles.chip} aria-hidden><IconTarget /></span>
+            <span className={styles.figure}>
+              <span className={styles.figureLabel}>Goal</span>
+              <span className={cx(styles.figureValue, "num")}>{formatNumber(targets.calories)}</span>
+            </span>
+          </li>
+        </ul>
       </div>
 
       <ul className={styles.macros}>
-        {MACROS.map(({ key, label, tone }) => (
-          <li key={key}>
-            <span className={cx(styles.macroLabel, styles[tone])}>{label}</span>
-            <span className={cx(styles.macroValue, "num")}>{formatNumber(totals[key])}<small> / {formatNumber(targets[key])} g</small></span>
-            <ProgressBar value={totals[key]} max={targets[key]} tone={tone} size="sm" label={`${label} eaten`} />
-          </li>
+        {MACROS.map(({ key, label }) => (
+          <MacroTile key={key} label={label} tone={key} value={totals[key]} target={targets[key]} />
         ))}
       </ul>
     </Card>

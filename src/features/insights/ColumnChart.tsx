@@ -1,4 +1,5 @@
-import { useId, useState, type KeyboardEvent, type PointerEvent } from "react";
+import { useId, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from "react";
+import { useAnimatesIn } from "../../lib/arrival.ts";
 import { cx } from "../../lib/cx.ts";
 import { slotAt } from "./chartScale.ts";
 import styles from "./ColumnChart.module.css";
@@ -38,7 +39,12 @@ interface Props {
  * Columns against a goal line. Thin, rounded at the top, square on the baseline. The whole chart is the hit target:
  * a finger or a pointer anywhere over it picks the nearest column, and the arrow keys walk along them.
  */
+/** All the columns grow in within about this long, however many there are. */
+const GROW_IN_MS = 700;
+const MAX_STAGGER_MS = 45;
+
 export function ColumnChart({ columns, reference, max, height, title, onActive }: Props) {
+  const animates = useAnimatesIn();
   const tableId = useId();
   const [active, setActive] = useState<number | null>(null);
 
@@ -75,11 +81,11 @@ export function ColumnChart({ columns, reference, max, height, title, onActive }
         <span className={styles.line} style={{ bottom: `${(reference.value / max) * 100}%` }} aria-hidden>
           <span className={styles.lineLabel}>{reference.label}</span>
         </span>
-        <div className={styles.columns} style={{ gridTemplateColumns: `repeat(${columns.length}, minmax(0, 1fr))` }}>
+        <div className={styles.columns} style={{ gridTemplateColumns: `repeat(${columns.length}, minmax(0, 1fr))`, "--stagger": `${Math.min(MAX_STAGGER_MS, GROW_IN_MS / columns.length)}ms` } as CSSProperties}>
           {columns.map((c, i) => (
             <div key={c.key} className={cx(styles.slot, active === i && styles.active)}>
               {c.value !== null && c.value > 0 ? (
-                <span className={cx(styles.bar, styles[c.tone], c.current && styles.current)} style={{ height: `${Math.max(2, Math.min(1, c.value / max) * 100)}%` }} />
+                <span className={cx(styles.bar, styles[c.tone], c.current && styles.current, animates && "motion-grow-y")} style={{ height: `${Math.max(2, Math.min(1, c.value / max) * 100)}%`, "--i": i } as CSSProperties} />
               ) : (
                 <span className={styles.empty} />
               )}

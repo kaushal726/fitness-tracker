@@ -1,3 +1,4 @@
+import { useAnimatesIn } from "../lib/arrival";
 import { cx } from "../lib/cx";
 import styles from "./ProgressBar.module.css";
 
@@ -14,9 +15,10 @@ interface ProgressBarProps {
 /** Fill is capped at 100% visually; the numbers beside it carry any overshoot. */
 export function ProgressBar({ value, max, tone = "primary", label, size = "md" }: ProgressBarProps) {
   const share = max > 0 ? Math.min(1, Math.max(0, value / max)) : 0;
+  const animates = useAnimatesIn();
   return (
     <div className={cx(styles.track, size === "sm" && styles.small)} role="progressbar" aria-label={label} aria-valuemin={0} aria-valuemax={Math.round(max)} aria-valuenow={Math.round(value)}>
-      <div className={cx(styles.fill, styles[tone])} style={{ width: `${share * 100}%` }} />
+      <div className={cx(styles.fill, styles[tone], animates && "motion-grow-x")} style={{ width: `${share * 100}%` }} />
     </div>
   );
 }

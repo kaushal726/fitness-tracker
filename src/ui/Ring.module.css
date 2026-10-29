@@ -1,19 +1,65 @@
+/* A ring takes its colours from three variables, so a tone, or the place a ring is used, only has to set those. */
 .ring {
   position: relative;
   flex: none;
-}
-
-.track {
-  stroke: color-mix(in srgb, var(--primary) 16%, transparent);
-}
-
-.arc {
-  stroke: var(--primary);
-  transition: stroke-dashoffset 0.9s var(--ease-out), stroke var(--dur) ease, opacity var(--dur) ease;
+  --ring-from: color-mix(in srgb, var(--primary) 55%, #ffffff);
+  --ring-to: var(--primary);
+  --ring-track: color-mix(in srgb, var(--primary) 16%, transparent);
 }
 
 .over {
-  stroke: var(--over);
+  --ring-from: color-mix(in srgb, var(--over) 55%, #ffffff);
+  --ring-to: var(--over);
+  --ring-track: color-mix(in srgb, var(--over) 16%, transparent);
+}
+
+.protein {
+  --ring-from: var(--n-protein);
+  --ring-to: var(--n-protein);
+  --ring-track: color-mix(in srgb, var(--n-protein) 18%, transparent);
+}
+
+.carbs {
+  --ring-from: var(--n-carbs);
+  --ring-to: var(--n-carbs);
+  --ring-track: color-mix(in srgb, var(--n-carbs) 18%, transparent);
+}
+
+.fat {
+  --ring-from: var(--n-fat);
+  --ring-to: var(--n-fat);
+  --ring-track: color-mix(in srgb, var(--n-fat) 18%, transparent);
+}
+
+.fiber {
+  --ring-from: var(--n-fiber);
+  --ring-to: var(--n-fiber);
+  --ring-track: color-mix(in srgb, var(--n-fiber) 18%, transparent);
+}
+
+/* The glow reaches past the ring's own box. */
+.ring svg {
+  overflow: visible;
+}
+
+.from {
+  stop-color: var(--ring-from);
+}
+
+.to {
+  stop-color: var(--ring-to);
+}
+
+.track {
+  stroke: var(--ring-track);
+}
+
+.arc {
+  transition: stroke-dashoffset 0.9s var(--ease-out), opacity var(--dur) ease;
+}
+
+.glow .arc {
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--ring-to) 50%, transparent));
 }
 
 .center {

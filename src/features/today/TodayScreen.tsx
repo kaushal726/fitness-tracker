@@ -1,10 +1,12 @@
-import { useMemo, useState } from "react";
-import { entriesOn, groupByMeal, sumEntries } from "../../data/selectors.ts";
+import { useMemo, useState, type CSSProperties } from "react";
+import { caloriesByDate, entriesOn, groupByMeal, sumEntries } from "../../data/selectors.ts";
 import { useAppState } from "../../data/store.ts";
 import type { Entry, Profile } from "../../data/types.ts";
 import { computePlan } from "../../domain/goals.ts";
 import { dayInsight } from "../../domain/insights.ts";
 import { mealForTime } from "../../domain/meals.ts";
+import { useAnimatesIn } from "../../lib/arrival.ts";
+import { useHeldWhileCovered } from "../../lib/covered.ts";
 import type { Food, MealType } from "../../nutrition/types.ts";
 import { CalorieHero } from "./CalorieHero.tsx";
 import { DayHeader } from "./DayHeader.tsx";
@@ -29,7 +31,10 @@ interface Props {
 
 /** Home: how the day is going, and its meals. Adding food is always one tap away in the dock. */
 export function TodayScreen({ profile, date, today, onSelectDate, onAdd }: Props) {
-  const { entries, settings } = useAppState();
+  const { entries: liveEntries, settings } = useAppState();
+  const animates = useAnimatesIn();
+  // Food added on the page over this one shows up, and counts, when that page is gone.
+  const entries = useHeldWhileCovered(liveEntries);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [ideasOpen, setIdeasOpen] = useState(false);
   const [sharing, setSharing] = useState(false);
@@ -38,7 +43,7 @@ export function TodayScreen({ profile, date, today, onSelectDate, onAdd }: Props
   const dayEntries = useMemo(() => entriesOn(entries, date), [entries, date]);
   const totals = useMemo(() => sumEntries(dayEntries), [dayEntries]);
   const byMeal = useMemo(() => groupByMeal(dayEntries), [dayEntries]);
-  const logged = useMemo(() => new Set(entries.map((e) => e.date)), [entries]);
+  const eatenByDay = useMemo(() => caloriesByDate(entries), [entries]);
   const editing: Entry | undefined = dayEntries.find((e) => e.id === editingId);
   const insight = dayInsight(totals, plan.targets, dayEntries.length > 0, new Date().getHours());
   const currentMeal = date === today ? mealForTime(new Date(), settings.mealStartHours) : null;
@@ -49,11 +54,15 @@ export function TodayScreen({ profile, date, today, onSelectDate, onAdd }: Props
   return (
     <>
       <DayHeader date={date} today={today} name={profile.name} onBackToToday={() => onSelectDate(today)} />
-      <WeekStrip selected={date} today={today} logged={logged} onSelect={onSelectDate} />
+      <WeekStrip selected={date} today={today} caloriesByDate={eatenByDay} goal={plan.targets.calories} onSelect={onSelectDate} />
       <div className={styles.layout}>
         <div className={styles.aside}>
           <CalorieHero totals={totals} targets={plan.targets} onShare={dayEntries.length > 0 ? () => setSharing(true) : undefined} />
-          {insight && <InsightPill insight={insight} onOpen={canSuggest ? () => setIdeasOpen(true) : undefined} />}
+          {insight && (
+            <div className={animates ? "motion-rise" : undefined} style={{ "--i": 1 } as CSSProperties}>
+              <InsightPill insight={insight} onOpen={canSuggest ? () => setIdeasOpen(true) : undefined} />
+            </div>
+          )}
         </div>
         <div className={styles.meals}>
           <MealList key={date} byMeal={byMeal} currentMeal={currentMeal} onOpenEntry={(e) => setEditingId(e.id)} onAdd={onAdd} />

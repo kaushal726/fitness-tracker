@@ -15,6 +15,9 @@ interface Props {
   onAdd: (meal: MealType) => void;
 }
 
+/** The day's card and its line come first, so the meals arrive after them. */
+const FIRST_MEAL_INDEX = 2;
+
 const countsOf = (byMeal: Record<MealType, Entry[]>): MealCounts => Object.fromEntries(MEAL_ORDER.map((m) => [m, byMeal[m].length])) as MealCounts;
 
 /**
@@ -36,8 +39,8 @@ export function MealList({ byMeal, currentMeal, onOpenEntry, onAdd }: Props) {
 
   return (
     <>
-      {MEAL_ORDER.map((meal) => (
-        <MealCard key={meal} meal={meal} entries={byMeal[meal]} open={open[meal]} onToggle={toggle} onOpen={onOpenEntry} onAdd={onAdd} />
+      {MEAL_ORDER.map((meal, i) => (
+        <MealCard key={meal} meal={meal} index={FIRST_MEAL_INDEX + i} entries={byMeal[meal]} open={open[meal]} onToggle={toggle} onOpen={onOpenEntry} onAdd={onAdd} />
       ))}
     </>
   );

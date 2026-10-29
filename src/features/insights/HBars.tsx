@@ -1,3 +1,6 @@
+import type { CSSProperties } from "react";
+import { useAnimatesIn } from "../../lib/arrival.ts";
+import { cx } from "../../lib/cx.ts";
 import { formatNumber } from "../../lib/format.ts";
 import styles from "./HBars.module.css";
 
@@ -22,10 +25,11 @@ interface Props {
  * bar under them is as long as the amount. One hue: the order of the rows is not a scale.
  */
 export function HBars({ rows, title }: Props) {
+  const animates = useAnimatesIn();
   const max = Math.max(...rows.map((r) => r.value), 1);
   return (
     <ul className={styles.list} aria-label={title}>
-      {rows.map((r) => (
+      {rows.map((r, i) => (
         <li key={r.key} className={styles.row}>
           <div className={styles.line}>
             <span className={styles.name}>{r.label}</span>
@@ -33,7 +37,7 @@ export function HBars({ rows, title }: Props) {
             <span className={styles.text}>{r.text}</span>
           </div>
           <span className={styles.track} aria-hidden>
-            <span className={styles.bar} style={{ width: `${Math.max(1.5, (r.value / max) * 100)}%` }} />
+            <span className={cx(styles.bar, animates && "motion-grow-x")} style={{ width: `${Math.max(1.5, (r.value / max) * 100)}%`, "--i": i } as CSSProperties} />
           </span>
         </li>
       ))}

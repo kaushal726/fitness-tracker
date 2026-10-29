@@ -40,3 +40,10 @@ export function recentFoodIds(entries: Entry[], limit: number): string[] {
 export function loggedDates(entries: Entry[]): string[] {
   return [...new Set(entries.map((e) => e.date))].sort().reverse();
 }
+
+/** Calories eaten on each date that has anything logged. */
+export function caloriesByDate(entries: Entry[]): Map<string, number> {
+  const byDate = new Map<string, number>();
+  for (const e of entries) byDate.set(e.date, (byDate.get(e.date) ?? 0) + e.nutrition.calories);
+  return byDate;
+}

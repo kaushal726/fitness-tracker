@@ -1,9 +1,12 @@
+/* The day's card: a soft glow of the accent in its top corner, the ring, the two figures beside it, and the macros under. */
 .hero {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 22px;
-  padding: 22px 20px 20px;
+  gap: 20px;
+  padding: 22px 18px 18px;
+  overflow: hidden;
+  background-image: radial-gradient(120% 85% at 0% 0%, color-mix(in srgb, var(--primary) 14%, transparent), transparent 62%);
 }
 
 .share {
@@ -20,18 +23,24 @@
 .top {
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 18px;
+}
+
+.flame {
+  margin-bottom: 3px;
+  color: var(--primary);
+  font-size: calc(20px * var(--fs-scale));
 }
 
 .leftValue {
-  font-size: calc(34px * var(--fs-scale));
+  font-size: calc(37px * var(--fs-scale));
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 1;
 }
 
 .overValue {
-  color: var(--warn);
+  color: var(--over);
 }
 
 .leftLabel {
@@ -48,23 +57,44 @@
   gap: 16px;
   min-width: 0;
   margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.figures div {
+.figures li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.chip {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--primary) 14%, transparent);
+  color: var(--primary);
+  font-size: calc(17px * var(--fs-scale));
+}
+
+.figure {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
+  min-width: 0;
 }
 
-.figures dt {
+.figureLabel {
   font-size: max(11px, calc(12.5px * var(--fs-scale)));
   font-weight: 700;
   color: var(--ink-2);
 }
 
-.figures dd {
-  margin: 0;
-  font-size: calc(25px * var(--fs-scale));
+.figureValue {
+  font-size: calc(24px * var(--fs-scale));
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.1;
@@ -73,50 +103,24 @@
 .macros {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
+  gap: 8px;
   margin: 0;
   padding: 18px 0 0;
   border-top: 1px solid var(--primary-line);
   list-style: none;
 }
 
-.macros li {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  min-width: 0;
-}
-
-.macroLabel {
-  font-size: max(11px, calc(12px * var(--fs-scale)));
-  font-weight: 800;
-}
-
-.protein { color: var(--n-protein); }
-.carbs { color: var(--n-carbs); }
-.fat { color: var(--n-fat); }
-.fiber { color: var(--n-fiber); }
-
-.macroValue {
-  font-size: calc(17px * var(--fs-scale));
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  white-space: nowrap;
-}
-
-.macroValue small {
-  font-size: max(11px, calc(11.5px * var(--fs-scale)));
-  font-weight: 600;
-  letter-spacing: 0;
-  color: var(--ink-3);
-}
-
 @media (max-width: 359px) {
   .top {
-    gap: 14px;
+    gap: 12px;
+  }
+
+  .chip {
+    display: none;
   }
 
   .macros {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 16px;
   }
 }
