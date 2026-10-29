@@ -1,0 +1,102 @@
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding-top: 4px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  background: var(--brand);
+}
+
+.mark {
+  width: 26px;
+  height: auto;
+}
+
+.perks,
+.steps {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.perks li,
+.steps li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: calc(15px * var(--fs-scale));
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.perkIcon {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: calc(18px * var(--fs-scale));
+}
+
+/* The two steps for a browser that has no install button of its own. */
+.steps {
+  gap: 10px;
+  padding: 14px;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+}
+
+.number {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-size: calc(13px * var(--fs-scale));
+  font-weight: 800;
+}
+
+.stepText {
+  flex: 1;
+  min-width: 0;
+  font-weight: 500;
+}
+
+.stepText b {
+  font-weight: 800;
+}
+
+.stepIcon {
+  flex: none;
+  display: flex;
+  font-size: calc(22px * var(--fs-scale));
+  color: var(--primary);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}

@@ -41,7 +41,7 @@ The timeline accepts any number of days, weeks or months. Height can be typed in
 
 **Design system.** Colours, sizes and motion come from `src/styles/tokens.css` (light and dark). The accent colour is a set of `[data-accent]` blocks there, chosen from Color in Profile (`src/app/accent.ts`; `accent.test.ts` keeps them in step and checks the text contrast). Every text size in the stylesheets is its design size times `--fs-scale` (0.9 by default, set from Text size in Profile), so the whole app's text scales from one place; form fields stay at 16px so iOS does not zoom into them. Components live in
 `src/ui/`, icons (Lucide) are named in `src/ui/icons.ts`, and the typeface is Plus Jakarta Sans, bundled with the app so
-it works offline. Motion is skipped for people who ask their device for less of it. Sheets are their own layer: lighter than the page in dark mode (dimming a dark page shows nothing) and a tall sheet leaves a strip of the page above it. Nothing opens on top of a sheet: a flow that needs more than one view (Add food) keeps them inside one surface.
+it works offline. **Install pop-up:** on a phone or tablet, in a browser tab (not the installed app), a sheet asks to install it a moment after the app opens (`src/app/InstallSheet.tsx`). Where the browser has its own prompt (Chrome and Edge on Android) the **Install** button opens it; on iPhone and iPad, and Firefox on Android, which have none, it shows the two steps instead (Share, Add to Home Screen). **Not now** is remembered for three days (`src/app/installNudge.ts`); it never shows on a computer or in the installed app. Motion is skipped for people who ask their device for less of it. Sheets are their own layer: lighter than the page in dark mode (dimming a dark page shows nothing) and a tall sheet leaves a strip of the page above it. Nothing opens on top of a sheet: a flow that needs more than one view (Add food) keeps them inside one surface.
 
 **Code.** `src/nutrition/` is the food engine, `src/domain/` is the maths (goals, timeline, meals, portions), `src/data/`
 is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features/` holds one folder per screen.
@@ -50,120 +50,121 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 <!-- stats:start -->
 
-**Total foods: 6226** (153 composite, 6073 simple)
+**Total foods: 8214** (364 composite, 7850 simple)
 
 **By category**
 
 | Category | Foods |
 |---|---|
-| Main Course | 1914 |
-| Drinks | 574 |
-| Snacks | 480 |
-| Desserts | 393 |
-| Fast Food | 371 |
-| Breakfast | 353 |
-| Sweets | 333 |
-| Vegetables | 265 |
-| Condiments & Cooking | 258 |
-| Packaged Food | 216 |
-| Dairy & Eggs | 199 |
+| Main Course | 2278 |
+| Chinese | 1095 |
+| Drinks | 788 |
+| Snacks | 620 |
+| Fast Food | 477 |
+| Breakfast | 462 |
+| Desserts | 408 |
+| Sweets | 359 |
+| Vegetables | 285 |
+| Condiments & Cooking | 272 |
+| Packaged Food | 220 |
+| Dairy & Eggs | 206 |
 | Staples & Grains | 188 |
-| Protein Foods | 180 |
-| Bakery | 163 |
+| Protein Foods | 185 |
+| Bakery | 169 |
 | Fruits | 143 |
-| Chinese | 141 |
 | Nuts & Seeds | 45 |
-| Supplements | 10 |
+| Supplements | 14 |
 
 **By cuisine**
 
 | Cuisine | Foods |
 |---|---|
-| pan_indian | 2232 |
-| american | 488 |
-| global | 415 |
-| tamil | 288 |
-| bengali | 244 |
-| north_indian | 215 |
-| kerala | 207 |
-| maharashtrian | 178 |
-| karnataka | 163 |
-| andhra_telangana | 148 |
-| punjabi | 146 |
+| pan_indian | 2662 |
+| indo_chinese | 825 |
+| american | 531 |
+| global | 476 |
+| north_indian | 430 |
+| tamil | 294 |
+| bengali | 249 |
+| kerala | 212 |
+| punjabi | 209 |
+| maharashtrian | 205 |
+| nepali_tibetan | 186 |
+| karnataka | 166 |
+| south_indian | 154 |
+| andhra_telangana | 151 |
 | jharkhandi | 132 |
-| gujarati | 112 |
-| south_indian | 102 |
-| italian | 98 |
-| continental | 96 |
-| indo_chinese | 88 |
-| goan | 68 |
-| hyderabadi | 67 |
+| gujarati | 128 |
+| italian | 114 |
+| continental | 98 |
+| chinese | 74 |
+| goan | 74 |
+| hyderabadi | 74 |
+| mughlai | 68 |
 | odia | 58 |
-| mughlai | 48 |
 | bihari_jharkhand | 45 |
 | northeastern | 45 |
+| rajasthani | 45 |
 | mangalorean | 43 |
+| japanese_korean | 41 |
 | mexican | 40 |
-| rajasthani | 37 |
-| middle_eastern | 36 |
+| middle_eastern | 38 |
 | assamese | 34 |
 | british | 31 |
 | malvani | 31 |
-| nepali_tibetan | 31 |
-| japanese_korean | 27 |
-| chettinad | 25 |
-| french | 25 |
-| kashmiri | 25 |
+| chettinad | 30 |
+| kashmiri | 29 |
+| french | 26 |
+| awadhi | 18 |
 | sindhi | 17 |
-| awadhi | 16 |
 | parsi | 16 |
 | uttarakhandi | 13 |
 | himachali | 12 |
 | chhattisgarhi | 11 |
 | spanish | 11 |
-| chinese | 9 |
+| eastern_european | 9 |
 | german | 9 |
-| eastern_european | 8 |
 | greek | 8 |
 | haryanvi | 8 |
 | turkish | 8 |
+| southeast_asian | 7 |
+| thai | 7 |
 | anglo_indian | 4 |
 | latin_american | 4 |
-| thai | 2 |
-| southeast_asian | 1 |
-| vietnamese | 1 |
+| burmese | 2 |
+| vietnamese | 2 |
 
 **By food type**
 
 | Food type | Foods |
 |---|---|
-| vegan | 2384 |
-| vegetarian | 2344 |
-| non_vegetarian | 1150 |
-| eggetarian | 348 |
+| vegetarian | 3475 |
+| vegan | 2615 |
+| non_vegetarian | 1637 |
+| eggetarian | 487 |
 
 **By confidence**
 
 | Confidence | Foods |
 |---|---|
-| medium | 4731 |
-| low | 1062 |
+| medium | 4985 |
+| low | 2796 |
 | high | 433 |
 
 **By variability**
 
 | Variability | Foods |
 |---|---|
-| medium | 3900 |
+| medium | 4259 |
+| high | 2347 |
 | low | 1608 |
-| high | 718 |
 
 **By data source**
 
 | Data source | Foods |
 |---|---|
-| recipe_based | 4092 |
-| estimated | 1382 |
+| recipe_based | 4304 |
+| estimated | 3158 |
 | standard_reference | 752 |
 
 **Serving units:** `g` (mass), `kg` (mass), `ml` (volume), `litre` (volume), `tsp` (volume), `tbsp` (volume), `cup` (volume), `glass` (volume), `katori` (volume), `bowl` (volume), `bottle` (volume), `can` (volume), `peg` (volume), `piece` (count), `slice` (count), `plate` (count), `serving` (count), `handful` (count), `scoop` (count), `pinch` (count), `packet` (count), `roti` (count, = piece), `paratha` (count, = piece), `dosa` (count, = piece), `idli` (count, = piece), `vada` (count, = piece), `samosa` (count, = piece), `egg` (count, = piece), `banana` (count, = piece), `apple` (count, = piece), `orange` (count, = piece), `mango` (count, = piece), `breast` (count, = piece)
@@ -239,6 +240,34 @@ so changing an ingredient updates every composite that uses it (`data/foods/comp
   "ingredients": [{ "foodId": "whey_protein", "quantity": 1, "unit": "scoop" }, { "foodId": "milk", "quantity": 250, "unit": "ml" }] }
 ```
 
+### Variants: "without oil", "without mayonnaise", "less sugar", "with almond milk"
+
+People search for the way they ate a dish, not only its name, so the common dishes also come in the versions they are
+asked for. Each variant is its own food, found by the words it is named with and by what people type for it
+(`paneer tikka without oil`, `oil free roti`, `veg sandwich no mayo`, `tea with almond milk`, `banana shake no sugar`):
+
+| File | What it holds | How the numbers are made |
+|---|---|---|
+| `variants-low-oil.json` | *(No Oil)* for tiffin, dal, rice, sabzi and curries; *(Air Fried)* for fried snacks; *(Light)* for rich gravies | the regular food with a share of its fat taken out (60-75% for oil that is only used to cook, 25-55% for foods that keep fat of their own); the weight stays the same |
+| `variants-without.json` | *(Without Mayonnaise / Cheese / Butter)* for sandwiches, burgers, wraps, salads, pav bhaji; *(No Sugar / Less Sugar)* for shakes, lassi and sweet drinks | the regular food minus that ingredient's weight, never more than 60% of its fat or 45% of its calories; salads get hung curd instead of mayonnaise |
+| `drinks-milk-sugar-variants.json` | tea, coffee, cappuccino, latte, cold coffee, oats and protein shakes with full cream, toned, double toned, skimmed, almond, soy, oat or coconut milk, and with no, less, jaggery, honey or sweetener | composites of the real ingredients |
+| `combos-everyday.json` | tea with rusk or biscuits, roti with dal, rice with fish curry, burger and fries, extra cheese pizza... | composites of foods that already exist |
+
+Whole menus were added the same way, by taking an existing dish that is close and moving it by what differs (the sauce, the
+main ingredient, the vegetable, the way it is cooked), so a new dish stays in line with its neighbours:
+
+| File | What it holds |
+|---|---|
+| `chinese-indo-chinese-menu.json` | Indo-Chinese starters (dry) and gravies for chicken, paneer, mushroom, baby corn, gobi, potato, veg, tofu, prawn, fish, egg, mutton, corn, soya, lotus stem in the usual sauces (manchurian, chilli, schezwan, hot garlic, garlic, black pepper, kung pao, sweet and sour, honey chilli, lemon, oyster, salt and pepper, crispy, dragon, ginger, butter garlic, black bean...); noodles and fried rice by type and protein; soups by type and protein |
+| `chinese-momos-dimsum-asian.json` | momos by filling and style (steamed, fried, pan fried, tandoori, kurkure, jhol, afghani, schezwan, butter, peri peri, cheese, gravy), dumplings, wontons, gyoza, siu mai, bao, spring rolls, and authentic Chinese, Thai, Japanese, Korean, Malaysian, Tibetan and Burmese dishes written by hand |
+| `indian-everyday-expansion.json` | chicken, mutton, fish, prawn, egg, paneer, soya, mushroom and veg in the usual preparations (korma, handi, kadai, bhuna, jalfrezi, tikka masala, saagwala, rogan josh, vindaloo, chettinad, achari, hariyali, kolhapuri, xacuti, roast, sukha...); vegetable versions of paratha, pakora, raita, cutlet, tikki, chilla, sandwich, kofta, thepla, uttapam, wrap, pulao, biryani, masala, fry, sabzi, soup and salad |
+| `indian-sweets-snacks-dosa-extras.json` | dosa, idli, kachori, halwa, kheer, ladoo, barfi, chaat, pickle and chutney versions that were missing |
+
+Variants are marked `nutritionConfidence: "low"` and `dataSourceType: "estimated"`: they are good for tracking, not
+for a label. A food that already is free of the thing asked for (a sandwich recipe with no mayonnaise) is repeated under
+its "without" name with the same numbers, so the search finds it. To add one, copy the pattern: keep the base food's ids,
+never edit the base, and give the variant its own id.
+
 ### Branded foods
 
 All foods here are generic. Brand names appear only as search aliases ("maggi" finds *Instant Noodles*). When a brand's
@@ -278,13 +307,16 @@ ignored) > close spelling. On top of that it adds a bonus for commonly eaten foo
 what comes first when browsing a category), the user's favourites and recents (pass their ids), and prefers shorter names.
 A few alternate spellings count as one word (`daal` = `dal`, `laddu` = `ladoo`, `chat` = `chaat`; see `SPELLING_VARIANTS`
 in `src/nutrition/text.ts`).
+Hindi phrasing works too: the joining words *ka / ki / ke / wala / wali* are ignored (`besan ka chila`, `bhindi ki sabzi`,
+`aloo ke parathe` find Besan Chilla, Bhindi Masala, Aloo Paratha), and `chila`/`cheela`, `parathe`/`parantha`, `pakode`/`pakoda`,
+`gobhi`, `sabji`/`subzi` and `rotiyan` are spellings of `chilla`, `paratha`, `pakora`, `gobi`, `sabzi` and `roti`.
 Options: `limit`, `category`, `cuisine`, `foodType`, `tag`, `recentIds`, `favoriteIds`, `extraFoods` (user-created foods).
 
 When no food has every word typed ("homemade curd", "1 katori dal"), words that only describe or count are left out, then words no food has, and the closest matches are shown with a note and an **Add it yourself** button (`searchFoodDetailed` says when the list is only the closest). A food of your own (**Add custom food**: name, calories and what one serving is, and under More details protein, carbs, fat, fiber, sugar and sodium) shows in the list with its own delete button, and its amount page has an edit button; if the name typed is already a food, the form offers it instead of a copy. **My foods** in Profile adds, changes and deletes them too.
 
 ## Loading the food data
 
-The foods are one lazy chunk (`src/nutrition/dataFiles.ts`, about 2.7 MB, 445 KB gzipped), so the app opens without waiting
+The foods are one lazy chunk (`src/nutrition/dataFiles.ts`, about 4.3 MB, 605 KB gzipped), so the app opens without waiting
 for them. The registry is empty until `await loadFoods()`: the app starts it in the background, and the Add page and the Edit sheet
 show a loading skeleton, or a "try again" button if the download failed, until it is ready. Scripts and tests call
 `loadFoods()` first; `getAllFoods`, `getFoodById` and the other getters throw if they are used before it finishes. In the

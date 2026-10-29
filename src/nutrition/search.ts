@@ -144,6 +144,12 @@ function passesFilters(food: Food, o: SearchOptions): boolean {
 const SKIPPABLE_WORDS: ReadonlySet<string> = new Set(
   ["home", "homemade", "made", "fresh", "plain", "normal", "regular", "extra", "some", "my", "own", "the", "a", "an", "of", "with", "and", "small", "medium", "large", "big", "bowl", "katori", "cup", "glass", "plate", "piece", "slice", "spoon", "tbsp", "tsp", "gram", "g", "ml", "kg", "litre", "liter", "serving", "portion"].map(stem),
 );
+/** Hindi words that only join the others ("besan ka chilla", "bhindi ki sabzi", "aloo ke parathe"): they say nothing about which food. */
+const PARTICLES: ReadonlySet<string> = new Set(["ka", "ki", "ke", "wala", "wali", "wale", "waala", "waali"]);
+const withoutParticles = (words: string[]): string[] => {
+  const content = words.filter((w) => !PARTICLES.has(w));
+  return content.length > 0 ? content : words;
+};
 const QUANTITY = /^\d+(?:[.,]\d+)?$/;
 const isSkippable = (token: string): boolean => SKIPPABLE_WORDS.has(token) || QUANTITY.test(token);
 
@@ -156,7 +162,7 @@ export interface SearchOutcome {
 export function searchFoodDetailed(query: string, options: SearchOptions = {}): SearchOutcome {
   const q = normalizeForSearch(query);
   if (!q) return { foods: [], closest: false };
-  const tokens = q.split(" ").map(stem);
+  const tokens = withoutParticles(q.split(" ")).map(stem);
   const favorites = new Set(options.favoriteIds);
   const recents = new Map((options.recentIds ?? []).map((id, i) => [id, i]));
   const pool = options.extraFoods?.length ? [...registryIndex(), ...options.extraFoods.map(index)] : registryIndex();

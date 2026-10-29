@@ -13,6 +13,7 @@ import type { Food, MealType } from "../nutrition/types.ts";
 import { useToast } from "../ui/Toast";
 import { AddButton } from "./AddButton.tsx";
 import { Dock } from "./Dock.tsx";
+import { InstallSheet } from "./InstallSheet.tsx";
 import type { TabId } from "./navItems.ts";
 import { Screen } from "./Screen.tsx";
 import { SideNav } from "./SideNav.tsx";
@@ -85,6 +86,7 @@ export function App() {
         </>
       )}
       {ready && !profile && <Onboarding />}
+      {ready && <InstallSheet />}
     </>
   );
 }

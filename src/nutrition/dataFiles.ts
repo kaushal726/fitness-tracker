@@ -222,6 +222,15 @@ import wesMhSnacks from "../../data/foods/wes-mh-snacks.json" with { type: "json
 import wesMhSweets from "../../data/foods/wes-mh-sweets.json" with { type: "json" };
 import wesMhVeg from "../../data/foods/wes-mh-veg.json" with { type: "json" };
 import composite from "../../data/foods/composite.json" with { type: "json" };
+import variantsLowOil from "../../data/foods/variants-low-oil.json" with { type: "json" };
+import variantsWithout from "../../data/foods/variants-without.json" with { type: "json" };
+import drinksMilkSugarVariants from "../../data/foods/drinks-milk-sugar-variants.json" with { type: "json" };
+import combosEveryday from "../../data/foods/combos-everyday.json" with { type: "json" };
+import dietTeaEverydayAdditions from "../../data/foods/diet-tea-everyday-additions.json" with { type: "json" };
+import chineseIndoChineseMenu from "../../data/foods/chinese-indo-chinese-menu.json" with { type: "json" };
+import chineseMomosDimsumAsian from "../../data/foods/chinese-momos-dimsum-asian.json" with { type: "json" };
+import indianEverydayExpansion from "../../data/foods/indian-everyday-expansion.json" with { type: "json" };
+import indianSweetsSnacksDosaExtras from "../../data/foods/indian-sweets-snacks-dosa-extras.json" with { type: "json" };
 
 export const DATA_FILES: DataFile[] = [
   { name: "alcoholic-beverages", data: alcoholicBeverages as DataFile["data"] },
@@ -441,5 +450,14 @@ export const DATA_FILES: DataFile[] = [
   { name: "wes-mh-snacks", data: wesMhSnacks as DataFile["data"] },
   { name: "wes-mh-sweets", data: wesMhSweets as DataFile["data"] },
   { name: "wes-mh-veg", data: wesMhVeg as DataFile["data"] },
+  { name: "variants-low-oil", data: variantsLowOil as DataFile["data"] },
+  { name: "variants-without", data: variantsWithout as DataFile["data"] },
+  { name: "diet-tea-everyday-additions", data: dietTeaEverydayAdditions as DataFile["data"] },
+  { name: "chinese-indo-chinese-menu", data: chineseIndoChineseMenu as DataFile["data"] },
+  { name: "chinese-momos-dimsum-asian", data: chineseMomosDimsumAsian as DataFile["data"] },
+  { name: "indian-everyday-expansion", data: indianEverydayExpansion as DataFile["data"] },
+  { name: "indian-sweets-snacks-dosa-extras", data: indianSweetsSnacksDosaExtras as DataFile["data"] },
   { name: "composite", data: composite as DataFile["data"] },
+  { name: "drinks-milk-sugar-variants", data: drinksMilkSugarVariants as DataFile["data"] },
+  { name: "combos-everyday", data: combosEveryday as DataFile["data"] },
 ];

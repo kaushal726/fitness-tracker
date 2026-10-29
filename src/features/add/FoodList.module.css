@@ -69,10 +69,15 @@ button.main:active {
   font-weight: 700;
 }
 
+/* Up to two lines: a version of a food ("Paneer Tikka Sandwich (Without Mayonnaise)") must stay readable to the end. */
 .nameText {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  min-width: 0;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
 }
 
 .star {
