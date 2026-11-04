@@ -50,7 +50,7 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 <!-- stats:start -->
 
-**Total foods: 8589** (582 composite, 8007 simple)
+**Total foods: 8674** (661 composite, 8013 simple)
 
 **By category**
 
@@ -58,14 +58,14 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 |---|---|
 | Main Course | 2434 |
 | Chinese | 1154 |
-| Drinks | 791 |
+| Drinks | 874 |
 | Snacks | 666 |
 | Breakfast | 518 |
 | Fast Food | 501 |
-| Desserts | 411 |
+| Desserts | 412 |
 | Sweets | 360 |
 | Vegetables | 295 |
-| Condiments & Cooking | 281 |
+| Condiments & Cooking | 282 |
 | Packaged Food | 220 |
 | Dairy & Eggs | 206 |
 | Protein Foods | 190 |
@@ -79,11 +79,11 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 | Cuisine | Foods |
 |---|---|
-| pan_indian | 2808 |
+| pan_indian | 2810 |
 | indo_chinese | 875 |
+| global | 572 |
 | american | 531 |
 | north_indian | 521 |
-| global | 489 |
 | tamil | 300 |
 | bengali | 249 |
 | kerala | 222 |
@@ -138,8 +138,8 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 | Food type | Foods |
 |---|---|
-| vegetarian | 3638 |
-| vegan | 2744 |
+| vegetarian | 3696 |
+| vegan | 2771 |
 | non_vegetarian | 1696 |
 | eggetarian | 511 |
 
@@ -147,25 +147,25 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 | Confidence | Foods |
 |---|---|
-| medium | 5203 |
-| low | 2953 |
+| medium | 5283 |
+| low | 2958 |
 | high | 433 |
 
 **By variability**
 
 | Variability | Foods |
 |---|---|
-| medium | 4536 |
+| medium | 4619 |
 | high | 2445 |
-| low | 1608 |
+| low | 1610 |
 
 **By data source**
 
 | Data source | Foods |
 |---|---|
-| recipe_based | 4522 |
-| estimated | 3315 |
-| standard_reference | 752 |
+| recipe_based | 4601 |
+| estimated | 3320 |
+| standard_reference | 753 |
 
 **Serving units:** `g` (mass), `kg` (mass), `ml` (volume), `litre` (volume), `tsp` (volume), `tbsp` (volume), `cup` (volume), `glass` (volume), `katori` (volume), `bowl` (volume), `bottle` (volume), `can` (volume), `peg` (volume), `piece` (count), `slice` (count), `plate` (count), `serving` (count), `handful` (count), `scoop` (count), `pinch` (count), `packet` (count), `roti` (count, = piece), `paratha` (count, = piece), `dosa` (count, = piece), `idli` (count, = piece), `vada` (count, = piece), `samosa` (count, = piece), `egg` (count, = piece), `banana` (count, = piece), `apple` (count, = piece), `orange` (count, = piece), `mango` (count, = piece), `breast` (count, = piece)
 

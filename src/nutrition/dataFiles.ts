@@ -241,6 +241,8 @@ import healthyMoreClonesSnacks from "../../data/foods/healthy-more-clones-snacks
 import healthySaladsSoupsBurgers from "../../data/foods/healthy-salads-soups-burgers.json" with { type: "json" };
 import healthyNoodlesMomosSprouts from "../../data/foods/healthy-noodles-momos-sprouts.json" with { type: "json" };
 import healthyRollsPastaMore from "../../data/foods/healthy-rolls-pasta-more.json" with { type: "json" };
+import coffeeInstantItems from "../../data/foods/coffee-instant-items.json" with { type: "json" };
+import coffeeMore from "../../data/foods/coffee-more.json" with { type: "json" };
 
 export const DATA_FILES: DataFile[] = [
   { name: "alcoholic-beverages", data: alcoholicBeverages as DataFile["data"] },
@@ -472,6 +474,7 @@ export const DATA_FILES: DataFile[] = [
   { name: "healthy-tiffin-snacks-dips", data: healthyTiffinSnacksDips as DataFile["data"] },
   { name: "healthy-more-clones-snacks", data: healthyMoreClonesSnacks as DataFile["data"] },
   { name: "healthy-noodles-momos-sprouts", data: healthyNoodlesMomosSprouts as DataFile["data"] },
+  { name: "coffee-instant-items", data: coffeeInstantItems as DataFile["data"] },
   { name: "composite", data: composite as DataFile["data"] },
   { name: "drinks-milk-sugar-variants", data: drinksMilkSugarVariants as DataFile["data"] },
   { name: "combos-everyday", data: combosEveryday as DataFile["data"] },
@@ -480,4 +483,5 @@ export const DATA_FILES: DataFile[] = [
   { name: "healthy-bowls-plates", data: healthyBowlsPlates as DataFile["data"] },
   { name: "healthy-salads-soups-burgers", data: healthySaladsSoupsBurgers as DataFile["data"] },
   { name: "healthy-rolls-pasta-more", data: healthyRollsPastaMore as DataFile["data"] },
+  { name: "coffee-more", data: coffeeMore as DataFile["data"] },
 ];
