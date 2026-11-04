@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
-import { makeFoodLookup, recentFoodIds } from "../../data/selectors.ts";
+import { entriesOn, makeFoodLookup, recentFoodIds, sumEntries } from "../../data/selectors.ts";
 import { useAppState } from "../../data/store.ts";
+import { computePlan } from "../../domain/goals.ts";
 import { todayISO } from "../../lib/dates.ts";
-import { browseCategory, searchFoodDetailed, type SearchOutcome } from "../../nutrition/index.ts";
+import { browseCategory, getAllFoods, popularFoods, searchFoodDetailed, type SearchOutcome } from "../../nutrition/index.ts";
 import type { Food, MealType } from "../../nutrition/types.ts";
 import { buildSuggestions, type SuggestionSection } from "./suggestions.ts";
 import { useFoods, type FoodsStatus } from "./useFoods.ts";
@@ -31,7 +32,7 @@ export interface FoodBrowser {
 }
 
 export function useFoodBrowser(query: string, category: string | null, { meal, date }: AddTarget): FoodBrowser {
-  const { entries, customFoods, favorites } = useAppState();
+  const { entries, customFoods, favorites, lastUsed, profile, settings } = useAppState();
   const { status, retry } = useFoods();
   const ready = status === "ready";
   const searching = query.trim() !== "";
@@ -42,9 +43,16 @@ export function useFoodBrowser(query: string, category: string | null, { meal, d
   // Worked out from what was logged before the page opened: a food that was just added keeps its place in the list, ticked,
   // instead of the rows moving under the finger.
   const [history] = useState(entries);
+  // What the day still has room for, as it was when the page opened.
+  const remaining = useMemo(() => {
+    if (!profile) return undefined;
+    const { targets } = computePlan(profile, settings.customCalories);
+    const eaten = sumEntries(entriesOn(history, date));
+    return { calories: targets.calories - eaten.calories, protein: targets.protein - eaten.protein };
+  }, [profile, settings.customCalories, history, date]);
   const suggestions = useMemo(
-    () => (ready ? buildSuggestions({ history, meal, date, today: todayISO(), favorites, customFoods, lookup }) : []),
-    [ready, history, meal, date, favorites, customFoods, lookup],
+    () => (ready ? buildSuggestions({ history, meal, date, today: todayISO(), favorites, customFoods, lookup, pool: getAllFoods(), popular: popularFoods(), lastUsed, remaining }) : []),
+    [ready, history, meal, date, favorites, customFoods, lookup, lastUsed, remaining],
   );
 
   const found = useMemo<SearchOutcome>(

@@ -4,6 +4,7 @@ import type { Entry } from "../../data/types.ts";
 import { addDays } from "../../lib/dates.ts";
 import { ZERO_TOTALS } from "../../nutrition/constants.ts";
 import type { Food, MealType } from "../../nutrition/types.ts";
+import { hashOf } from "./discover.ts";
 import { buildSuggestions } from "./suggestions.ts";
 
 const TODAY = "2026-10-21";
@@ -87,11 +88,11 @@ describe("buildSuggestions", () => {
     expect(sections[0].title).toBe("Popular");
   });
 
-  it("shows no more than six usual foods", () => {
+  it("shows no more than eight usual foods", () => {
     const ids = ["roti", "banana", "egg_boiled", "milk_tea", "steamed_rice", "protein_shake", "chicken_breast", "paneer_raw"].filter((id) => lookup(id));
     const history = ids.flatMap((id, i) => onDays(Array.from({ length: 10 - i }, (_, d) => d + 1), "breakfast", id));
-    expect(build(history)[0].items.length).toBeLessThanOrEqual(6);
-    expect(build(history)[0].items.length).toBe(Math.min(6, ids.length));
+    expect(build(history)[0].items.length).toBeLessThanOrEqual(8);
+    expect(build(history)[0].items.length).toBe(Math.min(8, ids.length));
   });
 });
 
@@ -150,3 +151,48 @@ describe("why a food is offered", () => {
   });
 });
 
+
+describe("what is offered beyond what was logged", () => {
+  const some = (ids: string[]): Food[] => ids.map(food);
+  const POPULAR = ["egg_boiled", "roti", "banana", "steamed_rice", "chicken_breast_grilled", "paneer", "milk_tea", "apple"];
+  const wide = (history: Entry[], extra: Partial<Parameters<typeof buildSuggestions>[0]> = {}, meal: MealType = "breakfast") =>
+    buildSuggestions({ history, meal, date: TODAY, today: TODAY, favorites: [], customFoods: [], lookup, pool: some(POPULAR), popular: some(POPULAR), ...extra });
+  const titled = (sections: ReturnType<typeof buildSuggestions>, start: string) => sections.find((s) => s.title.startsWith(start));
+
+  it("offers the common foods for the meal to someone with no history, each a tap from being added", () => {
+    const popular = titled(wide([]), "Popular for breakfast")!;
+    expect(popular).toBeDefined();
+    expect(idsOf(popular)).toContain("egg_boiled");
+    expect(popular.items.every((i) => i.portion !== undefined)).toBe(true);
+  });
+
+  it("offers a food only for the meals it suits", () => {
+    const all = wide([], {}, "snack").flatMap(idsOf);
+    for (const id of all) expect(food(id).mealTypes).toContain("snack");
+  });
+
+  it("puts no food on the page twice, and leaves out what is already in the meal", () => {
+    const sections = wide([...onDays([1, 2, 3], "breakfast", "banana"), log(0, "breakfast", "egg_boiled")]);
+    const ids = sections.flatMap(idsOf);
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(ids).not.toContain("egg_boiled");
+  });
+
+  it("does not offer meat to someone who has logged enough without any", () => {
+    const veg = [...onDays([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "lunch", "steamed_rice")];
+    expect(wide(veg, {}, "lunch").flatMap(idsOf)).not.toContain("chicken_breast_grilled");
+    expect(wide([], {}, "lunch").flatMap(idsOf)).toContain("chicken_breast_grilled");
+  });
+
+  it("has a protein section only when the day is short of protein, and only for foods with protein in them", () => {
+    expect(titled(wide([], { remaining: { calories: 900, protein: 5 } }), "High protein")).toBeUndefined();
+    const section = titled(wide([], { remaining: { calories: 900, protein: 60 } }, "lunch"), "High protein")!;
+    expect(section).toBeDefined();
+    for (const { food: f } of section.items) expect(f.nutritionPerServing.protein).toBeGreaterThanOrEqual(12);
+  });
+
+  it("changes from day to day and not within a day", () => {
+    expect(hashOf("2026-11-04|roti")).toBe(hashOf("2026-11-04|roti"));
+    expect(hashOf("2026-11-04|roti")).not.toBe(hashOf("2026-11-05|roti"));
+  });
+});

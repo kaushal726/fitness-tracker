@@ -12,9 +12,16 @@ import { defaultPortion, lastPortionSummary } from "../../domain/portions.ts";
 import { DEFAULT_REPEAT_CHANCE, repeatChance } from "../../domain/repeatChance.ts";
 import { foodsInMeal, usualFoods, type Usual } from "../../domain/usuals.ts";
 import type { Food, MealType } from "../../nutrition/types.ts";
+import { differentFor, healthyFor, leftOut, popularFor, proteinFor, type DiscoverInput, type Pick } from "./discover.ts";
 
-const LIKELY_SHOWN = 6;
-const OTHERS_SHOWN = 8;
+const LIKELY_SHOWN = 8;
+const OTHERS_SHOWN = 12;
+const POPULAR_SHOWN = 12;
+const HEALTHY_SHOWN = 10;
+const PROTEIN_SHOWN = 6;
+const DIFFERENT_SHOWN = 8;
+/** The commonest foods are in "Popular" already: "something different" is drawn from beyond them. */
+const DIFFERENT_AFTER = 40;
 /** Shown to a new person until their own habits take over. */
 const COMMON_IDS = ["egg_boiled", "banana", "milk_tea", "protein_shake", "roti", "steamed_rice", "chicken_breast"];
 
@@ -47,6 +54,13 @@ interface Input {
   favorites: string[];
   customFoods: Food[];
   lookup: (id: string) => Food | undefined;
+  /** Every food there is, and the commonly eaten ones in order: what fills the page beyond what this person has logged. */
+  pool?: readonly Food[];
+  popular?: readonly Food[];
+  /** How each food was last had, for the amount one tap adds. */
+  lastUsed?: Record<string, LastUsed>;
+  /** What the day still has room for. */
+  remaining?: { calories: number; protein: number };
 }
 
 const plain = (food: Food): Suggestion => ({ food });
@@ -82,7 +96,7 @@ function reasonFor({ carry, usual }: Merged, date: string, lookup: (id: string) 
   return usual?.weekday ? { kind: "weekday", date } : undefined;
 }
 
-export function buildSuggestions({ history, meal, date, today, favorites, customFoods, lookup }: Input): SuggestionSection[] {
+export function buildSuggestions({ history, meal, date, today, favorites, customFoods, lookup, pool = [], popular = [], lastUsed = {}, remaining }: Input): SuggestionSection[] {
   const toFoods = (ids: string[]): Food[] => ids.map(lookup).filter((f): f is Food => f !== undefined);
   const priorOf = (id: string): number => {
     const food = lookup(id);
@@ -108,9 +122,26 @@ export function buildSuggestions({ history, meal, date, today, favorites, custom
     .slice(0, OTHERS_SHOWN)
     .map(plain);
 
+  // Beyond their own foods: the whole food list, by rules on each food, nothing twice on the page.
+  const skip = new Set([...shown, ...others.map((s) => s.food.id), ...inMeal]);
+  const discover: DiscoverInput = { pool, popular, meal, seed: date, skip, leftOut: leftOut(history, lookup), lastUsed, remaining };
+  const take = (picks: Pick[]): Suggestion[] => {
+    for (const p of picks) skip.add(p.food.id);
+    return picks;
+  };
+  const label = MEAL_LABELS[meal].toLowerCase();
+  const protein = take(proteinFor(discover, PROTEIN_SHOWN));
+  const common = take(popularFor(discover, POPULAR_SHOWN));
+  const healthy = take(healthyFor(discover, HEALTHY_SHOWN));
+  const different = take(differentFor(discover, DIFFERENT_SHOWN, DIFFERENT_AFTER));
+
   const sections = [
-    { title: `Likely for ${MEAL_LABELS[meal].toLowerCase()}`, items: likely },
+    { title: `Likely for ${label}`, items: likely },
+    { title: `High protein for ${label}`, items: protein },
     { title: likely.length > 0 ? "More of your foods" : "Your foods", items: others },
+    { title: `Popular for ${label}`, items: common },
+    { title: `Healthy picks for ${label}`, items: healthy },
+    { title: `Something different for ${label}`, items: different },
   ].filter((section) => section.items.length > 0);
   return sections.length > 0 ? sections : [{ title: "Popular", items: toFoods(COMMON_IDS).map(plain) }];
 }
