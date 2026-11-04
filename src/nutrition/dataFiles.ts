@@ -233,6 +233,14 @@ import indianEverydayExpansion from "../../data/foods/indian-everyday-expansion.
 import indianSweetsSnacksDosaExtras from "../../data/foods/indian-sweets-snacks-dosa-extras.json" with { type: "json" };
 import northSouthChineseGapFill from "../../data/foods/north-south-chinese-gap-fill.json" with { type: "json" };
 import restaurantCombos from "../../data/foods/restaurant-combos.json" with { type: "json" };
+import healthyRotisFlatbreads from "../../data/foods/healthy-rotis-flatbreads.json" with { type: "json" };
+import healthyTiffinSnacksDips from "../../data/foods/healthy-tiffin-snacks-dips.json" with { type: "json" };
+import healthySandwichesWraps from "../../data/foods/healthy-sandwiches-wraps.json" with { type: "json" };
+import healthyBowlsPlates from "../../data/foods/healthy-bowls-plates.json" with { type: "json" };
+import healthyMoreClonesSnacks from "../../data/foods/healthy-more-clones-snacks.json" with { type: "json" };
+import healthySaladsSoupsBurgers from "../../data/foods/healthy-salads-soups-burgers.json" with { type: "json" };
+import healthyNoodlesMomosSprouts from "../../data/foods/healthy-noodles-momos-sprouts.json" with { type: "json" };
+import healthyRollsPastaMore from "../../data/foods/healthy-rolls-pasta-more.json" with { type: "json" };
 
 export const DATA_FILES: DataFile[] = [
   { name: "alcoholic-beverages", data: alcoholicBeverages as DataFile["data"] },
@@ -460,8 +468,16 @@ export const DATA_FILES: DataFile[] = [
   { name: "indian-everyday-expansion", data: indianEverydayExpansion as DataFile["data"] },
   { name: "indian-sweets-snacks-dosa-extras", data: indianSweetsSnacksDosaExtras as DataFile["data"] },
   { name: "north-south-chinese-gap-fill", data: northSouthChineseGapFill as DataFile["data"] },
+  { name: "healthy-rotis-flatbreads", data: healthyRotisFlatbreads as DataFile["data"] },
+  { name: "healthy-tiffin-snacks-dips", data: healthyTiffinSnacksDips as DataFile["data"] },
+  { name: "healthy-more-clones-snacks", data: healthyMoreClonesSnacks as DataFile["data"] },
+  { name: "healthy-noodles-momos-sprouts", data: healthyNoodlesMomosSprouts as DataFile["data"] },
   { name: "composite", data: composite as DataFile["data"] },
   { name: "drinks-milk-sugar-variants", data: drinksMilkSugarVariants as DataFile["data"] },
   { name: "combos-everyday", data: combosEveryday as DataFile["data"] },
   { name: "restaurant-combos", data: restaurantCombos as DataFile["data"] },
+  { name: "healthy-sandwiches-wraps", data: healthySandwichesWraps as DataFile["data"] },
+  { name: "healthy-bowls-plates", data: healthyBowlsPlates as DataFile["data"] },
+  { name: "healthy-salads-soups-burgers", data: healthySaladsSoupsBurgers as DataFile["data"] },
+  { name: "healthy-rolls-pasta-more", data: healthyRollsPastaMore as DataFile["data"] },
 ];

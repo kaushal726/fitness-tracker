@@ -50,27 +50,27 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 <!-- stats:start -->
 
-**Total foods: 8383** (467 composite, 7916 simple)
+**Total foods: 8589** (582 composite, 8007 simple)
 
 **By category**
 
 | Category | Foods |
 |---|---|
-| Main Course | 2368 |
-| Chinese | 1141 |
-| Drinks | 788 |
-| Snacks | 621 |
-| Breakfast | 481 |
-| Fast Food | 477 |
+| Main Course | 2434 |
+| Chinese | 1154 |
+| Drinks | 791 |
+| Snacks | 666 |
+| Breakfast | 518 |
+| Fast Food | 501 |
 | Desserts | 411 |
-| Sweets | 359 |
-| Vegetables | 285 |
-| Condiments & Cooking | 275 |
+| Sweets | 360 |
+| Vegetables | 295 |
+| Condiments & Cooking | 281 |
 | Packaged Food | 220 |
 | Dairy & Eggs | 206 |
 | Protein Foods | 190 |
 | Staples & Grains | 188 |
-| Bakery | 171 |
+| Bakery | 172 |
 | Fruits | 143 |
 | Nuts & Seeds | 45 |
 | Supplements | 14 |
@@ -79,23 +79,23 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 | Cuisine | Foods |
 |---|---|
-| pan_indian | 2662 |
-| indo_chinese | 867 |
+| pan_indian | 2808 |
+| indo_chinese | 875 |
 | american | 531 |
-| north_indian | 504 |
-| global | 476 |
+| north_indian | 521 |
+| global | 489 |
 | tamil | 300 |
 | bengali | 249 |
-| kerala | 220 |
+| kerala | 222 |
 | punjabi | 210 |
-| maharashtrian | 205 |
+| maharashtrian | 208 |
 | nepali_tibetan | 186 |
-| south_indian | 167 |
+| south_indian | 179 |
 | karnataka | 166 |
 | andhra_telangana | 155 |
 | jharkhandi | 132 |
 | gujarati | 128 |
-| italian | 114 |
+| italian | 116 |
 | continental | 98 |
 | chinese | 84 |
 | mughlai | 76 |
@@ -106,9 +106,9 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 | rajasthani | 46 |
 | northeastern | 45 |
 | mangalorean | 43 |
-| japanese_korean | 41 |
+| japanese_korean | 42 |
 | mexican | 40 |
-| middle_eastern | 38 |
+| middle_eastern | 40 |
 | assamese | 34 |
 | british | 31 |
 | chettinad | 31 |
@@ -138,33 +138,33 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 | Food type | Foods |
 |---|---|
-| vegetarian | 3556 |
-| vegan | 2644 |
-| non_vegetarian | 1685 |
-| eggetarian | 498 |
+| vegetarian | 3638 |
+| vegan | 2744 |
+| non_vegetarian | 1696 |
+| eggetarian | 511 |
 
 **By confidence**
 
 | Confidence | Foods |
 |---|---|
-| medium | 5088 |
-| low | 2862 |
+| medium | 5203 |
+| low | 2953 |
 | high | 433 |
 
 **By variability**
 
 | Variability | Foods |
 |---|---|
-| medium | 4373 |
-| high | 2402 |
+| medium | 4536 |
+| high | 2445 |
 | low | 1608 |
 
 **By data source**
 
 | Data source | Foods |
 |---|---|
-| recipe_based | 4407 |
-| estimated | 3224 |
+| recipe_based | 4522 |
+| estimated | 3315 |
 | standard_reference | 752 |
 
 **Serving units:** `g` (mass), `kg` (mass), `ml` (volume), `litre` (volume), `tsp` (volume), `tbsp` (volume), `cup` (volume), `glass` (volume), `katori` (volume), `bowl` (volume), `bottle` (volume), `can` (volume), `peg` (volume), `piece` (count), `slice` (count), `plate` (count), `serving` (count), `handful` (count), `scoop` (count), `pinch` (count), `packet` (count), `roti` (count, = piece), `paratha` (count, = piece), `dosa` (count, = piece), `idli` (count, = piece), `vada` (count, = piece), `samosa` (count, = piece), `egg` (count, = piece), `banana` (count, = piece), `apple` (count, = piece), `orange` (count, = piece), `mango` (count, = piece), `breast` (count, = piece)
@@ -264,11 +264,27 @@ main ingredient, the vegetable, the way it is cooked), so a new dish stays in li
 | `indian-sweets-snacks-dosa-extras.json` | dosa, idli, kachori, halwa, kheer, ladoo, barfi, chaat, pickle and chutney versions that were missing |
 | `north-south-chinese-gap-fill.json` | dishes still missing after audits of North Indian, South Indian and Chinese menus (garlic and khasta roti, besan and pizza paratha, aloo-lauki and achari sabzis, chole paneer, nargisi kofta, murgh musallam, tunday kebab, lababdar, nawabi and malai gravies, Andhra and Tamil pachadi, pulusu and podimas, lung fung and hot garlic soup, congee, tea egg, scallion pancake, Chinese sweets), each cloned from a close dish and moved by what differs |
 | `restaurant-combos.json` | plates as they are ordered, built from foods that already exist: fried rice or noodles with manchurian, chilli paneer or chilli chicken; momos with chutney; butter chicken, dal makhani, paneer gravies and kebabs with naan, roti or rice; stuffed parathas with curd; dosa, idli, pongal and upma with sambar and chutney; Kerala parotta, appam, puttu and idiyappam with curry; biryani with raita. Composites, so listed after `composite` |
+| `healthy-rotis-flatbreads.json` | whole wheat roti without oil; foxtail, little, kodo and barnyard millet and barley (jau) rotis; multi-millet, jowar-bajra, wheat-ragi, wheat-jowar, wheat-bajra, wheat-oats and wheat-flaxseed rotis; high fibre, low GI and high protein rotis; rotis with a vegetable in the dough (palak, methi, lauki, carrot, beetroot, cabbage, pumpkin, mooli, onion, spring onion, sweet potato, mixed); a mini phulka. Worked out from the flours (78% of a roti is flour, the rest is the water in the dough) and the vegetable |
+| `healthy-sandwiches-wraps.json` | the veg sandwich on brown bread with a little cheese, capsicum, onion, carrot, cucumber and tomato ketchup, barbecue and chilli sauce (about 220 kcal, 4 g fibre), and its versions: no cheese, multigrain, whole wheat or oats bread, extra veggies, ketchup, mint chutney or hung curd instead of the sauces; cucumber-tomato, beetroot-carrot, corn, mushroom, spinach and open sandwiches; paneer, sprouts, egg white, boiled egg, chicken, tofu, chickpea, hummus and peanut butter banana; roti wraps and rolls; lettuce wraps. Composites, so listed after `composite` |
+| `healthy-bowls-plates.json` | brown rice, quinoa and foxtail millet bowls with dal, paneer, chicken, fish, tofu, rajma, chana, egg white, soya or sprouts; oats, yogurt and papaya breakfast bowls; moong, oats and besan chilla, ragi dosa and oats idli plates; light dinners; whole wheat and multi-millet roti thalis with low oil. Composites |
+| `healthy-salads-soups-burgers.json` | egg white, sprouts and corn, quinoa avocado, kala chana, lobia, hummus and low fat paneer salads; cauliflower rice bowls; sprouts and mixed dal soups; curd oats, chia pudding, overnight oats with chia, protein oatmeal; papaya smoothie; makhana bhel; whole wheat burgers; jowar, bajra and ragi roti thalis. Composites |
+| `healthy-rolls-pasta-more.json` | tuna sandwich, boiled eggs and banana, Greek yogurt parfait, whole wheat pasta and pasta salad, zucchini noodles, egg, paneer bhurji and jam roti rolls, roti pizza, leftover-sabzi roll. Composites |
+| `healthy-tiffin-snacks-dips.json` | quinoa and multigrain dosa, ragi and oats appam, quinoa and vegetable idli, millet uttapam, ragi, jowar and millet upma, vegetable poha with less oil, oats and multigrain chilla, oats pancakes, veg oats, quinoa porridge, cheese makhana, seeds mix, energy balls, baked beetroot and sweet potato chips, mint yogurt dip, light mayonnaise, sugar free kheer |
+| `healthy-more-clones-snacks.json` | baked sprouts, quinoa, ragi, chana and paneer tikki, baked falafel, whole wheat and multigrain pizza, brown rice pulao, khichdi and biryani, little millet upma, red poha, low fat mushroom soup, fennel tea, oats chivda, whole wheat pita |
+| `healthy-noodles-momos-sprouts.json` | whole wheat, ragi, brown rice, oats and soba veg noodles with less oil; whole wheat, oats and ragi momos; a baked spring roll; sprouts upma, uttapam, dosa and khichdi; chana usal; light dressings (lemon and olive oil, yogurt and herb, balsamic, honey mustard); clear garlic soup |
 
 Variants are marked `nutritionConfidence: "low"` and `dataSourceType: "estimated"`: they are good for tracking, not
 for a label. A food that already is free of the thing asked for (a sandwich recipe with no mayonnaise) is repeated under
 its "without" name with the same numbers, so the search finds it. To add one, copy the pattern: keep the base food's ids,
 never edit the base, and give the variant its own id.
+
+**Healthy foods.** The healthy version of what people eat is in the data under the name they would give it, from the veg
+sandwich on brown bread with cheese and three sauces to rotis of every grain and vegetable, wraps, bowls, salads, soups,
+rolls and plates. Whatever is made of several foods is a composite, so its numbers come from what is in it; a roti is worked
+out from its flours. Each carries the words people search with: `high fiber sandwich`, `low calorie sandwich`, and for a meal
+what it is for (`weight loss dinner`, `high protein lunch`, `low carb dinner`, `vegan lunch`, `gluten free dinner`), decided
+from the numbers of one serving. Names are kept short enough to read on two lines in the Add list; what is in a food is in its
+nicknames.
 
 ### Branded foods
 
@@ -318,7 +334,7 @@ When no food has every word typed ("homemade curd", "1 katori dal"), words that 
 
 ## Loading the food data
 
-The foods are one lazy chunk (`src/nutrition/dataFiles.ts`, about 4.4 MB, 616 KB gzipped), so the app opens without waiting
+The foods are one lazy chunk (`src/nutrition/dataFiles.ts`, about 4.6 MB, 632 KB gzipped), so the app opens without waiting
 for them. The registry is empty until `await loadFoods()`: the app starts it in the background, and the Add page and the Edit sheet
 show a loading skeleton, or a "try again" button if the download failed, until it is ready. Scripts and tests call
 `loadFoods()` first; `getAllFoods`, `getFoodById` and the other getters throw if they are used before it finishes. In the
