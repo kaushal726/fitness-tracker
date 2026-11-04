@@ -59,7 +59,8 @@ describe("buildSuggestions", () => {
     expect(idsOf(usual)).toEqual(["banana"]);
     expect(more.title).toBe("More of your foods");
     expect(idsOf(more)).toEqual(["egg_boiled", "steamed_rice", "roti"]);
-    expect(more.items.every((i) => i.portion === undefined)).toBe(true);
+    // One tap adds each, in the amount they usually have.
+    expect(more.items.every((i) => i.portion !== undefined)).toBe(true);
   });
 
   it("does not offer again what is already in the meal today", () => {
@@ -194,5 +195,34 @@ describe("what is offered beyond what was logged", () => {
   it("changes from day to day and not within a day", () => {
     expect(hashOf("2026-11-04|roti")).toBe(hashOf("2026-11-04|roti"));
     expect(hashOf("2026-11-04|roti")).not.toBe(hashOf("2026-11-05|roti"));
+  });
+});
+
+describe("their sabzis and what they eat most", () => {
+  const SABZIS = ["aloo_gobi", "bhindi_masala", "mix_veg"];
+  const sections = (history: Entry[], meal: MealType) => build(history, { meal });
+  const sabzi = (history: Entry[], meal: MealType) => sections(history, meal).find((s) => s.title === "Your sabzis");
+
+  it("brings back the sabzis they eat most, for lunch and dinner", () => {
+    const history = [...onDays([1, 2, 3, 4, 5], "lunch", "aloo_gobi"), ...onDays([2, 4], "dinner", "bhindi_masala"), ...onDays([1, 2, 3], "breakfast", "banana")];
+    // Each is on the page once: the one eaten at lunch is already under Likely for lunch.
+    expect(idsOf(sabzi(history, "lunch")!)).toEqual(["bhindi_masala"]);
+    expect(idsOf(sections(history, "lunch")[0])).toContain("aloo_gobi");
+    expect(idsOf(sabzi(history, "dinner")!)).toEqual(["aloo_gobi"]);
+    expect(sabzi(history, "breakfast")).toBeUndefined();
+    expect(sabzi(history, "lunch")!.items.every((i) => i.portion !== undefined)).toBe(true);
+  });
+
+  it("has no sabzi section for someone who has not eaten one, and no sabzi twice on the page", () => {
+    expect(sabzi(onDays([1, 2, 3], "lunch", "steamed_rice"), "lunch")).toBeUndefined();
+    const ids = sections([...onDays([1, 2, 3], "lunch", SABZIS[0]), ...onDays([1, 2], "dinner", SABZIS[2])], "lunch").flatMap(idsOf);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it("says how many days lately a food was eaten, once it is a lot", () => {
+    const history = [...onDays([1, 2, 3, 4], "lunch", "steamed_rice"), ...onDays([1], "lunch", "roti")];
+    const more = sections(history, "dinner").find((s) => /your foods/i.test(s.title))!;
+    expect(more.items.find((i) => i.food.id === "steamed_rice")?.reason).toEqual({ kind: "often", days: 4 });
+    expect(more.items.find((i) => i.food.id === "roti")?.reason).toBeUndefined();
   });
 });

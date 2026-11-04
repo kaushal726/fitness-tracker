@@ -2,7 +2,7 @@ import type { IconType } from "react-icons";
 import { MEAL_LABELS } from "../../domain/meals.ts";
 import { formatDate } from "../../lib/dates.ts";
 import type { MealType } from "../../nutrition/types.ts";
-import { IconBreakfast, IconDinner, IconHistory, IconLunch, IconSnack, IconSparkles } from "../../ui/icons";
+import { IconBreakfast, IconDinner, IconFlame, IconHistory, IconLunch, IconSnack, IconSparkles } from "../../ui/icons";
 import type { Reason } from "./suggestions.ts";
 import styles from "./ReasonChip.module.css";
 
@@ -16,6 +16,8 @@ function describe(reason: Reason): { Icon: IconType; text: string } {
       return { Icon: IconHistory, text: "Had yesterday" };
     case "with":
       return { Icon: IconSparkles, text: `Goes with ${reason.food.name}` };
+    case "often":
+      return { Icon: IconFlame, text: `Eaten on ${reason.days} days this month` };
     case "weekday":
       return { Icon: IconHistory, text: `Usual on ${formatDate(reason.date, { weekday: "long" })}s` };
   }

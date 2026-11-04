@@ -1,0 +1,86 @@
+.section {
+  margin-top: 26px;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 4px 12px;
+}
+
+.chip {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  font-size: calc(18px * var(--fs-scale));
+}
+
+.green { background: var(--primary-soft); color: var(--primary); }
+.protein { background: var(--n-protein-soft); color: var(--n-protein); }
+.carbs { background: var(--n-carbs-soft); color: var(--n-carbs); }
+.fat { background: var(--n-fat-soft); color: var(--n-fat); }
+.fiber { background: var(--n-fiber-soft); color: var(--n-fiber); }
+
+.text {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: calc(16.5px * var(--fs-scale));
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.hint {
+  margin: 1px 0 0;
+  font-size: max(11px, calc(12.5px * var(--fs-scale)));
+  color: var(--ink-3);
+}
+
+.count {
+  flex: none;
+  min-width: 26px;
+  padding: 3px 9px;
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  font-size: max(11px, calc(12px * var(--fs-scale)));
+  font-weight: 800;
+  text-align: center;
+  color: var(--ink-2);
+}
+
+.more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  min-height: 44px;
+  margin-top: 8px;
+  border: 0;
+  border-radius: var(--r-md);
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: calc(14.5px * var(--fs-scale));
+  font-weight: 750;
+  transition: background var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out);
+}
+
+.more:active {
+  transform: scale(0.985);
+}
+
+.chevron {
+  font-size: calc(18px * var(--fs-scale));
+  transition: transform var(--dur) var(--ease-out);
+}
+
+.up {
+  transform: rotate(180deg);
+}

@@ -116,3 +116,22 @@ export function differentFor(input: DiscoverInput, count: number, after: number)
     .slice(0, count)
     .map((f) => pick(f, input.lastUsed));
 }
+
+/** Sabzi: vegetable dishes, paneer dishes and koftas. */
+const SABZI_KINDS = new Set(["vegetable_curry", "paneer", "kofta"]);
+export const isSabzi = (f: Food): boolean => f.category === "main_course" && SABZI_KINDS.has(f.subCategory);
+/** The meals a sabzi belongs to. */
+export const SABZI_MEALS: readonly MealType[] = ["lunch", "dinner"];
+/** A version of a dish ("No Oil", "Restaurant Style"): the plain dish is the one to suggest. */
+const VERSION = /\((no oil|light|air fried|restaurant style|low oil)/i;
+
+/** Other sabzis of the kinds this person eats (their cuisines), the commonly eaten ones first, a different few each day. */
+export function moreSabziFor(input: DiscoverInput, count: number, cuisines: ReadonlySet<string>): Pick[] {
+  const rank = new Map(input.popular.map((f, i) => [f.id, i]));
+  const order = byHash(`${input.seed}|sabzi`);
+  return input.pool
+    .filter((f) => isSabzi(f) && f.type === "simple" && suits(f, input) && !VERSION.test(f.name) && (cuisines.size === 0 || cuisines.has(f.cuisine)))
+    .sort((a, b) => (rank.get(a.id) ?? Infinity) - (rank.get(b.id) ?? Infinity) || order(a, b))
+    .slice(0, count)
+    .map((f) => pick(f, input.lastUsed));
+}

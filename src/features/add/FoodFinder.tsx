@@ -1,12 +1,10 @@
-import { Fragment } from "react";
 import type { LastUsed } from "../../data/types.ts";
 import type { Food } from "../../nutrition/types.ts";
-import { SectionLabel } from "../../ui/SectionLabel";
 import { CategoryChips } from "./CategoryChips.tsx";
 import { CategoryFoods } from "./CategoryFoods.tsx";
 import { FoodsNotReady } from "./FoodsNotReady.tsx";
 import { SearchResults } from "./SearchResults.tsx";
-import { SuggestionRows } from "./SuggestionRows.tsx";
+import { SuggestionSection } from "./SuggestionSection.tsx";
 import type { FoodBrowser } from "./useFoodSearch.ts";
 import styles from "./FoodFinder.module.css";
 
@@ -40,10 +38,7 @@ export function FoodFinder({ browser, query, category, addedFoodIds, onCategory,
         </div>
       ) : (
         browser.suggestions.map((section) => (
-          <Fragment key={section.title}>
-            <SectionLabel>{section.title}</SectionLabel>
-            <SuggestionRows items={section.items} addedFoodIds={addedFoodIds} onSelect={onSelect} onQuickAdd={onQuickAdd} />
-          </Fragment>
+          <SuggestionSection key={section.title} section={section} addedFoodIds={addedFoodIds} onSelect={onSelect} onQuickAdd={onQuickAdd} />
         ))
       )}
     </>

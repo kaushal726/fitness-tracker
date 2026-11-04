@@ -12,7 +12,8 @@ import { defaultPortion, lastPortionSummary } from "../../domain/portions.ts";
 import { DEFAULT_REPEAT_CHANCE, repeatChance } from "../../domain/repeatChance.ts";
 import { foodsInMeal, usualFoods, type Usual } from "../../domain/usuals.ts";
 import type { Food, MealType } from "../../nutrition/types.ts";
-import { differentFor, healthyFor, leftOut, popularFor, proteinFor, type DiscoverInput, type Pick } from "./discover.ts";
+import { daysEatenIn, OFTEN_DAYS } from "../../domain/lately.ts";
+import { differentFor, healthyFor, isSabzi, leftOut, moreSabziFor, popularFor, proteinFor, SABZI_MEALS, type DiscoverInput, type Pick } from "./discover.ts";
 
 const LIKELY_SHOWN = 8;
 const OTHERS_SHOWN = 12;
@@ -22,6 +23,8 @@ const PROTEIN_SHOWN = 6;
 const DIFFERENT_SHOWN = 8;
 /** The commonest foods are in "Popular" already: "something different" is drawn from beyond them. */
 const DIFFERENT_AFTER = 40;
+const SABZI_SHOWN = 8;
+const MORE_SABZI_SHOWN = 6;
 /** Shown to a new person until their own habits take over. */
 const COMMON_IDS = ["egg_boiled", "banana", "milk_tea", "protein_shake", "roti", "steamed_rice", "chicken_breast"];
 
@@ -30,7 +33,9 @@ export type Reason =
   | { kind: "earlier"; meal: MealType }
   | { kind: "yesterday" }
   | { kind: "with"; food: Food }
-  | { kind: "weekday"; date: string };
+  | { kind: "weekday"; date: string }
+  /** Eaten on this many days lately. */
+  | { kind: "often"; days: number };
 
 export interface Suggestion {
   food: Food;
@@ -39,7 +44,11 @@ export interface Suggestion {
   reason?: Reason;
 }
 
+/** What a section is, for its icon and its line of explanation. */
+export type SectionKind = "likely" | "sabzi" | "more" | "protein" | "popular" | "moreSabzi" | "healthy" | "different";
+
 export interface SuggestionSection {
+  kind: SectionKind;
   title: string;
   items: Suggestion[];
 }
@@ -116,11 +125,28 @@ export function buildSuggestions({ history, meal, date, today, favorites, custom
 
   const shown = new Set(likely.map((s) => s.food.id));
   const inMeal = foodsInMeal(history, meal, date);
-  const overall = usualFoods({ entries: history, meal: null, date, today }).map((u) => u.foodId);
-  const others = toFoods([...new Set([...favorites, ...overall, ...customFoods.map((f) => f.id)])])
-    .filter((f) => !shown.has(f.id) && !inMeal.has(f.id))
+  const usualOverall = usualFoods({ entries: history, meal: null, date, today });
+  const usualPortionOf = new Map(usualOverall.map((u) => [u.foodId, u.portion]));
+  const daysLately = daysEatenIn(history, today);
+  /** A food of theirs, in the amount they usually have, with how much of it they have been eating when that is a lot. */
+  const own = (food: Food): Suggestion => {
+    const amount = defaultPortion(food, usualPortionOf.get(food.id) ?? lastUsed[food.id]);
+    const days = daysLately.get(food.id) ?? 0;
+    return { food, portion: lastPortionSummary(food, amount) ? amount : undefined, reason: days >= OFTEN_DAYS ? { kind: "often", days } : undefined };
+  };
+  const fresh = (food: Food | undefined): food is Food => food !== undefined && !shown.has(food.id) && !inMeal.has(food.id);
+
+  // The sabzis they eat most, for the meals sabzi belongs to.
+  const sabzi = SABZI_MEALS.includes(meal)
+    ? toFoods(usualOverall.map((u) => u.foodId)).filter((f) => isSabzi(f) && fresh(f)).slice(0, SABZI_SHOWN).map(own)
+    : [];
+  for (const s of sabzi) shown.add(s.food.id);
+
+  // Then the rest of what they eat and drink, the most eaten first, the foods they marked as favourites ahead of them.
+  const others = toFoods([...new Set([...favorites, ...usualOverall.map((u) => u.foodId), ...customFoods.map((f) => f.id)])])
+    .filter(fresh)
     .slice(0, OTHERS_SHOWN)
-    .map(plain);
+    .map(own);
 
   // Beyond their own foods: the whole food list, by rules on each food, nothing twice on the page.
   const skip = new Set([...shown, ...others.map((s) => s.food.id), ...inMeal]);
@@ -132,16 +158,21 @@ export function buildSuggestions({ history, meal, date, today, favorites, custom
   const label = MEAL_LABELS[meal].toLowerCase();
   const protein = take(proteinFor(discover, PROTEIN_SHOWN));
   const common = take(popularFor(discover, POPULAR_SHOWN));
+  const sabziCuisines = new Set(sabzi.map((s) => s.food.cuisine));
+  const moreSabzi = sabzi.length > 0 ? take(moreSabziFor(discover, MORE_SABZI_SHOWN, sabziCuisines)) : [];
   const healthy = take(healthyFor(discover, HEALTHY_SHOWN));
   const different = take(differentFor(discover, DIFFERENT_SHOWN, DIFFERENT_AFTER));
 
-  const sections = [
-    { title: `Likely for ${label}`, items: likely },
-    { title: `High protein for ${label}`, items: protein },
-    { title: likely.length > 0 ? "More of your foods" : "Your foods", items: others },
-    { title: `Popular for ${label}`, items: common },
-    { title: `Healthy picks for ${label}`, items: healthy },
-    { title: `Something different for ${label}`, items: different },
-  ].filter((section) => section.items.length > 0);
-  return sections.length > 0 ? sections : [{ title: "Popular", items: toFoods(COMMON_IDS).map(plain) }];
+  const all: SuggestionSection[] = [
+    { kind: "likely", title: `Likely for ${label}`, items: likely },
+    { kind: "sabzi", title: "Your sabzis", items: sabzi },
+    { kind: "more", title: likely.length > 0 || sabzi.length > 0 ? "More of your foods" : "Your foods", items: others },
+    { kind: "protein", title: `High protein for ${label}`, items: protein },
+    { kind: "popular", title: `Popular for ${label}`, items: common },
+    { kind: "moreSabzi", title: "More sabzi to try", items: moreSabzi },
+    { kind: "healthy", title: `Healthy picks for ${label}`, items: healthy },
+    { kind: "different", title: `Something different for ${label}`, items: different },
+  ];
+  const sections = all.filter((section) => section.items.length > 0);
+  return sections.length > 0 ? sections : [{ kind: "popular", title: "Popular", items: toFoods(COMMON_IDS).map(plain) }];
 }

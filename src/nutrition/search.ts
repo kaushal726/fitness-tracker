@@ -27,6 +27,9 @@ const SCORE = {
   favorite: 50,
   recentMax: 40,
   recentStep: 2,
+  /** The foods this person eats most come first, ahead even of an exact name match on a food they never eat. */
+  frequentMax: 480,
+  frequentStep: 6,
   categoryHit: 20,
   perNameChar: 0.3,
   /** Ready-made meals rank just below the single foods they are made of. */
@@ -128,6 +131,8 @@ export interface SearchOptions {
   tag?: string;
   /** Most recent first. */
   recentIds?: string[];
+  /** The foods eaten most, the most eaten first. */
+  frequentIds?: string[];
   favoriteIds?: string[];
   /** User-created foods, searched together with the built-in ones. */
   extraFoods?: Food[];
@@ -165,6 +170,7 @@ export function searchFoodDetailed(query: string, options: SearchOptions = {}): 
   const tokens = withoutParticles(q.split(" ")).map(stem);
   const favorites = new Set(options.favoriteIds);
   const recents = new Map((options.recentIds ?? []).map((id, i) => [id, i]));
+  const frequent = new Map((options.frequentIds ?? []).map((id, i) => [id, i]));
   const pool = options.extraFoods?.length ? [...registryIndex(), ...options.extraFoods.map(index)] : registryIndex();
   const allowed = (ix: Indexed): boolean => passesFilters(ix.food, options);
 
@@ -176,10 +182,12 @@ export function searchFoodDetailed(query: string, options: SearchOptions = {}): 
       const b = base(ix);
       if (b === 0) continue;
       const recentRank = recents.get(ix.food.id);
+      const frequentRank = frequent.get(ix.food.id);
       const score = b
         + (POPULARITY.get(ix.food.id) ?? 0)
         + (favorites.has(ix.food.id) ? SCORE.favorite : 0)
         + (recentRank === undefined ? 0 : Math.max(0, SCORE.recentMax - recentRank * SCORE.recentStep))
+        + (frequentRank === undefined ? 0 : Math.max(0, SCORE.frequentMax - frequentRank * SCORE.frequentStep))
         + (words.some((t) => ix.categoryWords.has(t)) ? SCORE.categoryHit : 0)
         - (ix.food.type === "composite" ? SCORE.composite : 0)
         - ix.name.length * SCORE.perNameChar;

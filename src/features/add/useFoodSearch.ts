@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { entriesOn, makeFoodLookup, recentFoodIds, sumEntries } from "../../data/selectors.ts";
 import { useAppState } from "../../data/store.ts";
 import { computePlan } from "../../domain/goals.ts";
+import { usualFoods } from "../../domain/usuals.ts";
 import { todayISO } from "../../lib/dates.ts";
 import { browseCategory, getAllFoods, popularFoods, searchFoodDetailed, type SearchOutcome } from "../../nutrition/index.ts";
 import type { Food, MealType } from "../../nutrition/types.ts";
@@ -55,9 +56,15 @@ export function useFoodBrowser(query: string, category: string | null, { meal, d
     [ready, history, meal, date, favorites, customFoods, lookup, lastUsed, remaining],
   );
 
+  // What is eaten most for this meal, then what is eaten most at all: a search puts these first.
+  const frequentIds = useMemo(() => {
+    const at = { entries, date, today: todayISO() };
+    return [...new Set([...usualFoods({ ...at, meal }), ...usualFoods({ ...at, meal: null })].map((u) => u.foodId))];
+  }, [entries, meal, date]);
+
   const found = useMemo<SearchOutcome>(
-    () => (ready && searching ? searchFoodDetailed(query, { limit: SEARCH_LIMIT, category: category ?? undefined, recentIds, favoriteIds: favorites, extraFoods: customFoods }) : { foods: [], closest: false }),
-    [ready, searching, query, category, recentIds, favorites, customFoods],
+    () => (ready && searching ? searchFoodDetailed(query, { limit: SEARCH_LIMIT, category: category ?? undefined, recentIds, frequentIds, favoriteIds: favorites, extraFoods: customFoods }) : { foods: [], closest: false }),
+    [ready, searching, query, category, recentIds, frequentIds, favorites, customFoods],
   );
   const inCategory = useMemo(() => (ready && category ? browseCategory(category, customFoods) : []), [ready, category, customFoods]);
 
