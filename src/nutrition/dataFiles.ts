@@ -244,6 +244,12 @@ import healthyRollsPastaMore from "../../data/foods/healthy-rolls-pasta-more.jso
 import coffeeInstantItems from "../../data/foods/coffee-instant-items.json" with { type: "json" };
 import coffeeMore from "../../data/foods/coffee-more.json" with { type: "json" };
 import commonCombosRotiRiceMore from "../../data/foods/common-combos-roti-rice-more.json" with { type: "json" };
+import chocolatesChainsBakeryMore from "../../data/foods/chocolates-chains-bakery-more.json" with { type: "json" };
+import brandsIcecreamMore from "../../data/foods/brands-icecream-more.json" with { type: "json" };
+import brandsCakesPastriesWaffles from "../../data/foods/brands-cakes-pastries-waffles.json" with { type: "json" };
+import brandsChocolatesCookiesBiscuitsRusk from "../../data/foods/brands-chocolates-cookies-biscuits-rusk.json" with { type: "json" };
+import brandsNamkeenNimkiSev from "../../data/foods/brands-namkeen-nimki-sev.json" with { type: "json" };
+import brandsRestaurantChainsMore from "../../data/foods/brands-restaurant-chains-more.json" with { type: "json" };
 
 export const DATA_FILES: DataFile[] = [
   { name: "alcoholic-beverages", data: alcoholicBeverages as DataFile["data"] },
@@ -476,6 +482,12 @@ export const DATA_FILES: DataFile[] = [
   { name: "healthy-more-clones-snacks", data: healthyMoreClonesSnacks as DataFile["data"] },
   { name: "healthy-noodles-momos-sprouts", data: healthyNoodlesMomosSprouts as DataFile["data"] },
   { name: "coffee-instant-items", data: coffeeInstantItems as DataFile["data"] },
+  { name: "chocolates-chains-bakery-more", data: chocolatesChainsBakeryMore as DataFile["data"] },
+  { name: "brands-icecream-more", data: brandsIcecreamMore as DataFile["data"] },
+  { name: "brands-cakes-pastries-waffles", data: brandsCakesPastriesWaffles as DataFile["data"] },
+  { name: "brands-chocolates-cookies-biscuits-rusk", data: brandsChocolatesCookiesBiscuitsRusk as DataFile["data"] },
+  { name: "brands-namkeen-nimki-sev", data: brandsNamkeenNimkiSev as DataFile["data"] },
+  { name: "brands-restaurant-chains-more", data: brandsRestaurantChainsMore as DataFile["data"] },
   { name: "composite", data: composite as DataFile["data"] },
   { name: "drinks-milk-sugar-variants", data: drinksMilkSugarVariants as DataFile["data"] },
   { name: "combos-everyday", data: combosEveryday as DataFile["data"] },

@@ -50,7 +50,7 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 <!-- stats:start -->
 
-**Total foods: 8717** (704 composite, 8013 simple)
+**Total foods: 10299** (704 composite, 9595 simple)
 
 **By category**
 
@@ -58,19 +58,19 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 |---|---|
 | Main Course | 2473 |
 | Chinese | 1154 |
-| Drinks | 875 |
-| Snacks | 668 |
-| Breakfast | 519 |
-| Fast Food | 501 |
-| Desserts | 412 |
+| Drinks | 959 |
+| Fast Food | 906 |
+| Snacks | 727 |
+| Packaged Food | 637 |
+| Desserts | 609 |
+| Breakfast | 585 |
+| Bakery | 526 |
 | Sweets | 360 |
 | Vegetables | 295 |
 | Condiments & Cooking | 282 |
-| Packaged Food | 220 |
 | Dairy & Eggs | 206 |
 | Protein Foods | 190 |
 | Staples & Grains | 188 |
-| Bakery | 172 |
 | Fruits | 143 |
 | Nuts & Seeds | 45 |
 | Supplements | 14 |
@@ -79,51 +79,51 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 | Cuisine | Foods |
 |---|---|
-| pan_indian | 2853 |
+| pan_indian | 3347 |
+| global | 1520 |
 | indo_chinese | 875 |
-| global | 572 |
-| american | 531 |
+| american | 553 |
 | north_indian | 521 |
 | tamil | 300 |
-| bengali | 249 |
-| kerala | 222 |
+| bengali | 250 |
+| kerala | 225 |
 | punjabi | 210 |
 | maharashtrian | 208 |
 | nepali_tibetan | 186 |
 | south_indian | 179 |
-| karnataka | 166 |
-| andhra_telangana | 155 |
+| karnataka | 170 |
+| gujarati | 161 |
+| andhra_telangana | 158 |
 | jharkhandi | 132 |
-| gujarati | 128 |
-| italian | 116 |
-| continental | 98 |
-| chinese | 84 |
+| italian | 117 |
+| continental | 103 |
+| chinese | 86 |
+| rajasthani | 82 |
 | mughlai | 76 |
 | goan | 74 |
 | hyderabadi | 74 |
 | odia | 58 |
+| french | 52 |
 | bihari_jharkhand | 46 |
-| rajasthani | 46 |
 | northeastern | 45 |
+| japanese_korean | 43 |
 | mangalorean | 43 |
-| japanese_korean | 42 |
 | mexican | 40 |
 | middle_eastern | 40 |
 | assamese | 34 |
-| british | 31 |
+| british | 32 |
 | chettinad | 31 |
 | malvani | 31 |
 | kashmiri | 29 |
-| french | 26 |
 | awadhi | 18 |
 | sindhi | 17 |
 | parsi | 16 |
 | uttarakhandi | 13 |
 | himachali | 12 |
 | chhattisgarhi | 11 |
+| german | 11 |
 | spanish | 11 |
 | eastern_european | 9 |
-| german | 9 |
 | greek | 8 |
 | haryanvi | 8 |
 | turkish | 8 |
@@ -138,34 +138,34 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 | Food type | Foods |
 |---|---|
-| vegetarian | 3708 |
-| vegan | 2792 |
-| non_vegetarian | 1704 |
-| eggetarian | 513 |
+| vegetarian | 4422 |
+| vegan | 3038 |
+| non_vegetarian | 1881 |
+| eggetarian | 958 |
 
 **By confidence**
 
 | Confidence | Foods |
 |---|---|
-| medium | 5326 |
-| low | 2958 |
-| high | 433 |
+| medium | 5875 |
+| low | 3661 |
+| high | 763 |
 
 **By variability**
 
 | Variability | Foods |
 |---|---|
-| medium | 4662 |
+| medium | 5827 |
 | high | 2445 |
-| low | 1610 |
+| low | 2027 |
 
 **By data source**
 
 | Data source | Foods |
 |---|---|
 | recipe_based | 4644 |
-| estimated | 3320 |
-| standard_reference | 753 |
+| estimated | 4564 |
+| standard_reference | 1091 |
 
 **Serving units:** `g` (mass), `kg` (mass), `ml` (volume), `litre` (volume), `tsp` (volume), `tbsp` (volume), `cup` (volume), `glass` (volume), `katori` (volume), `bowl` (volume), `bottle` (volume), `can` (volume), `peg` (volume), `piece` (count), `slice` (count), `plate` (count), `serving` (count), `handful` (count), `scoop` (count), `pinch` (count), `packet` (count), `roti` (count, = piece), `paratha` (count, = piece), `dosa` (count, = piece), `idli` (count, = piece), `vada` (count, = piece), `samosa` (count, = piece), `egg` (count, = piece), `banana` (count, = piece), `apple` (count, = piece), `orange` (count, = piece), `mango` (count, = piece), `breast` (count, = piece)
 
