@@ -5,7 +5,8 @@
  */
 import popular from "../../data/popular-foods.json" with { type: "json" };
 import { getAllFoods, getFoodById } from "./registry.ts";
-import { boundedDistance, normalizeForSearch, stem, tokenizeForSearch } from "./text.ts";
+import { buildVocabulary, isTrustedWord, repairOptions, type Vocabulary } from "./searchRepair.ts";
+import { boundedDistance, normalizeForSearch, SPELLING_VARIANTS, stem, tokenizeForSearch } from "./text.ts";
 import type { Food } from "./types.ts";
 
 const DEFAULT_LIMIT = 20;
@@ -67,6 +68,9 @@ function index(food: Food): Indexed {
 let baseIndex: Indexed[] | null = null;
 const registryIndex = () => (baseIndex ??= getAllFoods().map(index));
 
+let baseVocabulary: Vocabulary | null = null;
+const vocabularyOf = (pool: Indexed[]): Vocabulary => buildVocabulary(pool.map((ix) => [...ix.nameWords, ...ix.aliasWords]), (word) => SKIPPABLE_WORDS.has(word) || PARTICLES.has(word), SPELLING_VARIANTS);
+
 function maxDistance(word: string): number {
   if (word.length < MIN_FUZZY_LENGTH) return 0;
   return word.length >= LONG_WORD_LENGTH ? 2 : 1;
@@ -84,7 +88,7 @@ function isFuzzy(words: Iterable<string>, token: string): boolean {
   return false;
 }
 
-function tokenLevel(ix: Indexed, token: string): number {
+function tokenLevel(ix: Indexed, token: string, fuzzy = true): number {
   if (ix.nameWords.includes(token)) return LEVEL.nameWord;
   if (hasPrefix(ix.nameWords, token)) return LEVEL.namePrefix;
   if (ix.aliasWords.has(token)) return LEVEL.aliasWord;
@@ -92,11 +96,11 @@ function tokenLevel(ix: Indexed, token: string): number {
   if (ix.textWords.has(token)) return LEVEL.textWord;
   if (hasPrefix(ix.textWords, token)) return LEVEL.textPrefix;
   if (token.length >= MIN_SUBSTRING_LENGTH && ix.nameWords.some((w) => w.includes(token))) return LEVEL.nameSubstring;
-  if (isFuzzy(ix.nameWords, token) || isFuzzy(ix.aliasWords, token)) return LEVEL.fuzzy;
+  if (fuzzy && (isFuzzy(ix.nameWords, token) || isFuzzy(ix.aliasWords, token))) return LEVEL.fuzzy;
   return 0;
 }
 
-function baseScore(ix: Indexed, query: string, tokens: string[]): number {
+function baseScore(ix: Indexed, query: string, tokens: string[], fuzzy = true): number {
   if (ix.name === query) return SCORE.exactName;
   if (ix.aliases.includes(query)) return SCORE.exactAlias;
   const endsWord = (text: string) => text.length === query.length || text[query.length] === " ";
@@ -104,7 +108,7 @@ function baseScore(ix: Indexed, query: string, tokens: string[]): number {
   if (ix.aliases.some((a) => a.startsWith(query) && endsWord(a))) return SCORE.aliasPrefix;
   let total = 0;
   for (const token of tokens) {
-    const level = tokenLevel(ix, token);
+    const level = tokenLevel(ix, token, fuzzy);
     if (level === 0) return 0;
     total += level;
   }
@@ -147,7 +151,7 @@ function passesFilters(food: Food, o: SearchOptions): boolean {
 
 /** Words that say how a food was made or how much of it, not what it is: "homemade curd", "1 katori dal". Only dropped when nothing matched them. */
 const SKIPPABLE_WORDS: ReadonlySet<string> = new Set(
-  ["home", "homemade", "made", "fresh", "plain", "normal", "regular", "extra", "some", "my", "own", "the", "a", "an", "of", "with", "and", "small", "medium", "large", "big", "bowl", "katori", "cup", "glass", "plate", "piece", "slice", "spoon", "tbsp", "tsp", "gram", "g", "ml", "kg", "litre", "liter", "serving", "portion"].map(stem),
+  ["one", "two", "three", "four", "five", "half", "quarter", "home", "homemade", "made", "fresh", "plain", "normal", "regular", "extra", "some", "my", "own", "the", "a", "an", "of", "with", "and", "small", "medium", "large", "big", "bowl", "katori", "cup", "glass", "plate", "piece", "slice", "spoon", "tbsp", "tsp", "gram", "g", "ml", "kg", "litre", "liter", "serving", "portion"].map(stem),
 );
 /** Hindi words that only join the others ("besan ka chilla", "bhindi ki sabzi", "aloo ke parathe"): they say nothing about which food. */
 const PARTICLES: ReadonlySet<string> = new Set(["ka", "ki", "ke", "wala", "wali", "wale", "waala", "waali"]);
@@ -155,6 +159,8 @@ const withoutParticles = (words: string[]): string[] => {
   const content = words.filter((w) => !PARTICLES.has(w));
   return content.length > 0 ? content : words;
 };
+/** How many, in Hindi ("do roti", "teen chapati"): never part of a food's name, so dropped before searching. */
+const COUNT_WORDS: ReadonlySet<string> = new Set(["ek", "do", "teen", "chaar", "paanch", "panch", "chhe", "aadha", "adha"]);
 const QUANTITY = /^\d+(?:[.,]\d+)?$/;
 const isSkippable = (token: string): boolean => SKIPPABLE_WORDS.has(token) || QUANTITY.test(token);
 
@@ -162,12 +168,29 @@ export interface SearchOutcome {
   foods: Food[];
   /** True when no food matched every word, so these are the closest matches instead. */
   closest: boolean;
+  /** Set when a word nobody has was read as another ("wet sandwich" as "veg sandwich"): what was searched in its place. */
+  corrected?: string;
+}
+
+/** The most readings of a query tried together; each unknown word multiplies them. */
+const MAX_READINGS = 8;
+
+/** Every way to read the query, each doubtful word as typed or as one of its likely meanings; the likeliest first. */
+function readings(tokens: string[], doubtful: Set<string>, vocabulary: Vocabulary): string[][] {
+  let all: string[][] = [[]];
+  for (const token of tokens) {
+    const options = doubtful.has(token) ? [[token], ...repairOptions(token, vocabulary)] : [[token]];
+    all = all.flatMap((soFar) => options.map((option) => [...soFar, ...option])).slice(0, MAX_READINGS);
+  }
+  return all;
 }
 
 export function searchFoodDetailed(query: string, options: SearchOptions = {}): SearchOutcome {
-  const q = normalizeForSearch(query);
+  const typed = normalizeForSearch(query).split(" ");
+  const counted = typed.filter((w) => !COUNT_WORDS.has(w));
+  let q = (counted.length > 0 ? counted : typed).join(" ");
   if (!q) return { foods: [], closest: false };
-  const tokens = withoutParticles(q.split(" ")).map(stem);
+  let tokens = withoutParticles(q.split(" ")).map(stem);
   const favorites = new Set(options.favoriteIds);
   const recents = new Map((options.recentIds ?? []).map((id, i) => [id, i]));
   const frequent = new Map((options.frequentIds ?? []).map((id, i) => [id, i]));
@@ -196,10 +219,30 @@ export function searchFoodDetailed(query: string, options: SearchOptions = {}): 
     scored.sort((a, b) => b.score - a.score || a.food.name.localeCompare(b.food.name));
     return scored.slice(0, options.limit ?? DEFAULT_LIMIT).map((s) => s.food);
   };
-  const everyWord = (text: string, words: string[]): Food[] => rank(words, (ix) => baseScore(ix, text, words));
+  const everyWord = (text: string, words: string[], fuzzy = true): Food[] => rank(words, (ix) => baseScore(ix, text, words, fuzzy));
 
-  const found = everyWord(q, tokens);
-  if (found.length > 0 || tokens.length < 2) return { foods: found, closest: false };
+  let found = everyWord(q, tokens);
+  // "2 egg", "3 roti": a number is how many, unless the food's own name starts with what was typed ("chicken 65").
+  const wanted = tokens.filter((t) => !QUANTITY.test(t));
+  const isNamedSo = (food: Food): boolean => [food.name, ...food.aliases].some((n) => normalizeForSearch(n).startsWith(q));
+  if (found.length > 0 && wanted.length < tokens.length && wanted.some((t) => !isSkippable(t)) && !isNamedSo(found[0])) {
+    tokens = wanted;
+    q = wanted.join(" ");
+    found = everyWord(q, tokens);
+  }
+  if (found.length > 0) return { foods: found, closest: false };
+
+  // A word few foods have may be a mishearing or another spelling ("wet sandwich", "bindi"): search what it was likely meant to be.
+  const vocabulary = options.extraFoods?.length ? vocabularyOf(pool) : (baseVocabulary ??= vocabularyOf(pool));
+  const doubtful = new Set(tokens.filter((t) => !isSkippable(t) && !isTrustedWord(vocabulary, t)));
+  if (doubtful.size > 0) {
+    // The first reading (every word as typed) is what already found nothing.
+    for (const reading of readings(tokens, doubtful, vocabulary).slice(1)) {
+      const repaired = everyWord(reading.join(" "), reading, false);
+      if (repaired.length > 0) return { foods: repaired, closest: false, corrected: reading.join(" ") };
+    }
+  }
+  if (tokens.length < 2) return { foods: [], closest: false };
 
   // Nothing matched every word ("homemade curd"): leave out words that only describe, and words no food has, and search the rest.
   const known = tokens.filter((t) => !isSkippable(t) && pool.some((ix) => allowed(ix) && tokenLevel(ix, t) > 0));

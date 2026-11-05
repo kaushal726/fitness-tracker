@@ -50,17 +50,17 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 <!-- stats:start -->
 
-**Total foods: 8674** (661 composite, 8013 simple)
+**Total foods: 8717** (704 composite, 8013 simple)
 
 **By category**
 
 | Category | Foods |
 |---|---|
-| Main Course | 2434 |
+| Main Course | 2473 |
 | Chinese | 1154 |
-| Drinks | 874 |
-| Snacks | 666 |
-| Breakfast | 518 |
+| Drinks | 875 |
+| Snacks | 668 |
+| Breakfast | 519 |
 | Fast Food | 501 |
 | Desserts | 412 |
 | Sweets | 360 |
@@ -79,7 +79,7 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 | Cuisine | Foods |
 |---|---|
-| pan_indian | 2810 |
+| pan_indian | 2853 |
 | indo_chinese | 875 |
 | global | 572 |
 | american | 531 |
@@ -138,16 +138,16 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 | Food type | Foods |
 |---|---|
-| vegetarian | 3696 |
-| vegan | 2771 |
-| non_vegetarian | 1696 |
-| eggetarian | 511 |
+| vegetarian | 3708 |
+| vegan | 2792 |
+| non_vegetarian | 1704 |
+| eggetarian | 513 |
 
 **By confidence**
 
 | Confidence | Foods |
 |---|---|
-| medium | 5283 |
+| medium | 5326 |
 | low | 2958 |
 | high | 433 |
 
@@ -155,7 +155,7 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 | Variability | Foods |
 |---|---|
-| medium | 4619 |
+| medium | 4662 |
 | high | 2445 |
 | low | 1610 |
 
@@ -163,7 +163,7 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 | Data source | Foods |
 |---|---|
-| recipe_based | 4601 |
+| recipe_based | 4644 |
 | estimated | 3320 |
 | standard_reference | 753 |
 

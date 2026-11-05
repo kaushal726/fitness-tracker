@@ -8,3 +8,8 @@
   line-height: 1.4;
   color: var(--ink-3);
 }
+
+.note strong {
+  font-weight: 700;
+  color: var(--ink);
+}

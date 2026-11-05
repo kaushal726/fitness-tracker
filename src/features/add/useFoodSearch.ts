@@ -28,6 +28,8 @@ export interface FoodBrowser {
   results: Food[];
   /** True when no food has every word typed, so `results` are only the closest. */
   closestMatches: boolean;
+  /** What was searched instead when a word was read as another ("veg sandwich" for "wet sandwich"). */
+  correctedTo?: string;
   /** Every food of the chosen category, commonly eaten first. */
   inCategory: Food[];
 }
@@ -68,5 +70,5 @@ export function useFoodBrowser(query: string, category: string | null, { meal, d
   );
   const inCategory = useMemo(() => (ready && category ? browseCategory(category, customFoods) : []), [ready, category, customFoods]);
 
-  return { status, retry, suggestions, results: found.foods, closestMatches: found.closest, inCategory };
+  return { status, retry, suggestions, results: found.foods, closestMatches: found.closest, correctedTo: found.corrected, inCategory };
 }

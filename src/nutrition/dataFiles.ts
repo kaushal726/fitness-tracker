@@ -243,6 +243,7 @@ import healthyNoodlesMomosSprouts from "../../data/foods/healthy-noodles-momos-s
 import healthyRollsPastaMore from "../../data/foods/healthy-rolls-pasta-more.json" with { type: "json" };
 import coffeeInstantItems from "../../data/foods/coffee-instant-items.json" with { type: "json" };
 import coffeeMore from "../../data/foods/coffee-more.json" with { type: "json" };
+import commonCombosRotiRiceMore from "../../data/foods/common-combos-roti-rice-more.json" with { type: "json" };
 
 export const DATA_FILES: DataFile[] = [
   { name: "alcoholic-beverages", data: alcoholicBeverages as DataFile["data"] },
@@ -484,4 +485,5 @@ export const DATA_FILES: DataFile[] = [
   { name: "healthy-salads-soups-burgers", data: healthySaladsSoupsBurgers as DataFile["data"] },
   { name: "healthy-rolls-pasta-more", data: healthyRollsPastaMore as DataFile["data"] },
   { name: "coffee-more", data: coffeeMore as DataFile["data"] },
+  { name: "common-combos-roti-rice-more", data: commonCombosRotiRiceMore as DataFile["data"] },
 ];

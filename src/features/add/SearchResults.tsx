@@ -11,14 +11,21 @@ interface Props {
   results: Food[];
   /** No food has every word typed: the list is the closest matches. */
   closest: boolean;
+  /** A word was read as another: what was searched in its place. */
+  correctedTo?: string;
   onSelect: (food: Food) => void;
   onCustom: (name: string) => void;
 }
 
 /** What matched. Nothing matching leads to adding the food by hand, and so does a list that is only close. */
-export function SearchResults({ query, results, closest, onSelect, onCustom }: Props) {
+export function SearchResults({ query, results, closest, correctedTo, onSelect, onCustom }: Props) {
   return (
     <>
+      {correctedTo && results.length > 0 && (
+        <div className={styles.note}>
+          <p>Showing results for <strong>{correctedTo}</strong>.</p>
+        </div>
+      )}
       {closest && results.length > 0 && (
         <div className={styles.note}>
           <p>No food has every word you typed. These are the closest.</p>

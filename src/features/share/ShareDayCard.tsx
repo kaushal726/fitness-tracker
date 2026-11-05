@@ -29,6 +29,13 @@ const SCOPES: { value: Scope; label: string }[] = [
   { value: "numbers", label: "Numbers only" },
 ];
 
+type NameScope = "named" | "anonymous";
+
+const NAME_SCOPES: { value: NameScope; label: string }[] = [
+  { value: "named", label: "Show my name" },
+  { value: "anonymous", label: "Hide my name" },
+];
+
 const DAY_NAME: Intl.DateTimeFormatOptions = { weekday: "long", day: "numeric", month: "short" };
 
 interface Picture {
@@ -44,6 +51,7 @@ export function ShareDayCard({ profile, date, showHead = true }: Props) {
   const [picture, setPicture] = useState<Picture | null>(null);
   const [failed, setFailed] = useState(false);
   const [scope, setScope] = useState<Scope>("foods");
+  const [nameScope, setNameScope] = useState<NameScope>("named");
   const dayName = formatDayLabel(date, DAY_NAME);
   const primary = accentOf(useAccent()).color;
 
@@ -53,7 +61,7 @@ export function ShareDayCard({ profile, date, showHead = true }: Props) {
     if (report.itemCount === 0) return;
     let cancelled = false;
     let url = "";
-    renderDayImage(report, { name: profile.name, goalLabel: goalDef(profile.goal).label }, { withFoods: scope === "foods", primary })
+    renderDayImage(report, { name: nameScope === "named" ? profile.name : "", goalLabel: goalDef(profile.goal).label }, { withFoods: scope === "foods", primary })
       .then((blob) => {
         if (cancelled) return;
         url = URL.createObjectURL(blob);
@@ -64,7 +72,7 @@ export function ShareDayCard({ profile, date, showHead = true }: Props) {
       cancelled = true;
       if (url) URL.revokeObjectURL(url);
     };
-  }, [report, profile.name, profile.goal, date, scope, primary]);
+  }, [report, profile.name, profile.goal, date, scope, nameScope, primary]);
 
   const save = () => {
     if (!picture) return;
@@ -91,8 +99,11 @@ export function ShareDayCard({ profile, date, showHead = true }: Props) {
       ) : picture ? (
         <>
           <Segmented label="What to share" value={scope} onChange={setScope} options={SCOPES} />
-          <p className={styles.hint}>{scope === "foods" ? "Calories, macros and each food you ate." : "Calories, macros and the total of each meal. No food names."}</p>
-          <img className={styles.preview} src={picture.url} alt="Calories, macros and meals of the day" />
+          <Segmented label="Your name" value={nameScope} onChange={setNameScope} options={NAME_SCOPES} />
+          <p className={styles.hint}>{scope === "foods" ? "Calories, macros, where the calories came from, and each food with its amount." : "Calories, macros and the total of each meal. No food names."}</p>
+          <div className={styles.frame}>
+            <img className={styles.preview} src={picture.url} alt="Calories, macros and meals of the day" />
+          </div>
           <div className={styles.actions}>
             {canShareFile(picture.file) ? (
               <>

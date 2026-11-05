@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Profile } from "../data/types.ts";
 import { entry } from "../test/entries.ts";
-import { dayReport } from "./dayReport.ts";
+import { calorieStatus, dayReport, energySplit } from "./dayReport.ts";
 import { computePlan } from "./goals.ts";
 import { EXPORT_FORMAT, exportFileName, monthExport } from "./monthExport.ts";
 
@@ -26,6 +26,16 @@ describe("dayReport", () => {
     expect(r.meals.map((m) => m.meal)).toEqual(["breakfast", "snack"]);
     expect(r.meals[0]).toMatchObject({ label: "Breakfast", calories: 450, items: [{ name: "Poha", portion: "1 katori", calories: 450 }] });
     expect(r.meals.reduce((s, m) => s + m.calories, 0)).toBe(r.totals.calories);
+  });
+
+  it("gives each meal its macros and when it started, and the day its energy split", () => {
+    const [breakfast] = r.meals;
+    expect(breakfast.protein).toBeCloseTo(18);
+    expect(breakfast.carbs).toBeCloseTo(45);
+    expect(breakfast.fat).toBeCloseTo(13.5);
+    expect(breakfast.at).toBe(entries[3].at);
+    expect(breakfast.items[0].protein).toBeCloseTo(18);
+    expect(Object.values(r.energySplit).reduce((a, b) => a + b, 0)).toBe(100);
   });
 
   it("is empty for a day with nothing logged", () => {
@@ -75,5 +85,32 @@ describe("monthExport", () => {
 
   it("survives being written out and read back", () => {
     expect(JSON.parse(JSON.stringify(x))).toEqual(x);
+  });
+});
+
+describe("energySplit", () => {
+  it("adds up to 100 whatever the rounding", () => {
+    for (const [protein, carbs, fat] of [[30, 100, 20], [1, 1, 1], [0, 0, 7], [55.5, 12.3, 80.1], [200, 0, 0]]) {
+      const s = energySplit({ protein, carbs, fat });
+      expect(s.protein + s.carbs + s.fat, `${protein}/${carbs}/${fat}`).toBe(100);
+    }
+  });
+
+  it("weighs fat by its 9 kcal a gram", () => {
+    expect(energySplit({ protein: 25, carbs: 25, fat: 22.22 })).toEqual({ protein: 25, carbs: 25, fat: 50 });
+  });
+
+  it("is all zero when nothing has macros", () => {
+    expect(energySplit({ protein: 0, carbs: 0, fat: 0 })).toEqual({ protein: 0, carbs: 0, fat: 0 });
+  });
+});
+
+describe("calorieStatus", () => {
+  it("says where the day stands against the goal", () => {
+    expect(calorieStatus(1200, 2000)).toBe("under");
+    expect(calorieStatus(1850, 2000)).toBe("close");
+    expect(calorieStatus(2050, 2000)).toBe("on");
+    expect(calorieStatus(2200, 2000)).toBe("over");
+    expect(calorieStatus(500, 0)).toBe("on");
   });
 });

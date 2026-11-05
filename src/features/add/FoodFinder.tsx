@@ -33,7 +33,7 @@ export function FoodFinder({ browser, query, category, addedFoodIds, onCategory,
       {searching || category ? (
         <div className={styles.list}>
           {searching
-            ? <SearchResults key={query} query={query} results={browser.results} closest={browser.closestMatches} onSelect={onSelect} onCustom={onCustom} />
+            ? <SearchResults key={query} query={query} results={browser.results} closest={browser.closestMatches} correctedTo={browser.correctedTo} onSelect={onSelect} onCustom={onCustom} />
             : <CategoryFoods key={category} foods={browser.inCategory} onSelect={onSelect} onCustom={() => onCustom("")} />}
         </div>
       ) : (
