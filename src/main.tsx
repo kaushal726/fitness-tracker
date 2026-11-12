@@ -4,6 +4,7 @@ import "@fontsource-variable/plus-jakarta-sans";
 import "./styles/global.css";
 import { initAccent } from "./app/accent";
 import { App } from "./app/App";
+import { ErrorBoundary } from "./app/ErrorBoundary";
 import { registerServiceWorker } from "./app/pwa";
 import { initTextSize } from "./app/textSize";
 import { initTheme } from "./app/theme";
@@ -13,11 +14,13 @@ import { ToastProvider } from "./ui/Toast";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ToastProvider>
-      <ConfirmProvider>
-        <App />
-      </ConfirmProvider>
-    </ToastProvider>
+    <ErrorBoundary>
+      <ToastProvider>
+        <ConfirmProvider>
+          <App />
+        </ConfirmProvider>
+      </ToastProvider>
+    </ErrorBoundary>
   </StrictMode>,
 );
 
