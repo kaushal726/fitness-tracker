@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { reminderSupport, sendTestReminder, startReminders, stopReminders, type ReminderSupport } from "../../app/reminderPush.ts";
+import { reminderSupport, startReminders, stopReminders, type ReminderSupport } from "../../app/reminderPush.ts";
 import { saveSettings } from "../../data/store.ts";
 import type { Settings } from "../../data/types.ts";
 import { formatHour, MEAL_LABELS, MEAL_ORDER } from "../../domain/meals.ts";
 import { clampReminder, REMINDER_STEP } from "../../domain/reminders.ts";
 import type { MealType } from "../../nutrition/types.ts";
 import { Button } from "../../ui/Button";
-import { IconBell } from "../../ui/icons";
 import { Field } from "../../ui/Field";
 import { Sheet } from "../../ui/Sheet";
 import { Stepper } from "../../ui/Stepper";
@@ -58,23 +57,6 @@ export function RemindersSheet({ settings, onClose }: Props) {
     onClose();
   };
 
-  // The test works from scratch: with reminders off, it turns them on for this phone first.
-  const sendTest = async () => {
-    setBusy(true);
-    try {
-      if (!on) {
-        await startReminders(times);
-        saveSettings({ reminders: { enabled: true, times } });
-      }
-      await sendTestReminder();
-      toast("Test sent. It should arrive in a few seconds.");
-    } catch {
-      toast("The test could not be sent. Check notifications are allowed and you are online, then try again.", { tone: "error" });
-    } finally {
-      setBusy(false);
-    }
-  };
-
   return (
     <Sheet
       open
@@ -101,7 +83,6 @@ export function RemindersSheet({ settings, onClose }: Props) {
           </Field>
         );
       })}
-      <Button variant="ghost" size="md" block icon={<IconBell />} disabled={busy || support !== "ready"} onClick={sendTest}>Send a test notification</Button>
       <p className={styles.note}>Only these times and your time zone go to the reminder server. What you eat stays on this phone.</p>
     </Sheet>
   );
