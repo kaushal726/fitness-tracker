@@ -250,6 +250,22 @@ import brandsCakesPastriesWaffles from "../../data/foods/brands-cakes-pastries-w
 import brandsChocolatesCookiesBiscuitsRusk from "../../data/foods/brands-chocolates-cookies-biscuits-rusk.json" with { type: "json" };
 import brandsNamkeenNimkiSev from "../../data/foods/brands-namkeen-nimki-sev.json" with { type: "json" };
 import brandsRestaurantChainsMore from "../../data/foods/brands-restaurant-chains-more.json" with { type: "json" };
+import brandsProteinBars from "../../data/foods/brands-protein-bars.json" with { type: "json" };
+import brandsProteinShakesPowders from "../../data/foods/brands-protein-shakes-powders.json" with { type: "json" };
+import brandsJaggerySweeteners from "../../data/foods/brands-jaggery-sweeteners.json" with { type: "json" };
+import brandsGheeOils from "../../data/foods/brands-ghee-oils.json" with { type: "json" };
+import brandsMithaiGheeRefined from "../../data/foods/brands-mithai-ghee-refined.json" with { type: "json" };
+import regionalJharkhandBiharGheeRefined from "../../data/foods/regional-jharkhand-bihar-ghee-refined.json" with { type: "json" };
+import brandsCoffeeCafe from "../../data/foods/brands-coffee-cafe.json" with { type: "json" };
+import brandsSandwichesBurgers from "../../data/foods/brands-sandwiches-burgers.json" with { type: "json" };
+import brandsWrapsRolls from "../../data/foods/brands-wraps-rolls.json" with { type: "json" };
+import brandsTikkaKebabSpiceVariants from "../../data/foods/brands-tikka-kebab-spice-variants.json" with { type: "json" };
+import appsIndianFoodsGap from "../../data/foods/apps-indian-foods-gap.json" with { type: "json" };
+import brandsFmcgGrocery from "../../data/foods/brands-fmcg-grocery.json" with { type: "json" };
+import globalCuisinesAndChains from "../../data/foods/global-cuisines-and-chains.json" with { type: "json" };
+import brandsBeverages from "../../data/foods/brands-beverages.json" with { type: "json" };
+import staplesFruitVegNutsMeatDairy from "../../data/foods/staples-fruit-veg-nuts-meat-dairy.json" with { type: "json" };
+import regionalStatesGap from "../../data/foods/regional-states-gap.json" with { type: "json" };
 
 export const DATA_FILES: DataFile[] = [
   { name: "alcoholic-beverages", data: alcoholicBeverages as DataFile["data"] },
@@ -488,6 +504,22 @@ export const DATA_FILES: DataFile[] = [
   { name: "brands-chocolates-cookies-biscuits-rusk", data: brandsChocolatesCookiesBiscuitsRusk as DataFile["data"] },
   { name: "brands-namkeen-nimki-sev", data: brandsNamkeenNimkiSev as DataFile["data"] },
   { name: "brands-restaurant-chains-more", data: brandsRestaurantChainsMore as DataFile["data"] },
+  { name: "brands-protein-bars", data: brandsProteinBars as DataFile["data"] },
+  { name: "brands-protein-shakes-powders", data: brandsProteinShakesPowders as DataFile["data"] },
+  { name: "brands-jaggery-sweeteners", data: brandsJaggerySweeteners as DataFile["data"] },
+  { name: "brands-ghee-oils", data: brandsGheeOils as DataFile["data"] },
+  { name: "brands-mithai-ghee-refined", data: brandsMithaiGheeRefined as DataFile["data"] },
+  { name: "regional-jharkhand-bihar-ghee-refined", data: regionalJharkhandBiharGheeRefined as DataFile["data"] },
+  { name: "brands-coffee-cafe", data: brandsCoffeeCafe as DataFile["data"] },
+  { name: "brands-sandwiches-burgers", data: brandsSandwichesBurgers as DataFile["data"] },
+  { name: "brands-wraps-rolls", data: brandsWrapsRolls as DataFile["data"] },
+  { name: "brands-tikka-kebab-spice-variants", data: brandsTikkaKebabSpiceVariants as DataFile["data"] },
+  { name: "apps-indian-foods-gap", data: appsIndianFoodsGap as DataFile["data"] },
+  { name: "brands-fmcg-grocery", data: brandsFmcgGrocery as DataFile["data"] },
+  { name: "global-cuisines-and-chains", data: globalCuisinesAndChains as DataFile["data"] },
+  { name: "brands-beverages", data: brandsBeverages as DataFile["data"] },
+  { name: "staples-fruit-veg-nuts-meat-dairy", data: staplesFruitVegNutsMeatDairy as DataFile["data"] },
+  { name: "regional-states-gap", data: regionalStatesGap as DataFile["data"] },
   { name: "composite", data: composite as DataFile["data"] },
   { name: "drinks-milk-sugar-variants", data: drinksMilkSugarVariants as DataFile["data"] },
   { name: "combos-everyday", data: combosEveryday as DataFile["data"] },

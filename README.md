@@ -50,122 +50,124 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 <!-- stats:start -->
 
-**Total foods: 10299** (704 composite, 9595 simple)
+**Total foods: 17344** (704 composite, 16640 simple)
 
 **By category**
 
 | Category | Foods |
 |---|---|
-| Main Course | 2473 |
-| Chinese | 1154 |
-| Drinks | 959 |
-| Fast Food | 906 |
-| Snacks | 727 |
-| Packaged Food | 637 |
-| Desserts | 609 |
-| Breakfast | 585 |
-| Bakery | 526 |
-| Sweets | 360 |
-| Vegetables | 295 |
-| Condiments & Cooking | 282 |
-| Dairy & Eggs | 206 |
-| Protein Foods | 190 |
-| Staples & Grains | 188 |
-| Fruits | 143 |
-| Nuts & Seeds | 45 |
-| Supplements | 14 |
+| Main Course | 3023 |
+| Snacks | 2008 |
+| Fast Food | 1912 |
+| Drinks | 1888 |
+| Chinese | 1215 |
+| Packaged Food | 1102 |
+| Condiments & Cooking | 806 |
+| Breakfast | 799 |
+| Desserts | 748 |
+| Sweets | 659 |
+| Bakery | 579 |
+| Vegetables | 537 |
+| Protein Foods | 486 |
+| Staples & Grains | 456 |
+| Dairy & Eggs | 359 |
+| Fruits | 280 |
+| Supplements | 251 |
+| Nuts & Seeds | 236 |
 
 **By cuisine**
 
 | Cuisine | Foods |
 |---|---|
-| pan_indian | 3347 |
-| global | 1520 |
-| indo_chinese | 875 |
-| american | 553 |
-| north_indian | 521 |
-| tamil | 300 |
-| bengali | 250 |
-| kerala | 225 |
-| punjabi | 210 |
-| maharashtrian | 208 |
-| nepali_tibetan | 186 |
-| south_indian | 179 |
-| karnataka | 170 |
-| gujarati | 161 |
-| andhra_telangana | 158 |
-| jharkhandi | 132 |
-| italian | 117 |
-| continental | 103 |
-| chinese | 86 |
-| rajasthani | 82 |
-| mughlai | 76 |
-| goan | 74 |
-| hyderabadi | 74 |
-| odia | 58 |
-| french | 52 |
-| bihari_jharkhand | 46 |
-| northeastern | 45 |
-| japanese_korean | 43 |
-| mangalorean | 43 |
-| mexican | 40 |
-| middle_eastern | 40 |
-| assamese | 34 |
-| british | 32 |
-| chettinad | 31 |
-| malvani | 31 |
-| kashmiri | 29 |
-| awadhi | 18 |
-| sindhi | 17 |
-| parsi | 16 |
-| uttarakhandi | 13 |
-| himachali | 12 |
-| chhattisgarhi | 11 |
-| german | 11 |
-| spanish | 11 |
-| eastern_european | 9 |
-| greek | 8 |
-| haryanvi | 8 |
-| turkish | 8 |
-| southeast_asian | 7 |
-| thai | 7 |
-| anglo_indian | 4 |
-| latin_american | 4 |
-| burmese | 2 |
-| vietnamese | 2 |
+| pan_indian | 5249 |
+| global | 3844 |
+| indo_chinese | 901 |
+| american | 899 |
+| north_indian | 727 |
+| punjabi | 671 |
+| tamil | 400 |
+| bengali | 316 |
+| kerala | 297 |
+| maharashtrian | 266 |
+| continental | 244 |
+| south_indian | 211 |
+| gujarati | 204 |
+| italian | 199 |
+| karnataka | 197 |
+| nepali_tibetan | 197 |
+| mexican | 189 |
+| andhra_telangana | 173 |
+| japanese_korean | 172 |
+| mughlai | 170 |
+| jharkhandi | 147 |
+| bihari_jharkhand | 135 |
+| rajasthani | 118 |
+| middle_eastern | 117 |
+| goan | 107 |
+| hyderabadi | 102 |
+| chinese | 96 |
+| french | 85 |
+| northeastern | 68 |
+| odia | 67 |
+| british | 66 |
+| thai | 63 |
+| kashmiri | 54 |
+| chettinad | 50 |
+| awadhi | 48 |
+| mangalorean | 47 |
+| assamese | 42 |
+| southeast_asian | 41 |
+| latin_american | 38 |
+| malvani | 32 |
+| german | 28 |
+| greek | 27 |
+| turkish | 27 |
+| sindhi | 26 |
+| african | 25 |
+| himachali | 24 |
+| uttarakhandi | 22 |
+| parsi | 21 |
+| vietnamese | 20 |
+| spanish | 17 |
+| chhattisgarhi | 15 |
+| anglo_indian | 11 |
+| eastern_european | 11 |
+| haryanvi | 10 |
+| sri_lankan | 6 |
+| burmese | 5 |
 
 **By food type**
 
 | Food type | Foods |
 |---|---|
-| vegetarian | 4422 |
-| vegan | 3038 |
-| non_vegetarian | 1881 |
-| eggetarian | 958 |
+| vegetarian | 7930 |
+| vegan | 4834 |
+| non_vegetarian | 3401 |
+| eggetarian | 1179 |
 
 **By confidence**
 
 | Confidence | Foods |
 |---|---|
-| medium | 5875 |
-| low | 3661 |
-| high | 763 |
+| medium | 8019 |
+| low | 7855 |
+| high | 1470 |
 
 **By variability**
 
 | Variability | Foods |
 |---|---|
-| medium | 5827 |
+| medium | 12407 |
+| low | 2492 |
 | high | 2445 |
-| low | 2027 |
 
 **By data source**
 
 | Data source | Foods |
 |---|---|
-| recipe_based | 4644 |
-| estimated | 4564 |
-| standard_reference | 1091 |
+| estimated | 9486 |
+| recipe_based | 5941 |
+| standard_reference | 1917 |
 
 **Serving units:** `g` (mass), `kg` (mass), `ml` (volume), `litre` (volume), `tsp` (volume), `tbsp` (volume), `cup` (volume), `glass` (volume), `katori` (volume), `bowl` (volume), `bottle` (volume), `can` (volume), `peg` (volume), `piece` (count), `slice` (count), `plate` (count), `serving` (count), `handful` (count), `scoop` (count), `pinch` (count), `packet` (count), `roti` (count, = piece), `paratha` (count, = piece), `dosa` (count, = piece), `idli` (count, = piece), `vada` (count, = piece), `samosa` (count, = piece), `egg` (count, = piece), `banana` (count, = piece), `apple` (count, = piece), `orange` (count, = piece), `mango` (count, = piece), `breast` (count, = piece)
 
