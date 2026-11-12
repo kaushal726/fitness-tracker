@@ -1,10 +1,11 @@
-/* Draws the day as a picture for sharing: the calories against the goal, the macros, where the calories came from and each meal.
- * Always in the light colours, so it reads the same wherever it is sent. The pieces it draws with are in canvasKit.ts.
+/* Draws the day as a picture for sharing: the calories left or over, the four macros and each meal.
+ * Simple on purpose, and always in the light colours so it reads the same wherever it is sent.
+ * It is 1080 wide and between a square and 4:5 tall, however many foods there are. The pieces it draws with are in canvasKit.ts.
  */
-import { calorieStatus, type CalorieStatus, type DayReport } from "../../domain/dayReport.ts";
-import { formatDate, formatTime } from "../../lib/dates.ts";
+import { calorieBalance, type DayReport } from "../../domain/dayReport.ts";
+import { formatDate } from "../../lib/dates.ts";
 import { formatNumber } from "../../lib/format.ts";
-import { alpha, brandMark, C, card, type Ctx, dot, FONT, FONT_WEIGHTS, fillRound, fit, line, mix, pill, ring, text, tick, widthOf } from "./canvasKit.ts";
+import { alpha, brandMark, C, type Ctx, FONT, FONT_WEIGHTS, fillRound, fit, line, mix, ring, text, widthOf } from "./canvasKit.ts";
 
 export interface Who {
   name: string;
@@ -14,27 +15,25 @@ export interface Who {
 export interface PictureOptions {
   /** False leaves out the names of the foods: calories, macros and the total of each meal only. */
   withFoods: boolean;
-  /** The app's accent colour as a hex, for the ring, the name and the highlights. */
+  /** The app's accent colour as a hex, for the ring and the highlights. */
   primary: string;
 }
 
 const W = 1080;
-const PAD = 56;
-const INNER = W - PAD * 2;
-const CARD_PAD = 44;
-const GAP = 28;
-const LEFT = PAD + CARD_PAD;
-const RIGHT = W - PAD - CARD_PAD;
-const ITEM_ROW = 60;
-/** From the top of a meal to its first food: the name, the time, the bar and the macros; a little less when no foods follow. */
-const MEAL_HEAD = 188;
-const MEAL_HEAD_NO_FOODS = 170;
-const MEAL_GAP = 36;
-/** The most the picture can need besides one row for every food and a block for every meal; the picture is cut to what was drawn. */
-const BASE_HEIGHT = 1700;
-const ITEM_ALLOWANCE = 64;
-const MEAL_ALLOWANCE = 200;
-const PERCENT = 100;
+const PAD = 72;
+const LEFT = PAD;
+const RIGHT = W - PAD;
+const MIN_HEIGHT = 1080;
+const MAX_HEIGHT = 1350;
+const MEAL_ROW = 88;
+const MEAL_ROW_NO_FOODS = 64;
+const FOOTER = 120;
+const SECTION_GAP = 36;
+const HEADER_END = PAD + 248;
+const HERO_HEIGHT = 270;
+const MACROS_HEIGHT = 104;
+/** Where the first meal starts: under the header, the ring and the macros, each with its gap and a rule between. */
+const MEALS_TOP = HEADER_END + SECTION_GAP + HERO_HEIGHT + SECTION_GAP + MACROS_HEIGHT + SECTION_GAP + 12;
 
 const MACROS = [
   { key: "protein", label: "Protein", color: C.protein },
@@ -43,193 +42,109 @@ const MACROS = [
   { key: "fiber", label: "Fiber", color: C.fiber },
 ] as const;
 
-const SPLIT = [
-  { key: "protein", label: "Protein", color: C.protein },
-  { key: "carbs", label: "Carbs", color: C.carbs },
-  { key: "fat", label: "Fat", color: C.fat },
-] as const;
-
-const STATUS_NOTE: Record<CalorieStatus, string> = { under: "On the way", close: "Almost there", on: "Right on target", over: "Over today's goal" };
-
 const share = (value: number, of: number): number => (of > 0 ? value / of : 0);
-const wholePercent = (value: number, of: number): number => Math.round(share(value, of) * PERCENT);
 
 function header(ctx: Ctx, report: DayReport, who: Who, primary: string): number {
-  brandMark(ctx, PAD, PAD, 60, primary);
-  text(ctx, "EatRight", PAD + 78, PAD + 42, 800, 36, C.ink);
-  pill(ctx, formatDate(report.date, { weekday: "short", day: "numeric", month: "short", year: "numeric" }), W - PAD, PAD + 2, { size: 26, weight: 600, color: C.ink2, background: C.card, border: C.line }, true);
+  brandMark(ctx, LEFT, PAD, 48, primary);
+  text(ctx, "EatRight", LEFT + 64, PAD + 34, 800, 32, C.ink);
+  text(ctx, formatDate(report.date, { weekday: "short", day: "numeric", month: "short", year: "numeric" }), RIGHT, PAD + 33, 600, 28, C.ink3, "right");
   const title = who.name ? `${who.name}'s day` : "My day";
-  const titleY = PAD + 168;
-  ctx.font = `800 76px ${FONT}`;
-  text(ctx, fit(ctx, title, INNER), PAD, titleY, 800, 76, C.ink);
-  pill(ctx, `${who.goalLabel}  ·  ${formatNumber(report.targets.calories)} kcal a day`, PAD, titleY + 30, { size: 26, weight: 700, color: mix(primary, C.ink, 0.35), background: alpha(primary, 0.12), padX: 24, height: 52 });
-  return titleY + 30 + 52 + 48;
+  ctx.font = `800 64px ${FONT}`;
+  text(ctx, fit(ctx, title, RIGHT - LEFT), LEFT, PAD + 150, 800, 64, C.ink);
+  text(ctx, `${who.goalLabel}  ·  ${formatNumber(report.targets.calories)} kcal a day`, LEFT, PAD + 196, 600, 28, C.ink3);
+  return HEADER_END;
 }
 
-function hero(ctx: Ctx, report: DayReport, y: number, withFoods: boolean, primary: string): number {
-  const height = 420;
-  card(ctx, PAD, y, INNER, height);
+function hero(ctx: Ctx, report: DayReport, y: number, primary: string): number {
+  const height = HERO_HEIGHT;
   const { calories } = report.totals;
   const goal = report.targets.calories;
-  const status = calorieStatus(calories, goal);
-  const over = status === "over";
+  const { over, amount } = calorieBalance(calories, goal);
   const accent = over ? C.over : primary;
-  const left = goal - calories;
-
-  const radius = 134;
-  const cx = LEFT + 20 + radius + 18;
+  const radius = 112;
+  const stroke = 26;
+  const cx = LEFT + radius + stroke / 2 + 8;
   const cy = y + height / 2;
-  ring(ctx, { cx, cy, radius, stroke: 36, share: share(calories, goal), from: mix(accent, "#ffffff", 0.5), to: accent, glow: true });
-  text(ctx, formatNumber(Math.abs(left)), cx, cy + 22, 800, 84, over ? C.over : C.ink, "center");
-  text(ctx, over ? "kcal over" : "kcal left", cx, cy + 66, 700, 28, C.ink3, "center");
+  ring(ctx, { cx, cy, radius, stroke, share: share(calories, goal), from: mix(accent, "#ffffff", 0.45), to: accent });
+  text(ctx, formatNumber(amount), cx, cy + 14, 800, 68, over ? C.over : C.ink, "center");
+  text(ctx, over ? "kcal over" : "kcal left", cx, cy + 54, 600, 26, C.ink3, "center");
 
-  const x = cx + radius + 18 + 64;
-  const note = status === "under" ? `${wholePercent(calories, goal)}% of your goal` : STATUS_NOTE[status];
-  pill(ctx, note, x, y + 56, { size: 26, weight: 700, color: over ? C.over : mix(primary, C.ink, 0.35), background: alpha(accent, 0.13), padX: 24, height: 52 });
-
+  const x = cx + radius + stroke / 2 + 80;
   const stats: [string, number][] = [["Eaten", calories], ["Goal", goal]];
   stats.forEach(([label, value], i) => {
-    const sx = x + i * 250;
-    text(ctx, label, sx, y + 182, 600, 26, C.ink3);
-    text(ctx, formatNumber(value), sx, y + 242, 800, 58, C.ink);
-    text(ctx, "kcal", sx + widthOf(ctx, formatNumber(value), 800, 58) + 10, y + 242, 600, 26, C.ink3);
+    const top = y + 78 + i * 104;
+    text(ctx, label, x, top, 600, 26, C.ink3);
+    const number = formatNumber(value);
+    text(ctx, number, x, top + 52, 800, 52, C.ink);
+    text(ctx, "kcal", x + widthOf(ctx, number, 800, 52) + 10, top + 52, 600, 26, C.ink3);
   });
-  line(ctx, x, W - PAD - CARD_PAD, y + 284);
-  const logged = withFoods
-    ? `${report.itemCount} ${report.itemCount === 1 ? "food" : "foods"} across ${report.meals.length} ${report.meals.length === 1 ? "meal" : "meals"}`
-    : `${report.meals.length} ${report.meals.length === 1 ? "meal" : "meals"} logged`;
-  text(ctx, logged, x, y + 338, 600, 28, C.ink2);
-  return y + height + GAP;
+  return y + height;
 }
 
 function macros(ctx: Ctx, report: DayReport, y: number): number {
-  const height = 550;
-  card(ctx, PAD, y, INNER, height);
-  text(ctx, "MACROS", LEFT, y + CARD_PAD + 22, 800, 24, C.ink3);
-  const column = (INNER - CARD_PAD * 2) / MACROS.length;
-  const cy = y + 170;
+  const gap = 28;
+  const column = (RIGHT - LEFT - gap * (MACROS.length - 1)) / MACROS.length;
   MACROS.forEach(({ key, label, color }, i) => {
-    const cx = LEFT + column * (i + 0.5);
+    const x = LEFT + i * (column + gap);
     const value = report.totals[key];
     const goal = report.targets[key];
-    const done = share(value, goal);
-    ring(ctx, { cx, cy, radius: 62, stroke: 16, share: done, from: color, to: color });
-    if (done >= 1) tick(ctx, cx, cy, 30, color, 7);
-    else text(ctx, `${Math.min(99, Math.floor(done * PERCENT))}%`, cx, cy + 11, 800, 30, C.ink2, "center");
-    text(ctx, label, cx, cy + 118, 800, 28, color, "center");
+    text(ctx, label, x, y + 26, 700, 26, C.ink3);
     const eaten = formatNumber(value);
-    const rest = ` / ${formatNumber(goal)} g`;
-    const total = widthOf(ctx, eaten, 800, 32) + widthOf(ctx, rest, 600, 24);
-    const startX = cx - total / 2;
-    text(ctx, eaten, startX, cy + 162, 800, 32, C.ink);
-    text(ctx, rest, startX + widthOf(ctx, eaten, 800, 32), cy + 162, 600, 24, C.ink3);
+    text(ctx, eaten, x, y + 72, 800, 40, C.ink);
+    text(ctx, ` / ${formatNumber(goal)} g`, x + widthOf(ctx, eaten, 800, 40), y + 72, 600, 24, C.ink3);
+    fillRound(ctx, x, y + 94, column, 10, 5, alpha(color, 0.18));
+    fillRound(ctx, x, y + 94, Math.max(10, column * Math.min(1, share(value, goal))), 10, 5, color);
   });
-
-  line(ctx, LEFT, RIGHT, y + 366);
-  const split = report.energySplit;
-  if (split.protein + split.carbs + split.fat === 0) return y + height + GAP;
-  text(ctx, "Where your calories came from", LEFT, y + 418, 700, 28, C.ink2);
-  const barY = y + 442;
-  const barW = RIGHT - LEFT;
-  const gap = 6;
-  let bx = LEFT;
-  const parts = SPLIT.filter(({ key }) => split[key] > 0);
-  parts.forEach(({ key, color }) => {
-    const w = (barW - gap * (parts.length - 1)) * (split[key] / PERCENT);
-    fillRound(ctx, bx, barY, w, 30, 15, color);
-    bx += w + gap;
-  });
-  const legend = barW / SPLIT.length;
-  SPLIT.forEach(({ key, label, color }, i) => {
-    const lx = LEFT + legend * i;
-    dot(ctx, lx + 8, y + 510, 8, color);
-    text(ctx, `${label} ${split[key]}%`, lx + 26, y + 519, 700, 26, C.ink2);
-  });
-  return y + height + GAP;
+  return y + MACROS_HEIGHT;
 }
 
-function mealHeight(meal: DayReport["meals"][number], withFoods: boolean): number {
-  return (withFoods ? MEAL_HEAD + meal.items.length * ITEM_ROW : MEAL_HEAD_NO_FOODS) + MEAL_GAP;
-}
-
-function meals(ctx: Ctx, report: DayReport, y: number, withFoods: boolean, primary: string): number {
-  const blocks = report.meals.reduce((sum, m) => sum + mealHeight(m, withFoods), 0);
-  const height = CARD_PAD + 56 + blocks - MEAL_GAP + CARD_PAD;
-  card(ctx, PAD, y, INNER, height);
-  text(ctx, "MEALS", LEFT, y + CARD_PAD + 22, 800, 24, C.ink3);
-  let top = y + CARD_PAD + 56;
-  report.meals.forEach((meal, index) => {
-    text(ctx, meal.label, LEFT, top + 36, 800, 38, C.ink);
-    text(ctx, formatNumber(meal.calories), RIGHT - widthOf(ctx, " kcal", 600, 26), top + 36, 800, 38, C.ink, "right");
-    text(ctx, " kcal", RIGHT, top + 36, 600, 26, C.ink3, "right");
-    text(ctx, formatTime(meal.at), LEFT, top + 74, 600, 25, C.ink3);
-    text(ctx, `${wholePercent(meal.calories, report.totals.calories)}% of the day`, RIGHT, top + 74, 600, 25, C.ink3, "right");
-    fillRound(ctx, LEFT, top + 94, RIGHT - LEFT, 12, 6, alpha(primary, 0.14));
-    fillRound(ctx, LEFT, top + 94, Math.max(12, (RIGHT - LEFT) * share(meal.calories, report.totals.calories)), 12, 6, primary);
-
-    let mx = LEFT;
-    for (const { key, label, color } of SPLIT) {
-      const grams = `${label} ${formatNumber(meal[key])} g`;
-      dot(ctx, mx + 7, top + 138, 7, color);
-      text(ctx, grams, mx + 22, top + 146, 600, 25, C.ink2);
-      mx += 22 + widthOf(ctx, grams, 600, 25) + 36;
-    }
-
-    let rowY = top + MEAL_HEAD;
+function meals(ctx: Ctx, report: DayReport, y: number, withFoods: boolean): number {
+  const row = withFoods ? MEAL_ROW : MEAL_ROW_NO_FOODS;
+  let top = y;
+  for (const meal of report.meals) {
+    text(ctx, meal.label, LEFT, top + 32, 800, 32, C.ink);
+    text(ctx, formatNumber(meal.calories), RIGHT - widthOf(ctx, " kcal", 600, 26), top + 32, 800, 32, C.ink, "right");
+    text(ctx, " kcal", RIGHT, top + 32, 600, 26, C.ink3, "right");
     if (withFoods) {
-      meal.items.forEach((item, i) => {
-        const amount = `${formatNumber(item.calories)} kcal`;
-        const room = RIGHT - LEFT - widthOf(ctx, amount, 600, 27) - 32;
-        const portion = item.portion;
-        const portionW = widthOf(ctx, portion, 500, 25);
-        ctx.font = `600 28px ${FONT}`;
-        const name = fit(ctx, item.name, Math.max(120, room - portionW - 18));
-        text(ctx, name, LEFT, rowY + 8, 600, 28, C.ink);
-        text(ctx, portion, LEFT + widthOf(ctx, name, 600, 28) + 16, rowY + 8, 500, 25, C.ink3);
-        text(ctx, amount, RIGHT, rowY + 8, 600, 27, C.ink2, "right");
-        if (i < meal.items.length - 1) line(ctx, LEFT, RIGHT, rowY + 34);
-        rowY += ITEM_ROW;
-      });
+      const names = meal.items.map((item) => item.name).join(", ");
+      ctx.font = `500 25px ${FONT}`;
+      text(ctx, fit(ctx, names, RIGHT - LEFT), LEFT, top + 68, 500, 25, C.ink3);
     }
-    top += mealHeight(meal, withFoods);
-    if (index < report.meals.length - 1) line(ctx, LEFT, RIGHT, top - MEAL_GAP / 2 - 4);
-  });
-  return y + height + GAP;
+    top += row;
+  }
+  return top;
 }
 
-function footer(ctx: Ctx, y: number, primary: string): number {
-  brandMark(ctx, W / 2 - 150, y, 34, primary);
-  text(ctx, "Made with EatRight", W / 2 - 100, y + 26, 700, 28, C.ink2);
-  return y + 34;
+/** The height the picture needs for what is in it: a square at the least, 4:5 at the most. */
+function heightFor(report: DayReport, withFoods: boolean): number {
+  const rows = report.meals.length * (withFoods ? MEAL_ROW : MEAL_ROW_NO_FOODS);
+  return Math.min(MAX_HEIGHT, Math.max(MIN_HEIGHT, MEALS_TOP + rows + FOOTER));
 }
 
-/** The day as a PNG, 1080 pixels wide and as tall as its content. */
+/** The day as a PNG, 1080 pixels wide. */
 export async function renderDayImage(report: DayReport, who: Who, { withFoods, primary }: PictureOptions): Promise<Blob> {
   await Promise.all(FONT_WEIGHTS.map((weight) => document.fonts.load(`${weight} 28px ${FONT}`))).catch(() => undefined);
-  const work = document.createElement("canvas");
-  work.width = W;
-  work.height = BASE_HEIGHT + report.itemCount * ITEM_ALLOWANCE + report.meals.length * MEAL_ALLOWANCE;
-  const ctx = work.getContext("2d");
-  if (!ctx) throw new Error("Pictures are not available here");
-
-  let y = header(ctx, report, who, primary);
-  y = hero(ctx, report, y, withFoods, primary);
-  y = macros(ctx, report, y);
-  y = meals(ctx, report, y, withFoods, primary);
-  const end = footer(ctx, y + 8, primary) + PAD;
-
+  const height = heightFor(report, withFoods);
   const out = document.createElement("canvas");
   out.width = W;
-  out.height = Math.min(work.height, end);
-  const outCtx = out.getContext("2d");
-  if (!outCtx) throw new Error("Pictures are not available here");
-  outCtx.fillStyle = C.bg;
-  outCtx.fillRect(0, 0, out.width, out.height);
-  const glow = outCtx.createRadialGradient(0, 0, 0, 0, 0, 980);
-  glow.addColorStop(0, alpha(primary, 0.2));
+  out.height = height;
+  const ctx = out.getContext("2d");
+  if (!ctx) throw new Error("Pictures are not available here");
+
+  ctx.fillStyle = C.bg;
+  ctx.fillRect(0, 0, W, height);
+  const glow = ctx.createRadialGradient(0, 0, 0, 0, 0, 900);
+  glow.addColorStop(0, alpha(primary, 0.16));
   glow.addColorStop(1, alpha(primary, 0));
-  outCtx.fillStyle = glow;
-  outCtx.fillRect(0, 0, out.width, out.height);
-  outCtx.drawImage(work, 0, 0);
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, W, height);
+
+  let y = header(ctx, report, who, primary) + SECTION_GAP;
+  y = hero(ctx, report, y, primary) + SECTION_GAP;
+  line(ctx, LEFT, RIGHT, y - SECTION_GAP / 2);
+  y = macros(ctx, report, y) + SECTION_GAP;
+  line(ctx, LEFT, RIGHT, y - SECTION_GAP / 2);
+  meals(ctx, report, y + 12, withFoods);
+  text(ctx, "Made with EatRight", W / 2, height - PAD + 8, 600, 24, C.ink3, "center");
   return new Promise((resolve, reject) => out.toBlob((blob) => (blob ? resolve(blob) : reject(new Error("The picture could not be made"))), "image/png"));
 }

@@ -71,3 +71,20 @@
   line-height: 1.45;
   color: var(--ink-3);
 }
+
+.options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* Quieter than the full-size switch: it only picks what the picture shows. */
+.compact {
+  padding: 3px;
+}
+
+.compact button {
+  min-height: 36px;
+  padding: 0 8px;
+  font-size: calc(13px * var(--fs-scale));
+}

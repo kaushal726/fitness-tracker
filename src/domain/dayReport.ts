@@ -6,11 +6,6 @@ import type { MealType, NutritionTotals } from "../nutrition/types.ts";
 import { MEAL_LABELS, MEAL_ORDER } from "./meals.ts";
 
 const PERCENT = 100;
-/** Within this share over the goal a day still counts as on target. */
-const ON_TARGET_SHARE = 0.05;
-/** From this share of the goal up, a day under it is close enough to say "about there". */
-const CLOSE_SHARE = 0.9;
-
 export interface DayReportItem {
   name: string;
   /** "2 roti", "200 g". */
@@ -48,14 +43,16 @@ export interface DayReport {
   energySplit: EnergySplit;
 }
 
-export type CalorieStatus = "under" | "close" | "on" | "over";
+export interface CalorieBalance {
+  over: boolean;
+  /** Whole kcal left, or over when `over`; never negative. */
+  amount: number;
+}
 
-/** Where the day stands against its calorie goal: well under, close, on it, or over by more than a little. */
-export function calorieStatus(calories: number, goal: number): CalorieStatus {
-  if (goal <= 0) return "on";
-  if (calories > goal * (1 + ON_TARGET_SHARE)) return "over";
-  if (calories > goal) return "on";
-  return calories >= goal * CLOSE_SHARE ? "close" : "under";
+/** What is left of the day's calories, or by how much it went over, so the number and the word always agree. */
+export function calorieBalance(calories: number, goal: number): CalorieBalance {
+  const left = Math.round(goal) - Math.round(calories);
+  return { over: left < 0, amount: Math.abs(left) };
 }
 
 /** The share of calories from protein, carbs and fat in whole percents that add up to 100 (largest remainder). */

@@ -25,15 +25,15 @@ interface Props {
 type Scope = "foods" | "numbers";
 
 const SCOPES: { value: Scope; label: string }[] = [
-  { value: "foods", label: "With foods" },
-  { value: "numbers", label: "Numbers only" },
+  { value: "foods", label: "Foods" },
+  { value: "numbers", label: "Numbers" },
 ];
 
 type NameScope = "named" | "anonymous";
 
 const NAME_SCOPES: { value: NameScope; label: string }[] = [
-  { value: "named", label: "Show my name" },
-  { value: "anonymous", label: "Hide my name" },
+  { value: "named", label: "Name" },
+  { value: "anonymous", label: "No name" },
 ];
 
 const DAY_NAME: Intl.DateTimeFormatOptions = { weekday: "long", day: "numeric", month: "short" };
@@ -98,9 +98,10 @@ export function ShareDayCard({ profile, date, showHead = true }: Props) {
         <p className={styles.hint}>The picture could not be made on this device.</p>
       ) : picture ? (
         <>
-          <Segmented label="What to share" value={scope} onChange={setScope} options={SCOPES} />
-          <Segmented label="Your name" value={nameScope} onChange={setNameScope} options={NAME_SCOPES} />
-          <p className={styles.hint}>{scope === "foods" ? "Calories, macros, where the calories came from, and each food with its amount." : "Calories, macros and the total of each meal. No food names."}</p>
+          <div className={styles.options}>
+            <Segmented className={styles.compact} label="What to share" value={scope} onChange={setScope} options={SCOPES} />
+            <Segmented className={styles.compact} label="Your name" value={nameScope} onChange={setNameScope} options={NAME_SCOPES} />
+          </div>
           <div className={styles.frame}>
             <img className={styles.preview} src={picture.url} alt="Calories, macros and meals of the day" />
           </div>
@@ -114,7 +115,6 @@ export function ShareDayCard({ profile, date, showHead = true }: Props) {
               <Button variant="primary" size="lg" onClick={save}>Save picture</Button>
             )}
           </div>
-          <p className={styles.hint}>Share opens your phone's share sheet: pick WhatsApp and the chat.</p>
         </>
       ) : (
         <div className={styles.previewWait}>Making the picture…</div>

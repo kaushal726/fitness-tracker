@@ -1,4 +1,4 @@
-/* The small drawing pieces the shared picture is built from: text, rounded shapes, rings, pills and colour mixing.
+/* The small drawing pieces the shared picture is built from: text, rounded shapes, a ring and colour mixing.
  * Plain canvas, no library. Colours are always the light ones so the picture reads the same wherever it is sent.
  */
 export type Ctx = CanvasRenderingContext2D;
@@ -10,13 +10,11 @@ export const FONT_WEIGHTS = [500, 600, 700, 800] as const;
 
 export const C = {
   bg: "#f6f5f0",
-  card: "#ffffff",
-  line: "#ebe9e1",
+  line: "#e4e2da",
   ink: "#15201a",
   ink2: "#4a5a50",
   ink3: "#78877d",
   over: "#e2692f",
-  track: "#ebe9e1",
   protein: "#4a6fe3",
   carbs: "#dc9518",
   fat: "#d8597a",
@@ -77,15 +75,10 @@ export function roundRect(ctx: Ctx, x: number, y: number, w: number, h: number, 
   ctx.closePath();
 }
 
-export function fillRound(ctx: Ctx, x: number, y: number, w: number, h: number, r: number, fill: string | CanvasGradient, stroke?: string): void {
+export function fillRound(ctx: Ctx, x: number, y: number, w: number, h: number, r: number, fill: string | CanvasGradient): void {
   roundRect(ctx, x, y, w, h, r);
   ctx.fillStyle = fill;
   ctx.fill();
-  if (stroke) {
-    ctx.strokeStyle = stroke;
-    ctx.lineWidth = 2;
-    ctx.stroke();
-  }
 }
 
 /** The text cut with an ellipsis so it fits in `max` pixels, at the font last set. */
@@ -101,20 +94,6 @@ export function line(ctx: Ctx, x1: number, x2: number, y: number, color: string 
   ctx.fillRect(x1, y, x2 - x1, 2);
 }
 
-/** A white card with a soft shadow, so it lifts off the page without a heavy edge. */
-export function card(ctx: Ctx, x: number, y: number, w: number, h: number): void {
-  ctx.save();
-  ctx.shadowColor = "rgba(21, 32, 26, 0.07)";
-  ctx.shadowBlur = 36;
-  ctx.shadowOffsetY = 10;
-  fillRound(ctx, x, y, w, h, 44, C.card);
-  ctx.restore();
-  roundRect(ctx, x, y, w, h, 44);
-  ctx.strokeStyle = C.line;
-  ctx.lineWidth = 2;
-  ctx.stroke();
-}
-
 export interface RingOptions {
   cx: number;
   cy: number;
@@ -124,25 +103,19 @@ export interface RingOptions {
   share: number;
   from: string;
   to: string;
-  /** A soft glow of the end colour around the arc. */
-  glow?: boolean;
 }
 
 /** A ring: a faint track and an arc from the top that goes lighter to darker, with round ends. */
-export function ring(ctx: Ctx, { cx, cy, radius, stroke, share, from, to, glow = false }: RingOptions): void {
+export function ring(ctx: Ctx, { cx, cy, radius, stroke, share, from, to }: RingOptions): void {
   ctx.save();
   ctx.lineWidth = stroke;
   ctx.lineCap = "round";
-  ctx.strokeStyle = alpha(to, 0.16);
+  ctx.strokeStyle = alpha(to, 0.14);
   ctx.beginPath();
   ctx.arc(cx, cy, radius, 0, FULL_TURN);
   ctx.stroke();
   const done = Math.min(1, Math.max(0, share));
   if (done > 0) {
-    if (glow) {
-      ctx.shadowColor = alpha(to, 0.4);
-      ctx.shadowBlur = 30;
-    }
     if (done < FULL_RING_SHARE && typeof ctx.createConicGradient === "function") {
       // The round ends reach past the arc by half the stroke, so the gradient starts and ends that much further out.
       const cap = stroke / 2 / radius / FULL_TURN;
@@ -160,53 +133,9 @@ export function ring(ctx: Ctx, { cx, cy, radius, stroke, share, from, to, glow =
   ctx.restore();
 }
 
-export interface PillOptions {
-  size: number;
-  weight: number;
-  color: string;
-  background: string;
-  border?: string;
-  padX?: number;
-  height?: number;
-}
-
-/** A rounded label with its left edge (or right edge, when `alignRight`) at `x`; returns how wide it is. */
-export function pill(ctx: Ctx, label: string, x: number, y: number, { size, weight, color, background, border, padX = 26, height = 56 }: PillOptions, alignRight = false): number {
-  const width = widthOf(ctx, label, weight, size) + padX * 2;
-  const left = alignRight ? x - width : x;
-  fillRound(ctx, left, y, width, height, height / 2, background, border);
-  text(ctx, label, left + padX, y + height / 2 + size * 0.35, weight, size, color);
-  return width;
-}
-
-/** A tick, centred on a point. */
-export function tick(ctx: Ctx, cx: number, cy: number, size: number, color: string, weight: number): void {
-  ctx.save();
-  ctx.strokeStyle = color;
-  ctx.lineWidth = weight;
-  ctx.lineCap = "round";
-  ctx.lineJoin = "round";
-  ctx.beginPath();
-  ctx.moveTo(cx - size * 0.5, cy + size * 0.02);
-  ctx.lineTo(cx - size * 0.12, cy + size * 0.4);
-  ctx.lineTo(cx + size * 0.55, cy - size * 0.38);
-  ctx.stroke();
-  ctx.restore();
-}
-
-export function dot(ctx: Ctx, cx: number, cy: number, radius: number, color: string): void {
-  ctx.fillStyle = color;
-  ctx.beginPath();
-  ctx.arc(cx, cy, radius, 0, FULL_TURN);
-  ctx.fill();
-}
-
 /** The app's mark: a rounded square in the accent with a leaf. */
 export function brandMark(ctx: Ctx, x: number, y: number, size: number, primary: string): void {
-  const gradient = ctx.createLinearGradient(x, y, x + size, y + size);
-  gradient.addColorStop(0, mix(primary, "#ffffff", 0.3));
-  gradient.addColorStop(1, primary);
-  fillRound(ctx, x, y, size, size, size * 0.3, gradient);
+  fillRound(ctx, x, y, size, size, size * 0.3, primary);
   const u = size / 60;
   const cx = x + size / 2;
   const cy = y + size / 2;

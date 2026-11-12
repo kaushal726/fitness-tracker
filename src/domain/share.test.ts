@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Profile } from "../data/types.ts";
 import { entry } from "../test/entries.ts";
-import { calorieStatus, dayReport, energySplit } from "./dayReport.ts";
+import { calorieBalance, dayReport, energySplit } from "./dayReport.ts";
 import { computePlan } from "./goals.ts";
 import { EXPORT_FORMAT, exportFileName, monthExport } from "./monthExport.ts";
 
@@ -105,12 +105,17 @@ describe("energySplit", () => {
   });
 });
 
-describe("calorieStatus", () => {
-  it("says where the day stands against the goal", () => {
-    expect(calorieStatus(1200, 2000)).toBe("under");
-    expect(calorieStatus(1850, 2000)).toBe("close");
-    expect(calorieStatus(2050, 2000)).toBe("on");
-    expect(calorieStatus(2200, 2000)).toBe("over");
-    expect(calorieStatus(500, 0)).toBe("on");
+describe("calorieBalance", () => {
+  it("says left or over by the sign, however small the difference", () => {
+    expect(calorieBalance(1200, 2000)).toEqual({ over: false, amount: 800 });
+    expect(calorieBalance(2000, 2000)).toEqual({ over: false, amount: 0 });
+    expect(calorieBalance(2051, 2000)).toEqual({ over: true, amount: 51 });
+    expect(calorieBalance(1949, 2000)).toEqual({ over: false, amount: 51 });
+    expect(calorieBalance(2200, 2000)).toEqual({ over: true, amount: 200 });
+  });
+
+  it("counts whole kcal the way the numbers are shown", () => {
+    expect(calorieBalance(2000.4, 2000)).toEqual({ over: false, amount: 0 });
+    expect(calorieBalance(2000.6, 2000)).toEqual({ over: true, amount: 1 });
   });
 });
