@@ -1,6 +1,6 @@
 /* Service worker, generated at build time by vite-plugins/serviceWorker.ts.
  * Precaches the whole app so it opens offline. A new build installs in the background and
- * takes over when the user taps "Reload" (the page posts SKIP_WAITING).
+ * takes over when the user taps "Reload" (the page posts SKIP_WAITING). The page itself is fetched network-first.
  * Everything lives in IndexedDB on the device, so there is nothing else to fetch.
  */
 const CACHE_NAME = "fitly-app-__CACHE_VERSION__";
@@ -26,11 +26,28 @@ self.addEventListener("message", (event) => {
 // ignoreVary: module scripts send an Origin header; a server's "Vary: Origin" must not cause a miss offline.
 const MATCH = { ignoreSearch: true, ignoreVary: true };
 
+/** How long a page load waits for the network before it opens the copy kept here. */
+const NAVIGATION_TIMEOUT_MS = 3500;
+
+/**
+ * The page itself comes from the network first, so it always names the files of the build that is live. Served from
+ * the cache, an old page could ask for files a new deploy has already replaced while a new service worker takes over
+ * mid-load, and the app would open blank. Offline, or on a network too slow to answer, the kept copy opens instead.
+ */
+function openPage(req) {
+  const network = fetch(req).then((res) => {
+    if (!res.ok) throw new Error("The page did not load");
+    return res;
+  });
+  const slow = new Promise((_, reject) => setTimeout(() => reject(new Error("Slow network")), NAVIGATION_TIMEOUT_MS));
+  return Promise.race([network, slow]).catch(() => caches.match(INDEX_URL, MATCH).then((cached) => cached || network));
+}
+
 self.addEventListener("fetch", (event) => {
   const req = event.request;
   if (req.method !== "GET" || new URL(req.url).origin !== self.location.origin) return;
   if (req.mode === "navigate") {
-    event.respondWith(caches.match(INDEX_URL, MATCH).then((cached) => cached || fetch(req)));
+    event.respondWith(openPage(req));
     return;
   }
   event.respondWith(caches.match(req, MATCH).then((cached) => cached || fetch(req)));

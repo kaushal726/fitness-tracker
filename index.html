@@ -41,6 +41,20 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // The last resort: if the app's script could not load at all (a network that dropped mid-update), offer a
+      // reload instead of leaving an empty page. src/main.tsx sets the flag as soon as the script runs.
+      setTimeout(function () {
+        var root = document.getElementById("root");
+        if (window.__appStarted || !root) return;
+        root.innerHTML =
+          '<div style="padding:96px 24px;text-align:center;font-family:system-ui,sans-serif;color:inherit">' +
+          '<p style="font-size:18px;font-weight:700;margin:0 0 8px">The app did not open</p>' +
+          '<p style="opacity:.7;margin:0 0 20px">Your data is safe on this phone.</p>' +
+          '<button onclick="location.reload()" style="min-height:48px;padding:0 28px;border:0;border-radius:999px;font:inherit;font-weight:700">Reload</button>' +
+          "</div>";
+      }, 10000);
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

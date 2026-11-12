@@ -12,6 +12,9 @@ import { initStore } from "./data/store";
 import { ConfirmProvider } from "./ui/Confirm";
 import { ToastProvider } from "./ui/Toast";
 
+// Tells the fallback in index.html that the app's script loaded, so it does not offer a reload.
+(window as Window & { __appStarted?: boolean }).__appStarted = true;
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ErrorBoundary>
