@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { reminderSupport, startReminders, stopReminders, type ReminderSupport } from "../../app/reminderPush.ts";
+import { reminderSupport, sendTestReminder, startReminders, stopReminders, type ReminderSupport } from "../../app/reminderPush.ts";
 import { saveSettings } from "../../data/store.ts";
 import type { Settings } from "../../data/types.ts";
 import { formatHour, MEAL_LABELS, MEAL_ORDER } from "../../domain/meals.ts";
 import { clampReminder, REMINDER_STEP } from "../../domain/reminders.ts";
 import type { MealType } from "../../nutrition/types.ts";
 import { Button } from "../../ui/Button";
+import { IconBell } from "../../ui/icons";
 import { Field } from "../../ui/Field";
 import { Sheet } from "../../ui/Sheet";
 import { Stepper } from "../../ui/Stepper";
@@ -57,6 +58,18 @@ export function RemindersSheet({ settings, onClose }: Props) {
     onClose();
   };
 
+  const sendTest = async () => {
+    setBusy(true);
+    try {
+      await sendTestReminder();
+      toast("Test sent. It should arrive in a few seconds.");
+    } catch {
+      toast("The test could not be sent. Turn reminders off and on again, then try once more.", { tone: "error" });
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
     <Sheet
       open
@@ -83,6 +96,9 @@ export function RemindersSheet({ settings, onClose }: Props) {
           </Field>
         );
       })}
+      {support === "ready" && on && (
+        <Button variant="ghost" size="md" block icon={<IconBell />} disabled={busy} onClick={sendTest}>Send a test notification</Button>
+      )}
       <p className={styles.note}>Only these times and your time zone go to the reminder server. What you eat stays on this phone.</p>
     </Sheet>
   );

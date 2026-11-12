@@ -49,3 +49,11 @@ export async function stopReminders(): Promise<void> {
   await post("/unsubscribe", { endpoint: subscription.endpoint }).catch(() => undefined);
   await subscription.unsubscribe();
 }
+
+/** Asks the server for one reminder right now, to check they reach this phone. Throws when it could not be sent. */
+export async function sendTestReminder(): Promise<void> {
+  const reg = await navigator.serviceWorker.ready;
+  const subscription = await reg.pushManager.getSubscription();
+  if (!subscription) throw new Error("Reminders are not on for this phone");
+  await post("/test", { endpoint: subscription.endpoint });
+}

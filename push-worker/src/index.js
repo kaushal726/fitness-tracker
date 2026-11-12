@@ -95,6 +95,15 @@ async function handleFetch(request, env) {
     await env.SUBSCRIPTIONS.delete(SUB_PREFIX + (await sha256Hex(endpoint)));
     return json({ ok: true }, 200, cors);
   }
+  // A push right now to a phone that is already subscribed, to check the whole way through.
+  if (pathname === "/test") {
+    const endpoint = body?.endpoint;
+    if (typeof endpoint !== "string") return json({ error: "Bad request" }, 400, cors);
+    const record = await env.SUBSCRIPTIONS.get(SUB_PREFIX + (await sha256Hex(endpoint)), "json");
+    if (!record) return json({ error: "Not subscribed" }, 404, cors);
+    const delivered = await sendPush(record.endpoint, env);
+    return json({ ok: delivered }, delivered ? 200 : 410, cors);
+  }
   return json({ error: "Not found" }, 404, cors);
 }
 
