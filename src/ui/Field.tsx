@@ -1,6 +1,7 @@
-import { useId, type InputHTMLAttributes, type ReactNode } from "react";
+import { useId, useRef, useState, type InputHTMLAttributes, type ReactNode } from "react";
 import { cx } from "../lib/cx";
 import { IconChevronDown } from "./icons";
+import { Menu, type MenuOption } from "./Menu";
 import styles from "./Field.module.css";
 
 interface FieldProps {
@@ -52,22 +53,32 @@ interface SelectFieldProps {
   label: string;
   value: string;
   onChange: (value: string) => void;
-  options: { value: string; label: string }[];
+  options: MenuOption<string>[];
   optional?: boolean;
   hint?: ReactNode;
 }
 
-/** A dropdown that looks like the text fields: the phone's own picker opens when it is tapped. */
+/** A dropdown that looks like the text fields and opens the app's own small menu under it. */
 export function SelectField({ label, value, onChange, options, optional, hint }: SelectFieldProps) {
   const id = useId();
+  const [open, setOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const chosen = options.find((o) => o.value === value);
   return (
     <Field label={label} htmlFor={id} optional={optional} hint={hint}>
-      <div className={styles.control}>
-        <select id={id} className={cx(styles.input, styles.select)} value={value} onChange={(e) => onChange(e.target.value)}>
-          {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-        </select>
+      <button
+        ref={triggerRef}
+        id={id}
+        type="button"
+        className={cx(styles.control, styles.select, open && styles.selectOpen)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        onClick={() => setOpen((o) => !o)}
+      >
+        <span className={styles.selectValue}>{chosen?.label ?? value}</span>
         <IconChevronDown className={styles.caret} aria-hidden />
-      </div>
+      </button>
+      {open && <Menu anchor={triggerRef} options={options} value={value} label={label} matchWidth onPick={onChange} onClose={() => setOpen(false)} />}
     </Field>
   );
 }

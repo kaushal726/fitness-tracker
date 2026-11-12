@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Entry } from "../data/types.ts";
 import { ZERO_TOTALS } from "../nutrition/constants.ts";
-import { clampWaterGoal, foodWaterByDate, formatVolume, glassesOf, trackedWater, waterByDate, waterShare, waterSummary, withWater } from "./water.ts";
+import { clampGlassMl, clampWaterGoal,foodWaterByDate, formatVolume, glassesOf, trackedWater, waterByDate, waterShare, waterSummary, withWater } from "./water.ts";
 
 const entry = (foodId: string, date: string, grams: number): Entry => ({
   id: `${foodId}-${date}-${grams}`,
@@ -90,5 +90,12 @@ describe("water in words and numbers", () => {
     expect(clampWaterGoal(2130)).toBe(2250);
     expect(clampWaterGoal(100)).toBe(1000);
     expect(clampWaterGoal(99_999)).toBe(6000);
+  });
+
+  it("keeps a glass on a step and inside the limits", () => {
+    expect(clampGlassMl(260)).toBe(250);
+    expect(clampGlassMl(340)).toBe(350);
+    expect(clampGlassMl(10)).toBe(50);
+    expect(clampGlassMl(5000)).toBe(1000);
   });
 });

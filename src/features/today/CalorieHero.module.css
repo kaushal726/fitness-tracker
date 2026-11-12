@@ -7,10 +7,104 @@
 }
 
 .head {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 8px;
   min-height: 40px;
+}
+
+.head .title {
+  margin-right: auto;
+}
+
+/* A slow light that drifts across the card, so it never looks quite still. */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  background:
+    radial-gradient(closest-side at 30% 35%, color-mix(in srgb, var(--hero-ring-from) 22%, transparent), transparent 70%),
+    radial-gradient(closest-side at 72% 68%, color-mix(in srgb, var(--hero-ring-to) 16%, transparent), transparent 70%);
+  pointer-events: none;
+  animation: hero-drift 14s ease-in-out infinite alternate;
+}
+
+.hero > * {
+  position: relative;
+}
+
+@keyframes hero-drift {
+  from {
+    transform: translate3d(-6%, -4%, 0) rotate(0deg);
+  }
+  to {
+    transform: translate3d(6%, 5%, 0) rotate(12deg);
+  }
+}
+
+/* The flame flickers now and then. */
+.flame {
+  transform-origin: 50% 85%;
+  animation: flame-flicker 2.8s ease-in-out infinite;
+}
+
+@keyframes flame-flicker {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+  20% {
+    transform: scale(1.12, 1.18) rotate(-4deg);
+  }
+  40% {
+    transform: scale(0.96, 1.04) rotate(3deg);
+  }
+  60% {
+    transform: scale(1.08, 1.12) rotate(-2deg);
+  }
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 30px;
+  padding: 0 11px 0 9px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--hero-panel);
+  color: var(--hero-ink);
+  font: inherit;
+  font-size: max(11px, calc(12.5px * var(--fs-scale)));
+  font-weight: 800;
+  white-space: nowrap;
+  animation: status-in 420ms var(--ease-out) both;
+}
+
+.status svg {
+  font-size: calc(15px * var(--fs-scale));
+  stroke-width: 2.6;
+}
+
+.status.over {
+  background: color-mix(in srgb, var(--hero-over) 22%, transparent);
+  color: var(--hero-over);
+}
+
+button.status:active {
+  transform: scale(0.95);
+}
+
+.statusMore {
+  margin-right: -4px;
+}
+
+@keyframes status-in {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
 }
 
 .title {
@@ -49,7 +143,71 @@
 .gauge {
   display: flex;
   justify-content: center;
-  margin: 2px 0 -26px;
+  margin: 22px 0 -10px;
+}
+
+/* The ring, the ticks around it and the sparks that circle them share one centre. */
+.dial {
+  position: relative;
+}
+
+/* Three sparks that circle the dial, slowly, at different speeds. */
+.orbit {
+  position: absolute;
+  inset: -26px;
+  pointer-events: none;
+}
+
+.orbit i {
+  position: absolute;
+  inset: 0;
+  animation: orbit-spin 16s linear infinite;
+}
+
+.orbit i::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  border-radius: 50%;
+  background: var(--hero-ring-from);
+  box-shadow: 0 0 8px 2px color-mix(in srgb, var(--hero-ring-to) 70%, transparent);
+  opacity: 0.85;
+}
+
+.orbit i:nth-child(2) {
+  animation-duration: 23s;
+  animation-direction: reverse;
+  transform: rotate(120deg);
+}
+
+.orbit i:nth-child(2)::before {
+  width: 3px;
+  height: 3px;
+  opacity: 0.6;
+}
+
+.orbit i:nth-child(3) {
+  animation-duration: 31s;
+  transform: rotate(240deg);
+}
+
+.orbit i:nth-child(3)::before {
+  width: 4px;
+  height: 4px;
+  opacity: 0.7;
+}
+
+@keyframes orbit-spin {
+  from {
+    rotate: 0deg;
+  }
+  to {
+    rotate: 360deg;
+  }
 }
 
 .ring {
@@ -64,6 +222,7 @@
 }
 
 .leftValue {
+  text-shadow: 0 0 28px color-mix(in srgb, var(--hero-ring-to) 45%, transparent);
   font-size: calc(50px * var(--fs-scale));
   font-weight: 800;
   letter-spacing: -0.045em;
@@ -105,9 +264,21 @@
 }
 
 .figure dt {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-size: max(11px, calc(12.5px * var(--fs-scale)));
   font-weight: 700;
   color: var(--hero-ink-2);
+}
+
+.figure dt svg {
+  font-size: calc(13px * var(--fs-scale));
+  color: var(--hero-ring-to);
+}
+
+.over .figure dt svg {
+  color: var(--hero-over);
 }
 
 .figure dd {
@@ -116,4 +287,41 @@
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.15;
+}
+
+/* A light that runs round the card's edge. */
+@property --edge-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--edge-angle), transparent 0 62%, color-mix(in srgb, var(--hero-ring-from) 85%, transparent) 80%, transparent 92%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  pointer-events: none;
+  animation: edge-run 6s linear infinite;
+}
+
+@keyframes edge-run {
+  to {
+    --edge-angle: 360deg;
+  }
+}
+
+/* Over the goal, the dial and its sparks turn to the warning colour. */
+.over .dial {
+  --ring-to: var(--hero-over);
+}
+
+.over .orbit i::before {
+  background: var(--hero-over);
+  box-shadow: 0 0 8px 2px color-mix(in srgb, var(--hero-over) 70%, transparent);
 }

@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import type { Profile } from "../data/types.ts";
 import { ACTIVITY_LEVELS, bmr, computePlan, GOALS, profileIssues } from "./goals.ts";
 import { TIMELINE_PRESETS } from "./timeline.ts";
-import { dayInsight } from "./insights.ts";
-import { DEFAULT_MEAL_STARTS, isValidMealStarts, mealForTime } from "./meals.ts";
+import { calorieStatus, proteinShortfall } from "./insights.ts";
+import { DEFAULT_MEAL_STARTS, isValidMealStarts, MEAL_SHARES, mealBudget, mealForTime } from "./meals.ts";
 
 const base: Profile = { name: "", age: 30, gender: "male", heightCm: 175, weightKg: 75, goal: "maintain", targetWeightKg: null, weeks: null, activity: "moderate" };
 
@@ -118,6 +118,12 @@ describe("meal by time", () => {
     expect(mealForTime(at(2))).toBe("dinner");
     expect(mealForTime(at(9), { breakfast: 7, lunch: 9, snack: 15, dinner: 20 })).toBe("lunch");
   });
+  it("splits the whole day over the meals", () => {
+    expect(Object.values(MEAL_SHARES).reduce((sum, s) => sum + s, 0)).toBeCloseTo(1);
+    expect(mealBudget("lunch", 2000)).toBe(700);
+    expect(mealBudget("breakfast", 1960)).toBe(490);
+  });
+
   it("only accepts windows that increase through the day", () => {
     expect(isValidMealStarts(DEFAULT_MEAL_STARTS)).toBe(true);
     expect(isValidMealStarts({ breakfast: 8, lunch: 8, snack: 16, dinner: 19 })).toBe(false);
@@ -125,14 +131,19 @@ describe("meal by time", () => {
   });
 });
 
-describe("day insight", () => {
+describe("how the day stands", () => {
   const targets = { calories: 2000, protein: 120, carbs: 250, fat: 60, fiber: 30 };
   const totals = (calories: number, protein: number) => ({ calories, protein, carbs: 0, fat: 0, fiber: 0, sugar: 0, sodium: 0 });
-  it("covers the four situations", () => {
-    expect(dayInsight(totals(0, 0), targets, false, 9)?.tone).toBe("info");
-    expect(dayInsight(totals(2400, 130), targets, true, 21)?.tone).toBe("warn");
-    expect(dayInsight(totals(1500, 50), targets, true, 19)?.text).toContain("Protein");
-    expect(dayInsight(totals(1950, 118), targets, true, 21)?.tone).toBe("good");
-    expect(dayInsight(totals(600, 30), targets, true, 11)).toBeNull();
+  it("says over, on track, or nothing", () => {
+    expect(calorieStatus(totals(2400, 130), targets)).toBe("over");
+    expect(calorieStatus(totals(1950, 118), targets)).toBe("onTrack");
+    expect(calorieStatus(totals(1950, 60), targets)).toBeNull();
+    expect(calorieStatus(totals(600, 30), targets)).toBeNull();
+  });
+
+  it("speaks of protein only late in the day, and only when it is well short", () => {
+    expect(proteinShortfall(totals(1500, 50), targets, 19)).toBe(70);
+    expect(proteinShortfall(totals(1500, 50), targets, 11)).toBeNull();
+    expect(proteinShortfall(totals(1500, 90), targets, 21)).toBeNull();
   });
 });

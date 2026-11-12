@@ -12,6 +12,9 @@ export const GLASS_SIZES_ML = [200, 250, 300, 500] as const;
 export const MIN_WATER_GOAL_ML = 1000;
 export const MAX_WATER_GOAL_ML = 6000;
 export const WATER_GOAL_STEP_ML = 250;
+export const MIN_GLASS_ML = 50;
+export const MAX_GLASS_ML = 1000;
+export const GLASS_STEP_ML = 25;
 export const BOTTLE_ML = 500;
 export const LARGE_BOTTLE_ML = 1000;
 /** More than anyone drinks in a day: a stop for a stuck finger, not a health limit. */
@@ -67,8 +70,16 @@ export function formatVolume(ml: number): string {
 
 /** A goal kept inside what the app offers, on a step. */
 export function clampWaterGoal(ml: number): number {
-  const stepped = Math.round(ml / WATER_GOAL_STEP_ML) * WATER_GOAL_STEP_ML;
-  return Math.min(MAX_WATER_GOAL_ML, Math.max(MIN_WATER_GOAL_ML, stepped));
+  return clampToStep(ml, WATER_GOAL_STEP_ML, MIN_WATER_GOAL_ML, MAX_WATER_GOAL_ML);
+}
+
+/** A glass size kept inside what the app offers, on a step. */
+export function clampGlassMl(ml: number): number {
+  return clampToStep(ml, GLASS_STEP_ML, MIN_GLASS_ML, MAX_GLASS_ML);
+}
+
+function clampToStep(value: number, step: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, Math.round(value / step) * step));
 }
 
 export interface WaterSummary {

@@ -1,12 +1,78 @@
 /* A nutrient's tile wears the soft tint of its colour; the label and the tick wear the colour itself. */
 .tile {
+  position: relative;
+  min-width: 0;
+  border-radius: var(--r-md);
+  background: var(--tile-soft);
+}
+
+.inner {
   display: flex;
   align-items: center;
   gap: 10px;
+  width: 100%;
+  height: 100%;
   min-width: 0;
   padding: 10px 12px 10px 10px;
-  border-radius: var(--r-md);
-  background: var(--tile-soft);
+  border: 0;
+  border-radius: inherit;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+button.inner:active {
+  transform: scale(0.98);
+}
+
+/* A nutrient that needs a look: an outline in the warning colour that pulses softly. */
+.alert {
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--warn) 55%, transparent);
+}
+
+.alert::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--warn) 45%, transparent);
+  pointer-events: none;
+  animation: tile-pulse 2.6s ease-out 0.8s infinite;
+}
+
+@keyframes tile-pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--warn) 40%, transparent);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 8px color-mix(in srgb, var(--warn) 0%, transparent);
+  }
+}
+
+.alertText {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  font-size: max(11px, calc(12px * var(--fs-scale)));
+  font-weight: 800;
+  color: var(--warn);
+  white-space: nowrap;
+}
+
+.alertText svg {
+  flex: none;
+  font-size: calc(13px * var(--fs-scale));
+  stroke-width: 2.6;
+}
+
+.more {
+  flex: none;
+  margin-left: auto;
+  color: var(--warn);
+  font-size: calc(18px * var(--fs-scale));
 }
 
 .protein { --tile-color: var(--n-protein); --tile-soft: var(--n-protein-soft); }

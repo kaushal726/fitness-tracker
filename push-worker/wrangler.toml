@@ -1,0 +1,18 @@
+# EatRight meal reminders. Deploy with: npx wrangler deploy (from this folder). See README.md.
+name = "eatright-push"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+
+# Every five minutes: sends the reminders that fall in the last five minutes.
+[triggers]
+crons = ["*/5 * * * *"]
+
+[vars]
+VAPID_PUBLIC_KEY = "BImzCBk_t4642UeNnNNHAvsIgBnf0wG69jWO-txU4B-2CUA2uSb3BWZLHsz2cKZThMlboAyUi41c7wtNs0zY89c"
+# Who push services can contact about this sender: the app's own address, no email needed.
+VAPID_SUBJECT = "https://kaushal726.github.io/fitness-tracker/"
+ALLOWED_ORIGINS = "https://kaushal726.github.io,http://localhost:8790,http://[::1]:8790"
+
+[[kv_namespaces]]
+binding = "SUBSCRIPTIONS"
+id = "000167c032cb4c1aa0332c61a915f66c"

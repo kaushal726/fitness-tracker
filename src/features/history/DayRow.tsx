@@ -1,50 +1,52 @@
-import { formatDayLabel, parseISODate } from "../../lib/dates.ts";
+import type { CSSProperties } from "react";
+import { dayVerdict, type DayVerdict } from "../../domain/dayVerdict.ts";
+import { useAnimatesIn } from "../../lib/arrival.ts";
+import { formatDayLabel } from "../../lib/dates.ts";
 import { cx } from "../../lib/cx.ts";
 import { formatNumber } from "../../lib/format.ts";
-import type { NutritionTotals } from "../../nutrition/types.ts";
-import { IconChevronRight, IconWater } from "../../ui/icons";
-import { ProgressBar } from "../../ui/ProgressBar";
+import { IconChevronRight } from "../../ui/icons";
+import { Ring } from "../../ui/Ring";
 import styles from "./DayRow.module.css";
 
-const OVER_TOLERANCE = 1.05;
+const RING_SIZE = 46;
+const RING_STROKE = 4;
+const PERCENT = 100;
+/** Rows further down arrive with the last of the first screenful, not one by one. */
+const MAX_STAGGER = 8;
 
 interface Props {
   date: string;
-  totals: NutritionTotals;
+  calories: number;
   goal: number;
-  /** Glasses of water that day; left out when there were none. */
-  waterGlasses?: number;
+  /** Today is still going: what is under the goal is what is left, not a shortfall. */
+  isToday: boolean;
+  /** Its place in the list: the rows arrive one after another. */
+  index: number;
   onOpen: (date: string) => void;
 }
 
-/** One logged day: when, how much, and how that sits against the goal. */
-export function DayRow({ date, totals, goal, waterGlasses = 0, onOpen }: Props) {
-  const d = parseISODate(date);
-  const over = totals.calories > goal * OVER_TOLERANCE;
-  const share = goal > 0 ? Math.round((totals.calories / goal) * 100) : 0;
+function verdictText({ kind, amount }: DayVerdict, isToday: boolean): string {
+  if (kind === "over") return `${formatNumber(amount)} kcal over`;
+  if (kind === "under") return `${formatNumber(amount)} kcal ${isToday ? "left" : "under"}`;
+  return "On track";
+}
+
+/** One logged day, kept to a glance: a ring of how much of the goal was eaten, the day, how it went, and the calories. */
+export function DayRow({ date, calories, goal, isToday, index, onOpen }: Props) {
+  const animates = useAnimatesIn();
+  const verdict = dayVerdict(calories, goal);
+  const over = verdict.kind === "over";
+  const share = goal > 0 ? Math.round((calories / goal) * PERCENT) : 0;
   return (
-    <button type="button" className={styles.row} onClick={() => onOpen(date)}>
-      <span className={styles.date} aria-hidden>
-        <span className={styles.weekday}>{d.toLocaleDateString("en-IN", { weekday: "short" })}</span>
-        <span className={styles.number}>{d.getDate()}</span>
-      </span>
+    <button type="button" className={cx(styles.row, animates && "motion-rise")} style={{ "--i": Math.min(index, MAX_STAGGER) } as CSSProperties} onClick={() => onOpen(date)}>
+      <Ring value={calories} max={goal} size={RING_SIZE} stroke={RING_STROKE} tone={over ? "over" : "primary"} label={`${share}% of the goal`}>
+        <span className={cx(styles.share, "num")}>{share}%</span>
+      </Ring>
       <span className={styles.main}>
-        <span className={styles.top}>
-          <span className={styles.title}>
-            {formatDayLabel(date)}
-            {waterGlasses > 0 && (
-              <span className={cx(styles.water, "num")} role="img" aria-label={`${waterGlasses.toLocaleString("en-IN")} glasses of water`}>
-                <IconWater aria-hidden /> {waterGlasses.toLocaleString("en-IN")}
-              </span>
-            )}
-          </span>
-          <span className={cx(styles.kcal, "num", over && styles.overText)}>{formatNumber(totals.calories)}<small> kcal</small></span>
-        </span>
-        <ProgressBar value={totals.calories} max={goal} tone={over ? "over" : "primary"} size="sm" label={`${share}% of goal`} />
-        <span className={cx(styles.macros, "num")}>
-          Protein {formatNumber(totals.protein)} g · Carbs {formatNumber(totals.carbs)} g · Fat {formatNumber(totals.fat)} g
-        </span>
+        <span className={styles.title}>{formatDayLabel(date)}</span>
+        <span className={cx(styles.verdict, styles[verdict.kind], isToday && styles.today, "num")}>{verdictText(verdict, isToday)}</span>
       </span>
+      <span className={cx(styles.kcal, "num", over && styles.overText)}>{formatNumber(calories)}<small> kcal</small></span>
       <IconChevronRight className={styles.chevron} aria-hidden />
     </button>
   );

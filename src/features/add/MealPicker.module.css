@@ -1,84 +1,46 @@
-.root {
-  position: relative;
-  display: inline-block;
-}
-
+/* A pill with the meal's own picture: where the foods go, and the way to change it. */
 .trigger {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  min-height: 32px;
-  margin-left: -8px;
-  padding: 0 8px;
-  border: 0;
+  gap: 8px;
+  min-height: 40px;
+  margin-left: -4px;
+  padding: 4px 10px 4px 4px;
+  border: 1px solid var(--line);
   border-radius: var(--r-pill);
-  background: none;
-  font-size: calc(13.5px * var(--fs-scale));
+  background: var(--surface);
   color: var(--ink-3);
+  font-size: calc(13.5px * var(--fs-scale));
+  transition: border-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out);
 }
 
-.trigger strong {
-  font-weight: 750;
-  color: var(--primary);
+.trigger:active {
+  transform: scale(0.97);
 }
 
-.trigger:hover {
-  background: var(--surface-2);
+.open {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+.icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.text strong {
+  font-weight: 800;
+  color: var(--ink);
 }
 
 .chevron {
-  color: var(--primary);
+  color: var(--ink-3);
   font-size: calc(16px * var(--fs-scale));
   transition: transform var(--dur) var(--ease-out);
 }
 
-.chevronOpen {
+.open .chevron {
   transform: rotate(180deg);
-}
-
-.menu {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: -8px;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  min-width: 190px;
-  padding: 6px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--r-md);
-  box-shadow: var(--shadow-float);
-  animation: menuIn var(--dur-fast) var(--ease-out);
-}
-
-.option {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  min-height: 44px;
-  padding: 0 12px;
-  border: 0;
-  border-radius: var(--r-sm);
-  background: none;
-  font-size: calc(15px * var(--fs-scale));
-  font-weight: 650;
-  text-align: left;
-}
-
-.option:hover,
-.option:active {
-  background: var(--surface-2);
-}
-
-.option[aria-checked="true"] {
   color: var(--primary);
-}
-
-@keyframes menuIn {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
 }

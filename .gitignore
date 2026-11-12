@@ -2,3 +2,6 @@ node_modules
 dist
 *.tsbuildinfo
 .DS_Store
+
+# Wrangler's local cache for the push server
+push-worker/.wrangler/

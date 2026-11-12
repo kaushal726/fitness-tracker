@@ -77,7 +77,7 @@ export function App() {
                 {tab === "today" && <TodayScreen profile={profile} date={date} today={today} onSelectDate={selectDate} onAdd={openAdd} />}
                 {tab === "history" && <HistoryScreen profile={profile} today={today} onOpenDay={openDay} />}
                 {tab === "insights" && <InsightsScreen profile={profile} today={today} onAdd={openAdd} />}
-                {tab === "body" && <BodyScreen profile={profile} today={today} onUpdateWeight={() => selectTab("profile")} />}
+                {tab === "body" && <BodyScreen profile={profile} today={today} />}
                 {tab === "profile" && <ProfileScreen profile={profile} today={today} />}
               </Screen>
             </CoveredContext.Provider>

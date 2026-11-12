@@ -59,7 +59,7 @@ export interface DayIdeas {
   foods: Idea[];
 }
 
-/** What is off about the day, most pressing first. Uses the same lines as the one-sentence insight on Today. */
+/** What is off about the day, most pressing first. Uses the same lines as the tags on Today (calories over, protein short). */
 export function dayGaps(totals: NutritionTotals, targets: Targets, hour: number): DayGap[] {
   const gaps: DayGap[] = [];
   if (totals.calories > targets.calories * OVER_SHARE) gaps.push({ nutrient: "calories", kind: "over", amount: totals.calories - targets.calories, eaten: totals.calories, goal: targets.calories });

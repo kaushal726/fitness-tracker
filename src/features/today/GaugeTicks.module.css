@@ -1,0 +1,24 @@
+.ticks {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.tick {
+  stroke: var(--hero-ring-track);
+  stroke-width: 2;
+  stroke-linecap: round;
+  transition: stroke 260ms ease, filter 260ms ease;
+  transition-delay: calc(var(--i) * 14ms);
+}
+
+.long {
+  stroke-width: 2.6;
+}
+
+/* Lit ticks wear the ring's own colour and glow a little. */
+.lit {
+  stroke: var(--ring-to, var(--hero-ring-to));
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--ring-to, var(--hero-ring-to)) 70%, transparent));
+}

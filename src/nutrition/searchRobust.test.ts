@@ -62,3 +62,10 @@ describe("search ignores how many was typed", () => {
     expect(names("chicken 65", 3)[0]).toMatch(/65/);
   });
 });
+
+describe("a drink asked for by its own name", () => {
+  it("finds filter coffee first, not a coffee that only shares the word", () => {
+    expect(searchFood("filter coffee", { limit: 3 })[0].id).toBe("south_indian_filter_coffee");
+    expect(searchFood("filtr coffee", { limit: 3 })[0].id).toBe("south_indian_filter_coffee");
+  });
+});

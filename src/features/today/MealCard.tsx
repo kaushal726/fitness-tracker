@@ -1,29 +1,39 @@
 import { useId, useState, type CSSProperties } from "react";
-import type { IconType } from "react-icons";
 import type { Entry } from "../../data/types.ts";
+import { KCAL_PER_G } from "../../domain/goals.ts";
 import { MEAL_LABELS } from "../../domain/meals.ts";
 import { useAnimatesIn } from "../../lib/arrival.ts";
 import { cx } from "../../lib/cx.ts";
 import { formatTime } from "../../lib/dates.ts";
 import { formatNumber, formatPortionText } from "../../lib/format.ts";
 import type { MealType } from "../../nutrition/types.ts";
-import { Card } from "../../ui/Card";
 import { IconButton } from "../../ui/Button";
+import { Card } from "../../ui/Card";
 import { CountUp } from "../../ui/CountUp";
-import { IconBreakfast, IconChevronDown, IconDinner, IconLunch, IconPlus, IconSnack } from "../../ui/icons";
+import { IconChevronDown, IconPlus } from "../../ui/icons";
+import { Ring } from "../../ui/Ring";
+import { MealIcon, MEAL_TONE } from "../meals/MealIcon.tsx";
 import styles from "./MealCard.module.css";
-
-const MEAL_ICONS: Record<MealType, IconType> = { breakfast: IconBreakfast, lunch: IconLunch, snack: IconSnack, dinner: IconDinner };
-const MEAL_TONES: Record<MealType, string> = { breakfast: styles.amber, lunch: styles.green, snack: styles.rose, dinner: styles.blue };
 
 /** A meal's total glides to a new value (an entry added, changed or removed) instead of jumping. */
 const TOTAL_COUNT_MS = 500;
+const RING_SIZE = 50;
+const RING_STROKE = 4;
+
+const MACROS = [
+  { key: "protein", label: "Protein" },
+  { key: "carbs", label: "Carbs" },
+  { key: "fat", label: "Fat" },
+] as const;
+const PERCENT = 100;
 
 interface Props {
   meal: MealType;
   /** Its place on the page: the cards arrive one after another. */
   index: number;
   entries: Entry[];
+  /** About how many calories this meal could have: its share of the day's goal. */
+  budget: number;
   /** Whether the entries are showing. A meal with nothing in it has nothing to fold. */
   open: boolean;
   onToggle: (meal: MealType) => void;
@@ -31,9 +41,11 @@ interface Props {
   onAdd: (meal: MealType) => void;
 }
 
-/** One meal of the day: its total on a single line, and what was eaten underneath, which can be folded away. */
-export function MealCard({ meal, index, entries, open, onToggle, onOpen, onAdd }: Props) {
-  const Icon = MEAL_ICONS[meal];
+/**
+ * One meal of the day. Folded, it is one line: the meal's picture in a ring of how much of its share it has had,
+ * how many foods, and its total. Open, it lists each food and the meal's protein, carbs and fat.
+ */
+export function MealCard({ meal, index, entries, budget, open, onToggle, onOpen, onAdd }: Props) {
   const animates = useAnimatesIn();
   // What was here when the card appeared is not new: only food that comes after it rises into place and glows.
   const [known] = useState(() => new Set(entries.map((e) => e.id)));
@@ -41,22 +53,39 @@ export function MealCard({ meal, index, entries, open, onToggle, onOpen, onAdd }
   const kcal = entries.reduce((sum, e) => sum + e.nutrition.calories, 0);
   const label = MEAL_LABELS[meal];
   const foldable = entries.length > 0;
-  const detail = foldable ? `${entries.length} ${entries.length === 1 ? "item" : "items"}` : "Nothing added yet";
+  const count = `${entries.length} ${entries.length === 1 ? "item" : "items"}`;
+  const grams = MACROS.map((m) => ({ ...m, grams: entries.reduce((sum, e) => sum + e.nutrition[m.key], 0) }));
+  const macroKcal = grams.reduce((sum, m) => sum + m.grams * KCAL_PER_G[m.key], 0);
+  // Each nutrient's share of the meal's calories, for the bar that splits them.
+  const macros = grams.map((m) => ({ ...m, share: macroKcal > 0 ? (m.grams * KCAL_PER_G[m.key]) / macroKcal : 0 }));
 
   const summary = (
     <>
-      <span className={cx(styles.tile, MEAL_TONES[meal])} aria-hidden><Icon /></span>
+      <Ring value={kcal} max={budget} size={RING_SIZE} stroke={RING_STROKE} tone={MEAL_TONE[meal]} label={`${formatNumber(kcal)} of about ${formatNumber(budget)} kcal`}>
+        <MealIcon meal={meal} size="sm" className={styles.icon} />
+      </Ring>
       <span className={styles.headText}>
         <span className={styles.name}>{label}</span>
-        <span className={styles.count}>{detail}</span>
+        <span className={styles.detail}>{foldable ? count : `Aim for about ${formatNumber(budget)} kcal`}</span>
       </span>
-      {foldable && <span className={cx(styles.total, "num")}><CountUp value={kcal} duration={TOTAL_COUNT_MS} /><small> kcal</small></span>}
-      {foldable && <IconChevronDown className={cx(styles.chevron, open && styles.chevronOpen)} aria-hidden />}
+      {foldable && (
+        <span className={styles.total}>
+          <span className={cx(styles.totalValue, "num")}><CountUp value={kcal} duration={TOTAL_COUNT_MS} /><small> kcal</small></span>
+          <span className={cx(styles.totalOf, "num")}>of {formatNumber(budget)}</span>
+        </span>
+      )}
+      {foldable && <span className={styles.chevron} aria-hidden><IconChevronDown /></span>}
     </>
   );
 
   return (
-    <Card padded={false} className={cx(styles.card, animates && "motion-rise")} style={{ "--i": index } as CSSProperties} aria-label={label} role="region">
+    <Card
+      padded={false}
+      className={cx(styles.card, styles[MEAL_TONE[meal]], !foldable && styles.empty, foldable && open && styles.isOpen, animates && "motion-rise")}
+      style={{ "--i": index } as CSSProperties}
+      aria-label={label}
+      role="region"
+    >
       <header className={styles.header}>
         <h2 className={styles.heading}>
           {foldable ? (
@@ -65,7 +94,7 @@ export function MealCard({ meal, index, entries, open, onToggle, onOpen, onAdd }
             <span className={styles.summary}>{summary}</span>
           )}
         </h2>
-        <IconButton label={`Add to ${label}`} icon={<IconPlus />} variant="soft" onClick={() => onAdd(meal)} />
+        <IconButton label={`Add to ${label}`} icon={<IconPlus />} variant="soft" className={styles.add} onClick={() => onAdd(meal)} />
       </header>
 
       {foldable && (
@@ -75,6 +104,7 @@ export function MealCard({ meal, index, entries, open, onToggle, onOpen, onAdd }
               {entries.map((e) => (
                 <li key={e.id} className={known.has(e.id) ? undefined : "motion-arrive"}>
                   <button type="button" className={styles.entry} onClick={() => onOpen(e)}>
+                    <span className={styles.dot} aria-hidden />
                     <span className={styles.entryMain}>
                       <span className={styles.entryName}>{e.name}</span>
                       <span className={styles.entryMeta}>{formatPortionText(e.portionText)} · {formatTime(e.at)}</span>
@@ -84,6 +114,19 @@ export function MealCard({ meal, index, entries, open, onToggle, onOpen, onAdd }
                 </li>
               ))}
             </ul>
+            <footer className={styles.foot}>
+              <span className={styles.split} role="img" aria-label={`Calories from ${macros.map((m) => `${m.label.toLowerCase()} ${Math.round(m.share * PERCENT)}%`).join(", ")}`}>
+                {macros.map((m) => m.share > 0 && <span key={m.key} className={styles[`m_${m.key}`]} style={{ flexGrow: m.share }} />)}
+              </span>
+              <span className={styles.macros}>
+                {macros.map((m) => (
+                  <span key={m.key} className={cx(styles.macro, styles[`m_${m.key}`])}>
+                    <span className={styles.macroLabel}>{m.label}</span>
+                    <span className={cx(styles.macroValue, "num")}>{formatNumber(m.grams)}<small> g</small></span>
+                  </span>
+                ))}
+              </span>
+            </footer>
           </div>
         </div>
       )}

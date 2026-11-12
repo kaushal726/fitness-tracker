@@ -1,12 +1,32 @@
+/* Each meal wears its own colour: the ring, the glow when open, the dots by its foods. */
 .card {
+  position: relative;
   overflow: hidden;
+  transition: box-shadow var(--dur) var(--ease-out), border-color var(--dur) ease;
+}
+
+.carbs { --meal-color: var(--n-carbs); --meal-soft: var(--n-carbs-soft); }
+.fiber { --meal-color: var(--n-fiber); --meal-soft: var(--n-fiber-soft); }
+.fat { --meal-color: var(--n-fat); --meal-soft: var(--n-fat-soft); }
+.protein { --meal-color: var(--n-protein); --meal-soft: var(--n-protein-soft); }
+
+/* Open, the card lifts a little in its own colour. */
+.isOpen {
+  box-shadow: var(--shadow-card), 0 14px 30px -18px color-mix(in srgb, var(--meal-color) 55%, transparent);
+}
+
+/* A meal with nothing in it yet: a quiet dashed outline that asks to be filled. */
+.empty {
+  border: 1.5px dashed color-mix(in srgb, var(--meal-color) 35%, var(--line));
+  background: color-mix(in srgb, var(--meal-soft) 35%, var(--surface));
+  box-shadow: none;
 }
 
 .header {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding-right: 14px;
+  gap: 2px;
+  padding-right: 12px;
 }
 
 .heading {
@@ -16,13 +36,14 @@
   font: inherit;
 }
 
-/* The meal's name, what is in it and its total. A button when there is something to fold. */
+/* The meal's ring, its name, what is in it and its total. A button when there is something to fold. */
 .summary {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   width: 100%;
-  padding: 14px 6px 14px 16px;
+  min-height: 76px;
+  padding: 12px 6px 12px 14px;
   border: 0;
   background: none;
   color: inherit;
@@ -35,34 +56,32 @@
   transition: background var(--dur-fast) ease;
 }
 
-.toggle:hover {
-  background: var(--surface-2);
+/* The fold answers on its arrow, not with a square block across the card. */
+.toggle:hover .chevron,
+.toggle:focus-visible .chevron {
+  background: var(--meal-soft);
+  color: var(--meal-color);
 }
 
-.toggle:active {
-  background: var(--surface-3);
+.toggle:active .chevron {
+  transform: scale(0.9);
 }
 
-.tile {
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 15px;
-  font-size: calc(22px * var(--fs-scale));
+.isOpen .toggle:active .chevron {
+  transform: rotate(180deg) scale(0.9);
 }
 
-.amber { background: var(--n-carbs-soft); color: var(--n-carbs); }
-.green { background: var(--n-fiber-soft); color: var(--n-fiber); }
-.rose { background: var(--n-fat-soft); color: var(--n-fat); }
-.blue { background: var(--n-protein-soft); color: var(--n-protein); }
+.icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
 
 .headText {
   flex: 1;
   display: flex;
   flex-direction: column;
+  gap: 1px;
   min-width: 0;
 }
 
@@ -75,8 +94,7 @@
   white-space: nowrap;
 }
 
-.count {
-  margin-top: 1px;
+.detail {
   font-size: calc(13px * var(--fs-scale));
   font-weight: 500;
   color: var(--ink-3);
@@ -87,12 +105,25 @@
 
 .total {
   flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.totalValue {
   font-size: calc(16px * var(--fs-scale));
   font-weight: 800;
   letter-spacing: -0.02em;
+  white-space: nowrap;
 }
 
-.total small,
+.totalOf {
+  font-size: max(11px, calc(11.5px * var(--fs-scale)));
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+.totalValue small,
 .entryKcal small {
   font-size: max(11px, calc(12px * var(--fs-scale)));
   font-weight: 600;
@@ -100,15 +131,28 @@
   color: var(--ink-3);
 }
 
+/* The fold's arrow on a small round chip of the meal's tint; it turns over when the meal opens. */
 .chevron {
   flex: none;
-  color: var(--ink-3);
-  font-size: calc(20px * var(--fs-scale));
-  transition: transform var(--dur) var(--ease-out);
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--ink-2);
+  font-size: calc(16px * var(--fs-scale));
+  transition: transform var(--dur) var(--ease-out), background var(--dur) ease, color var(--dur) ease;
 }
 
-.chevronOpen {
+.isOpen .chevron {
   transform: rotate(180deg);
+  background: var(--meal-soft);
+  color: var(--meal-color);
+}
+
+.add {
+  flex: none;
 }
 
 /* Folding slides the list's height to and from zero. */
@@ -128,13 +172,9 @@
 }
 
 .list {
-  margin: 0;
-  padding: 0;
+  margin: 0 12px;
+  padding: 4px 0 0;
   list-style: none;
-  border-top: 1px solid var(--line);
-}
-
-.list li + li {
   border-top: 1px solid var(--line);
 }
 
@@ -143,10 +183,12 @@
   align-items: center;
   gap: 12px;
   width: 100%;
-  min-height: 64px;
-  padding: 10px 16px;
+  min-height: 58px;
+  padding: 8px 6px;
   border: 0;
+  border-radius: var(--r-sm);
   background: none;
+  color: inherit;
   text-align: left;
   transition: background var(--dur-fast) ease;
 }
@@ -159,6 +201,16 @@
   background: var(--surface-3);
 }
 
+.dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-left: 4px;
+  border-radius: 50%;
+  background: var(--meal-color);
+  box-shadow: 0 0 0 4px var(--meal-soft);
+}
+
 .entryMain {
   flex: 1;
   display: flex;
@@ -168,7 +220,7 @@
 }
 
 .entryName {
-  font-size: calc(15.5px * var(--fs-scale));
+  font-size: calc(15px * var(--fs-scale));
   font-weight: 700;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -176,7 +228,7 @@
 }
 
 .entryMeta {
-  font-size: calc(13px * var(--fs-scale));
+  font-size: calc(12.5px * var(--fs-scale));
   color: var(--ink-3);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -185,13 +237,82 @@
 
 .entryKcal {
   flex: none;
-  font-size: calc(15.5px * var(--fs-scale));
+  font-size: calc(15px * var(--fs-scale));
   font-weight: 800;
 }
 
-/* A narrow phone has no room for the meal's icon beside its name and its total. */
+/* The meal's protein, carbs and fat: a bar split by where its calories come from, and the grams of each under it. */
+.foot {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 4px 12px 0;
+  padding: 12px 6px 14px;
+  border-top: 1px solid var(--line);
+}
+
+.split {
+  display: flex;
+  gap: 3px;
+  height: 8px;
+}
+
+.split > span {
+  flex-basis: 0;
+  min-width: 6px;
+  border-radius: var(--r-pill);
+  background: var(--macro-color);
+}
+
+.macros {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.macro {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.macroLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: max(11px, calc(12px * var(--fs-scale)));
+  font-weight: 700;
+  color: var(--ink-3);
+}
+
+.macroLabel::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--macro-color);
+}
+
+.macroValue {
+  font-size: calc(16px * var(--fs-scale));
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.macroValue small {
+  font-size: max(11px, calc(12px * var(--fs-scale)));
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+.m_protein { --macro-color: var(--n-protein); }
+.m_carbs { --macro-color: var(--n-carbs); }
+.m_fat { --macro-color: var(--n-fat); }
+
+/* A narrow phone has no room for the ring beside the name, the total and the buttons. */
 @media (max-width: 359px) {
-  .tile {
+  .summary > :first-child {
     display: none;
   }
 }

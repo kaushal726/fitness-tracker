@@ -2,8 +2,10 @@ import { useMemo } from "react";
 import { entriesOn, loggedDates, sumEntries } from "../../data/selectors.ts";
 import { useAppState } from "../../data/store.ts";
 import type { Profile } from "../../data/types.ts";
+import { groupByWeek, weekStartOf } from "../../domain/dayVerdict.ts";
 import { computePlan } from "../../domain/goals.ts";
-import { glassesOf, waterByDate } from "../../domain/water.ts";
+import { addDays, formatDate } from "../../lib/dates.ts";
+import { formatNumber } from "../../lib/format.ts";
 import { EmptyState } from "../../ui/EmptyState";
 import { IconHistory } from "../../ui/icons";
 import { ScreenHeader } from "../../ui/ScreenHeader";
@@ -19,18 +21,29 @@ interface Props {
 }
 
 const MAX_DAYS = 45;
+const DAYS_IN_WEEK = 7;
+const SHORT_DATE: Intl.DateTimeFormatOptions = { day: "numeric", month: "short" };
+
+/** "This week", "Last week", or the dates the week runs between. */
+function weekLabel(start: string, today: string): string {
+  const thisWeek = weekStartOf(today);
+  if (start === thisWeek) return "This week";
+  if (start === addDays(thisWeek, -DAYS_IN_WEEK)) return "Last week";
+  return `${formatDate(start, SHORT_DATE)} – ${formatDate(addDays(start, DAYS_IN_WEEK - 1), SHORT_DATE)}`;
+}
 
 export function HistoryScreen({ profile, today, onOpenDay }: Props) {
-  const { entries, settings, water } = useAppState();
+  const { entries, settings } = useAppState();
   const goal = useMemo(() => computePlan(profile, settings.customCalories).targets.calories, [profile, settings.customCalories]);
 
   const days = useMemo(
     () => loggedDates(entries).slice(0, MAX_DAYS).map((date) => ({ date, totals: sumEntries(entriesOn(entries, date)) })),
     [entries],
   );
+  const weeks = useMemo(() => groupByWeek(days, (d) => d.date), [days]);
   const caloriesByDate = useMemo(() => new Map(days.map((d) => [d.date, d.totals.calories])), [days]);
-  const waterOnDay = useMemo(() => waterByDate(water, entries), [water, entries]);
 
+  let index = 0;
   return (
     <>
       <ScreenHeader eyebrow="Your days" title="History" />
@@ -42,10 +55,19 @@ export function HistoryScreen({ profile, today, onOpenDay }: Props) {
             <WeekChart today={today} goal={goal} caloriesByDate={caloriesByDate} />
           </div>
           <div className={styles.main}>
-            <SectionLabel>All days</SectionLabel>
-            <div className={styles.list}>
-              {days.map((d) => <DayRow key={d.date} date={d.date} totals={d.totals} goal={goal} waterGlasses={glassesOf(waterOnDay.get(d.date) ?? 0, settings.waterGlassMl)} onOpen={onOpenDay} />)}
-            </div>
+            {weeks.map((week) => {
+              const average = week.items.reduce((sum, d) => sum + d.totals.calories, 0) / week.items.length;
+              return (
+                <section key={week.start} className={styles.week} aria-label={weekLabel(week.start, today)}>
+                  <SectionLabel right={<span className={styles.weekAverage}>{formatNumber(average)} kcal a day</span>}>{weekLabel(week.start, today)}</SectionLabel>
+                  <div className={styles.list}>
+                    {week.items.map((d) => (
+                      <DayRow key={d.date} date={d.date} calories={d.totals.calories} goal={goal} isToday={d.date === today} index={index++} onOpen={onOpenDay} />
+                    ))}
+                  </div>
+                </section>
+              );
+            })}
           </div>
         </div>
       )}

@@ -18,7 +18,14 @@
   }
 
   /* Line the list's heading up with the top of the chart card. */
-  .main > :first-child {
+  .main > :first-child > :first-child {
     margin-top: 0;
   }
+}
+
+.weekAverage {
+  font-size: max(11px, calc(12.5px * var(--fs-scale)));
+  font-weight: 700;
+  color: var(--ink-3);
+  white-space: nowrap;
 }

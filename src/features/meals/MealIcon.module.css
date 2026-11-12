@@ -1,0 +1,26 @@
+.tile {
+  flex: none;
+  display: grid;
+  place-items: center;
+  background: var(--meal-soft);
+  color: var(--meal-color);
+}
+
+.md {
+  width: 44px;
+  height: 44px;
+  border-radius: 15px;
+  font-size: calc(22px * var(--fs-scale));
+}
+
+.sm {
+  width: 32px;
+  height: 32px;
+  border-radius: 11px;
+  font-size: calc(17px * var(--fs-scale));
+}
+
+.carbs { --meal-color: var(--n-carbs); --meal-soft: var(--n-carbs-soft); }
+.fiber { --meal-color: var(--n-fiber); --meal-soft: var(--n-fiber-soft); }
+.fat { --meal-color: var(--n-fat); --meal-soft: var(--n-fat-soft); }
+.protein { --meal-color: var(--n-protein); --meal-soft: var(--n-protein-soft); }

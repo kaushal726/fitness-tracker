@@ -2,6 +2,7 @@
 export {
   LuActivity as IconActivity,
   LuArrowLeft as IconBack,
+  LuBell as IconBell,
   LuBookOpen as IconBook,
   LuCake as IconAge,
   LuCalendarClock as IconTimeline,

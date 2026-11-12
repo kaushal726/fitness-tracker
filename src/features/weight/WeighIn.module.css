@@ -1,0 +1,64 @@
+/* The Saturday ask on Today. */
+.card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 14px 14px 12px;
+  background: color-mix(in srgb, var(--primary-soft) 70%, var(--surface));
+  border-color: color-mix(in srgb, var(--primary) 30%, transparent);
+}
+
+.icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 15px;
+  background: var(--primary);
+  color: var(--on-primary, #ffffff);
+  font-size: calc(22px * var(--fs-scale));
+}
+
+.text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.title {
+  font-size: calc(16px * var(--fs-scale));
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.detail {
+  font-size: calc(13px * var(--fs-scale));
+  color: var(--ink-2);
+}
+
+/* The sheet: the number in the middle, a tenth less or more on either side. */
+.entry {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 12px 0 4px;
+}
+
+.last {
+  margin: 4px 0 12px;
+  text-align: center;
+  font-size: calc(14px * var(--fs-scale));
+  color: var(--ink-3);
+}
+
+.last b {
+  color: var(--ink);
+}
+
+.nowrap {
+  white-space: nowrap;
+}

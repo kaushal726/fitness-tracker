@@ -5,6 +5,8 @@ import { useSyncExternalStore } from "react";
 import { DEFAULT_MEAL_STARTS } from "../domain/meals.ts";
 import { stampWeight } from "../domain/profileWeight.ts";
 import { DEFAULT_GLASS_ML, DEFAULT_WATER_GOAL_ML, withWater, type WaterLog } from "../domain/water.ts";
+import { withWeighIn, type WeightLog } from "../domain/weighIns.ts";
+import { DEFAULT_REMINDERS } from "../domain/reminders.ts";
 import { todayISO } from "../lib/dates.ts";
 import type { Food } from "../nutrition/types.ts";
 import { deleteRecord, getAll, getValue, putRecord, replaceEverything, setValue, STORE } from "./db.ts";
@@ -19,12 +21,13 @@ export interface AppState {
   favorites: string[];
   lastUsed: Record<string, LastUsed>;
   water: WaterLog;
+  weights: WeightLog;
 }
 
-const KEY = { profile: "profile", settings: "settings", favorites: "favorites", lastUsed: "lastUsed", water: "water" } as const;
-export const DEFAULT_SETTINGS: Settings = { mealStartHours: DEFAULT_MEAL_STARTS, customCalories: null, waterGoalMl: DEFAULT_WATER_GOAL_ML, waterGlassMl: DEFAULT_GLASS_ML };
+const KEY = { profile: "profile", settings: "settings", favorites: "favorites", lastUsed: "lastUsed", water: "water", weights: "weights" } as const;
+export const DEFAULT_SETTINGS: Settings = { mealStartHours: DEFAULT_MEAL_STARTS, customCalories: null, waterGoalMl: DEFAULT_WATER_GOAL_ML, waterGlassMl: DEFAULT_GLASS_ML, reminders: DEFAULT_REMINDERS };
 
-let state: AppState = { ready: false, profile: null, settings: DEFAULT_SETTINGS, entries: [], customFoods: [], favorites: [], lastUsed: {}, water: {} };
+let state: AppState = { ready: false, profile: null, settings: DEFAULT_SETTINGS, entries: [], customFoods: [], favorites: [], lastUsed: {}, water: {}, weights: {} };
 const listeners = new Set<() => void>();
 const errorListeners = new Set<() => void>();
 
@@ -56,7 +59,7 @@ export function onStorageError(listener: () => void): () => void {
 
 export async function initStore(): Promise<void> {
   try {
-    const [entries, customFoods, profile, settings, favorites, lastUsed, water] = await Promise.all([
+    const [entries, customFoods, profile, settings, favorites, lastUsed, water, weights] = await Promise.all([
       getAll<Entry>(STORE.entries),
       getAll<Food>(STORE.customFoods),
       getValue<Profile>(KEY.profile),
@@ -64,6 +67,7 @@ export async function initStore(): Promise<void> {
       getValue<string[]>(KEY.favorites),
       getValue<Record<string, LastUsed>>(KEY.lastUsed),
       getValue<WaterLog>(KEY.water),
+      getValue<WeightLog>(KEY.weights),
     ]);
     set({
       ready: true,
@@ -74,6 +78,7 @@ export async function initStore(): Promise<void> {
       favorites: favorites ?? [],
       lastUsed: lastUsed ?? {},
       water: water ?? {},
+      weights: weights ?? {},
     });
   } catch {
     // Storage is blocked (private window, no space): the app still works for this session.
@@ -82,10 +87,21 @@ export async function initStore(): Promise<void> {
   }
 }
 
+/** Saves the profile. A new or changed weight also goes in the weight log, on today. */
 export function saveProfile(next: Profile): void {
-  const profile = stampWeight(next, state.profile, todayISO());
-  set({ profile });
+  const today = todayISO();
+  const profile = stampWeight(next, state.profile, today);
+  const previous = state.profile;
+  const weighed = previous === null || previous.weightKg !== profile.weightKg;
+  let weights = state.weights;
+  if (weighed) {
+    // The weight being replaced keeps its own day in the log, so a weight entered before the log existed is not lost.
+    if (previous?.weightDate && weights[previous.weightDate] === undefined) weights = withWeighIn(weights, previous.weightDate, previous.weightKg);
+    weights = withWeighIn(weights, today, profile.weightKg);
+  }
+  set({ profile, weights });
   persist(() => setValue(KEY.profile, profile));
+  if (weighed) persist(() => setValue(KEY.weights, weights));
 }
 
 export function saveSettings(patch: Partial<Settings>): void {
@@ -161,6 +177,7 @@ function toBackup(s: AppState): Backup {
     favorites: s.favorites,
     lastUsed: s.lastUsed,
     water: s.water,
+    weights: s.weights,
   };
 }
 
@@ -178,17 +195,18 @@ export function restoreBackup(backup: Backup): void {
     favorites: backup.favorites,
     lastUsed: backup.lastUsed,
     water: backup.water ?? {},
+    weights: backup.weights ?? {},
   });
   persist(() => replaceEverything(storedShape(state)));
 }
 
 export function resetAll(): void {
-  set({ profile: null, settings: DEFAULT_SETTINGS, entries: [], customFoods: [], favorites: [], lastUsed: {}, water: {} });
+  set({ profile: null, settings: DEFAULT_SETTINGS, entries: [], customFoods: [], favorites: [], lastUsed: {}, water: {}, weights: {} });
   persist(() => replaceEverything(storedShape(state)));
 }
 
 function storedShape(s: AppState) {
-  const kv: Record<string, unknown> = { [KEY.settings]: s.settings, [KEY.favorites]: s.favorites, [KEY.lastUsed]: s.lastUsed, [KEY.water]: s.water };
+  const kv: Record<string, unknown> = { [KEY.settings]: s.settings, [KEY.favorites]: s.favorites, [KEY.lastUsed]: s.lastUsed, [KEY.water]: s.water, [KEY.weights]: s.weights };
   if (s.profile) kv[KEY.profile] = s.profile;
   return { entries: s.entries, customFoods: s.customFoods, kv };
 }

@@ -1,0 +1,110 @@
+/* A floating list over everything, sheets included, under the toasts. */
+.menu {
+  position: fixed;
+  z-index: 120;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 200px;
+  padding: 6px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--sheet-surface);
+  box-shadow: var(--shadow-float);
+  transform-origin: top left;
+  animation: menu-in 180ms var(--ease-out) both;
+}
+
+/* Opened upward: it sits on top of what opened it and grows from its foot. */
+.above {
+  transform: translateY(-100%);
+  transform-origin: bottom left;
+  animation-name: menu-in-above;
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.96);
+  }
+}
+
+@keyframes menu-in-above {
+  from {
+    opacity: 0;
+    transform: translateY(calc(-100% + 6px)) scale(0.96);
+  }
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 46px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  transition: background var(--dur-fast) ease;
+}
+
+.option:hover,
+.option:focus-visible {
+  background: var(--sheet-surface-2);
+  outline: none;
+}
+
+.option:active {
+  background: var(--sheet-surface-3);
+}
+
+.option[aria-selected="true"] {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+}
+
+.text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.label {
+  font-size: calc(15px * var(--fs-scale));
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hint {
+  font-size: max(11px, calc(12.5px * var(--fs-scale)));
+  font-weight: 500;
+  color: var(--ink-3);
+}
+
+.check {
+  flex: none;
+  font-size: calc(18px * var(--fs-scale));
+  stroke-width: 3;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out);
+}
+
+.option[aria-selected="true"] .check {
+  opacity: 1;
+  transform: none;
+}

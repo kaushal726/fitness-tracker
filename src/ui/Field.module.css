@@ -78,15 +78,38 @@
   font-weight: 600;
 }
 
+/* The dropdown is a button dressed as a field. */
 .select {
-  appearance: none;
-  -webkit-appearance: none;
+  width: 100%;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
   cursor: pointer;
+}
+
+.selectOpen {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px var(--primary-soft);
+}
+
+.selectValue {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 16px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .caret {
   flex: none;
   font-size: calc(20px * var(--fs-scale));
   color: var(--ink-3);
-  pointer-events: none;
+  transition: transform var(--dur) var(--ease-out);
+}
+
+.selectOpen .caret {
+  transform: rotate(180deg);
+  color: var(--primary);
 }

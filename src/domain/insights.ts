@@ -1,30 +1,24 @@
 import type { Targets } from "../data/types.ts";
 import type { NutritionTotals } from "../nutrition/types.ts";
 
-export type InsightTone = "good" | "warn" | "info";
-export interface Insight {
-  tone: InsightTone;
-  text: string;
-}
-
 export const OVER_SHARE = 1.1;
 const ON_TRACK_MIN_SHARE = 0.9;
 export const LOW_PROTEIN_SHARE = 0.7;
 export const PROTEIN_CHECK_HOUR = 17;
-const PROTEIN_SOURCES = "Eggs, paneer, dal or chicken can help.";
+/** A day that is over has run its course: its whole day counts, whatever the clock says now. */
+export const END_OF_DAY_HOUR = 24;
 
-/** One short line about how the day is going, or null when there is nothing useful to say. */
-export function dayInsight(totals: NutritionTotals, targets: Targets, hasEntries: boolean, hour: number): Insight | null {
-  if (!hasEntries) return { tone: "info", text: "Nothing logged yet. Tap Add to begin." };
-  if (totals.calories > targets.calories * OVER_SHARE) {
-    return { tone: "warn", text: `${Math.round(totals.calories - targets.calories)} kcal over your goal today.` };
-  }
-  const proteinShort = targets.protein - totals.protein;
-  if (hour >= PROTEIN_CHECK_HOUR && totals.protein < targets.protein * LOW_PROTEIN_SHARE) {
-    return { tone: "warn", text: `Protein is ${Math.round(proteinShort)} g short. ${PROTEIN_SOURCES}` };
-  }
-  if (totals.calories >= targets.calories * ON_TRACK_MIN_SHARE && totals.protein >= targets.protein * ON_TRACK_MIN_SHARE) {
-    return { tone: "good", text: "Right on track today." };
-  }
+/** How the day's calories stand: past the goal, on track (calories and protein both close to their goals), or nothing worth a word. */
+export type CalorieStatus = "over" | "onTrack";
+
+export function calorieStatus(totals: NutritionTotals, targets: Targets): CalorieStatus | null {
+  if (totals.calories > targets.calories * OVER_SHARE) return "over";
+  if (totals.calories >= targets.calories * ON_TRACK_MIN_SHARE && totals.protein >= targets.protein * ON_TRACK_MIN_SHARE) return "onTrack";
   return null;
+}
+
+/** Grams of protein still missing, once it is late enough in the day for that to matter; null while it is not worth a word. */
+export function proteinShortfall(totals: NutritionTotals, targets: Targets, hour: number): number | null {
+  if (hour < PROTEIN_CHECK_HOUR || totals.protein >= targets.protein * LOW_PROTEIN_SHARE) return null;
+  return Math.round(targets.protein - totals.protein);
 }

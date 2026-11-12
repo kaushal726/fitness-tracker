@@ -35,3 +35,68 @@ self.addEventListener("fetch", (event) => {
   }
   event.respondWith(caches.match(req, MATCH).then((cached) => cached || fetch(req)));
 });
+
+/* Meal reminders. The push server (push-worker/) sends an empty push at each reminder time; the meal is worked out
+ * here from the reminder times saved on the phone, so nothing about food ever leaves it. Keep these in step with
+ * src/domain/reminders.ts and src/domain/meals.ts.
+ */
+const MEALS = [
+  { id: "breakfast", label: "breakfast" },
+  { id: "lunch", label: "lunch" },
+  { id: "snack", label: "snack" },
+  { id: "dinner", label: "dinner" },
+];
+const DEFAULT_REMINDER_HOURS = { breakfast: 8.5, lunch: 13.5, snack: 17, dinner: 20.5 };
+const MINUTES_IN_DAY = 1440;
+
+function readSettings() {
+  return new Promise((resolve) => {
+    const open = indexedDB.open("fitly");
+    open.onerror = () => resolve(null);
+    open.onsuccess = () => {
+      try {
+        const req = open.result.transaction("kv").objectStore("kv").get("settings");
+        req.onsuccess = () => resolve(req.result ?? null);
+        req.onerror = () => resolve(null);
+      } catch {
+        resolve(null);
+      }
+    };
+  });
+}
+
+/** The meal whose reminder time is nearest to now. */
+function mealNow(hours) {
+  const now = new Date();
+  const minute = now.getHours() * 60 + now.getMinutes();
+  const distance = (m) => {
+    const d = Math.abs(minute - Math.round((hours[m.id] ?? DEFAULT_REMINDER_HOURS[m.id]) * 60));
+    return Math.min(d, MINUTES_IN_DAY - d);
+  };
+  return MEALS.reduce((best, m) => (distance(m) < distance(best) ? m : best));
+}
+
+self.addEventListener("push", (event) => {
+  event.waitUntil(
+    readSettings().then((settings) => {
+      const meal = mealNow(settings?.reminders?.times ?? DEFAULT_REMINDER_HOURS);
+      return self.registration.showNotification(`Time to log your ${meal.label}`, {
+        body: "Tap to add what you ate.",
+        icon: "./icons/icon-192.png",
+        badge: "./icons/icon-192.png",
+        tag: "meal-reminder",
+        data: { meal: meal.id },
+      });
+    }),
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((windows) => {
+      const open = windows.find((w) => w.url.startsWith(self.registration.scope));
+      return open ? open.focus() : self.clients.openWindow(self.registration.scope);
+    }),
+  );
+});

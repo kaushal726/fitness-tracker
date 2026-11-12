@@ -1,5 +1,6 @@
 import type { Profile } from "../../data/types.ts";
 import { progressNote, formatKg } from "../../domain/progressNote.ts";
+import { signedKg } from "../../domain/weighIns.ts";
 import { useAnimatesIn } from "../../lib/arrival.ts";
 import { cx } from "../../lib/cx.ts";
 import { formatDate } from "../../lib/dates.ts";
@@ -19,12 +20,6 @@ interface Props {
   view: BodyView;
   onUpdateWeight: () => void;
 }
-
-/** A change in kilograms with a real minus sign, one decimal. */
-const signedKg = (kg: number): string => {
-  const rounded = Math.round(kg * 10) / 10;
-  return rounded > 0 ? `+${rounded}` : rounded < 0 ? `−${Math.abs(rounded)}` : "0";
-};
 
 /** "5 months" with the unit small, like the other tiles; years read "over 2 years". */
 function EtaSpan({ days }: { days: number }) {

@@ -71,3 +71,62 @@
   justify-content: center;
   text-align: center;
 }
+
+/* The dot at the end of the arc moves with it, then breathes. */
+.knob {
+  transition: transform 0.9s var(--ease-out), opacity var(--dur) ease;
+}
+
+.knobDot {
+  fill: #ffffff;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--ring-to) 80%, transparent));
+}
+
+.knobHalo {
+  fill: var(--ring-to);
+  opacity: 0.45;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: knob-breathe 2.4s ease-in-out 1s infinite;
+}
+
+@keyframes knob-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+  50% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+/* A glint that runs from the start of the arc to its end, then rests a while. */
+.shine {
+  stroke: #ffffff;
+  opacity: 0;
+  stroke-dashoffset: var(--shine-from);
+  animation: ring-shine 4.2s var(--ease-out) 1.4s infinite;
+}
+
+@keyframes ring-shine {
+  0% {
+    stroke-dashoffset: var(--shine-from);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.55;
+  }
+  42% {
+    opacity: 0.4;
+  }
+  50% {
+    stroke-dashoffset: var(--shine-to);
+    opacity: 0;
+  }
+  100% {
+    stroke-dashoffset: var(--shine-to);
+    opacity: 0;
+  }
+}

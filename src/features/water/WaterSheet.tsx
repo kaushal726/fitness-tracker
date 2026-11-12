@@ -1,12 +1,13 @@
 import { useMemo } from "react";
 import { saveSettings, useAppState } from "../../data/store.ts";
-import { BOTTLE_ML, clampWaterGoal, formatVolume, GLASS_SIZES_ML, glassesOf, LARGE_BOTTLE_ML, MAX_WATER_GOAL_ML, MIN_WATER_GOAL_ML, WATER_GOAL_STEP_ML, waterByDate } from "../../domain/water.ts";
+import { BOTTLE_ML, clampGlassMl, clampWaterGoal, formatVolume, GLASS_SIZES_ML, GLASS_STEP_ML, glassesOf, LARGE_BOTTLE_ML, MAX_GLASS_ML, MAX_WATER_GOAL_ML, MIN_GLASS_ML, MIN_WATER_GOAL_ML, WATER_GOAL_STEP_ML, waterByDate } from "../../domain/water.ts";
 import { formatDayLabel } from "../../lib/dates.ts";
 import { cx } from "../../lib/cx.ts";
-import { Button, IconButton } from "../../ui/Button";
-import { IconCheck, IconDrops, IconMinus, IconPlus, IconUndo, IconWater } from "../../ui/icons";
+import { Button } from "../../ui/Button";
+import { IconCheck, IconDrops, IconUndo, IconWater } from "../../ui/icons";
 import { Segmented } from "../../ui/Segmented";
 import { Sheet } from "../../ui/Sheet";
+import { Stepper } from "../../ui/Stepper";
 import { glassCount } from "./glassCount.ts";
 import { useWater } from "./useWater.ts";
 import { WaterGlass } from "./WaterGlass.tsx";
@@ -29,6 +30,7 @@ export function WaterSheet({ date, onClose }: Props) {
   const { ml, trackedMl, goalMl, glassMl, glasses, share, reached, add } = water;
   const byDate = useMemo(() => waterByDate(log, entries), [log, entries]);
   const setGoal = (next: number) => saveSettings({ waterGoalMl: clampWaterGoal(next) });
+  const setGlass = (next: number) => saveSettings({ waterGlassMl: clampGlassMl(next) });
 
   const amounts = [
     { label: "Glass", ml: glassMl, icon: <IconWater /> },
@@ -68,19 +70,29 @@ export function WaterSheet({ date, onClose }: Props) {
 
         <section className={styles.section} aria-label="Daily goal">
           <h3 className={styles.heading}>Daily goal</h3>
-          <div className={styles.stepper}>
-            <IconButton label="Less" icon={<IconMinus />} variant="secondary" disabled={goalMl <= MIN_WATER_GOAL_ML} onClick={() => setGoal(goalMl - WATER_GOAL_STEP_ML)} />
-            <p className={styles.goal} aria-live="polite">
-              <span className={cx(styles.goalValue, "num")}>{formatVolume(goalMl)}</span>
-              <span className={cx(styles.goalGlasses, "num")}>about {glassCount(Math.round(glassesOf(goalMl, glassMl)))}</span>
-            </p>
-            <IconButton label="More" icon={<IconPlus />} variant="secondary" disabled={goalMl >= MAX_WATER_GOAL_ML} onClick={() => setGoal(goalMl + WATER_GOAL_STEP_ML)} />
-          </div>
+          <Stepper
+            label="Daily goal"
+            value={formatVolume(goalMl)}
+            caption={`about ${glassCount(Math.round(glassesOf(goalMl, glassMl)))}`}
+            lessDisabled={goalMl <= MIN_WATER_GOAL_ML}
+            moreDisabled={goalMl >= MAX_WATER_GOAL_ML}
+            onLess={() => setGoal(goalMl - WATER_GOAL_STEP_ML)}
+            onMore={() => setGoal(goalMl + WATER_GOAL_STEP_ML)}
+          />
         </section>
 
         <section className={styles.section} aria-label="Glass size">
-          <h3 className={styles.heading}>Your glass</h3>
-          <Segmented label="Glass size" value={String(glassMl)} onChange={(value) => saveSettings({ waterGlassMl: Number(value) })} options={GLASS_OPTIONS} />
+          <h3 className={styles.heading}>One glass is</h3>
+          <Stepper
+            label="Glass size"
+            value={`${glassMl} ml`}
+            caption="added with each tap"
+            lessDisabled={glassMl <= MIN_GLASS_ML}
+            moreDisabled={glassMl >= MAX_GLASS_ML}
+            onLess={() => setGlass(glassMl - GLASS_STEP_ML)}
+            onMore={() => setGlass(glassMl + GLASS_STEP_ML)}
+          />
+          <Segmented label="Common glass sizes" value={String(glassMl)} onChange={(value) => setGlass(Number(value))} options={GLASS_OPTIONS} />
         </section>
       </div>
     </Sheet>

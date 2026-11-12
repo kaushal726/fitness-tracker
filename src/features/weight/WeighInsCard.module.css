@@ -1,0 +1,75 @@
+/* Which way the last weigh-in went: the accent toward the target, the warning colour away from it, grey when steady. */
+.trend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 9px 12px;
+  border-radius: var(--r-md);
+  font-size: calc(13.5px * var(--fs-scale));
+  font-weight: 700;
+}
+
+.trend svg {
+  flex: none;
+  font-size: calc(17px * var(--fs-scale));
+  stroke-width: 2.4;
+}
+
+.trend span {
+  flex: 1;
+  min-width: 0;
+}
+
+.trend b {
+  flex: none;
+  font-weight: 800;
+}
+
+.toward {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.away {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+
+.steady {
+  background: var(--surface-2);
+  color: var(--ink-2);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  padding: 10px 4px;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+}
+
+.stats div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.stats div + div {
+  border-left: 1px solid var(--line);
+}
+
+.stats dt {
+  font-size: max(11px, calc(12px * var(--fs-scale)));
+  font-weight: 700;
+  color: var(--ink-3);
+}
+
+.stats dd {
+  margin: 0;
+  font-size: calc(16px * var(--fs-scale));
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}

@@ -39,6 +39,8 @@ export interface Settings {
   waterGoalMl: number;
   /** What one tap on the water card adds: the size of the glass, in millilitres. */
   waterGlassMl: number;
+  /** Phone notifications to log each meal. */
+  reminders: import("../domain/reminders.ts").Reminders;
 }
 
 export interface Entry {
@@ -77,4 +79,6 @@ export interface Backup {
   lastUsed: Record<string, LastUsed>;
   /** Millilitres of water tapped in on each day. Backups made before water was tracked do not have it. */
   water?: Record<string, number>;
+  /** Kilograms on each day weighed. Backups made before the weigh-ins do not have it. */
+  weights?: Record<string, number>;
 }

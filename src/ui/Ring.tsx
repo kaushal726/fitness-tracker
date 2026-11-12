@@ -1,4 +1,4 @@
-import { useEffect, useId, useState, type ReactNode } from "react";
+import { useEffect, useId, useState, type CSSProperties, type ReactNode } from "react";
 import { useAnimatesIn } from "../lib/arrival";
 import { cx } from "../lib/cx";
 import styles from "./Ring.module.css";
@@ -16,6 +16,10 @@ interface RingProps {
   glow?: boolean;
   /** How much of a circle it is, in degrees. Less than a full turn makes a gauge, open at the bottom. */
   sweep?: number;
+  /** A glowing dot that rides the end of the arc and breathes: for the big ring that leads a screen. */
+  knob?: boolean;
+  /** A glint of light that runs along the arc now and then. */
+  shine?: boolean;
   /** Lets a place restyle the ring's colours (`--ring-from`, `--ring-to`, `--ring-track`). */
   className?: string;
   children?: ReactNode;
@@ -27,8 +31,10 @@ const FULL_TURN = 360;
 const TOP = -90;
 /** Where the middle of a gauge's opening points: straight down. */
 const BOTTOM = 90;
+/** How long the running glint is, against the stroke. */
+const SHINE_PER_STROKE = 2.2;
 
-export function Ring({ value, max, size = 152, stroke = 14, tone = "primary", label, glow = false, sweep = FULL_TURN, className, children }: RingProps) {
+export function Ring({ value, max, size = 152, stroke = 14, tone = "primary", label, glow = false, sweep = FULL_TURN, knob = false, shine = false, className, children }: RingProps) {
   const radius = (size - stroke) / 2;
   const circumference = 2 * Math.PI * radius;
   const length = circumference * (Math.min(FULL_TURN, sweep) / FULL_TURN);
@@ -45,6 +51,10 @@ export function Ring({ value, max, size = 152, stroke = 14, tone = "primary", la
   }, [share]);
 
   const center = size / 2;
+  const drawnLength = length * drawn;
+  const shineLength = stroke * SHINE_PER_STROKE;
+  const tipAngle = startAngle + Math.min(FULL_TURN, sweep) * drawn;
+  const shineStyle = { "--shine-from": `${shineLength}`, "--shine-to": `${shineLength - drawnLength}` } as CSSProperties;
   return (
     <div className={cx(styles.ring, styles[tone], glow && styles.glow, className)} style={{ width: size, height: size }} role="img" aria-label={label}>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden>
@@ -69,6 +79,27 @@ export function Ring({ value, max, size = 152, stroke = 14, tone = "primary", la
           transform={`rotate(${startAngle} ${center} ${center})`}
           style={{ opacity: drawn > 0 ? 1 : 0 }}
         />
+        {shine && drawnLength > shineLength * 2 && (
+          <circle
+            key={Math.round(drawnLength)}
+            className={styles.shine}
+            cx={center}
+            cy={center}
+            r={radius}
+            strokeWidth={stroke * 0.55}
+            fill="none"
+            strokeLinecap="round"
+            strokeDasharray={`${shineLength} ${circumference * 2}`}
+            transform={`rotate(${startAngle} ${center} ${center})`}
+            style={shineStyle}
+          />
+        )}
+        {knob && (
+          <g className={styles.knob} style={{ transform: `rotate(${tipAngle}deg)`, transformOrigin: `${center}px ${center}px`, opacity: drawn > 0 ? 1 : 0 }}>
+            <circle className={styles.knobHalo} cx={center + radius} cy={center} r={stroke * 0.5} />
+            <circle className={styles.knobDot} cx={center + radius} cy={center} r={stroke * 0.32} />
+          </g>
+        )}
       </svg>
       <div className={styles.center}>{children}</div>
     </div>

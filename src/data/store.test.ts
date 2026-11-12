@@ -7,8 +7,9 @@ import { parseBackup } from "./backup.ts";
 import { getAll, STORE } from "./db.ts";
 import { buildEntry, reviseEntry } from "./entries.ts";
 import { groupByMeal, makeFoodLookup, recentFoodIds, sumEntries } from "./selectors.ts";
-import { addCustomFood, addEntry, addWater, DEFAULT_SETTINGS, exportBackup, getState, initStore, removeEntry, replaceEntry, resetAll, restoreBackup, toggleFavorite } from "./store.ts";
-import type { Entry } from "./types.ts";
+import { addCustomFood, addEntry, addWater, DEFAULT_SETTINGS, exportBackup, getState, initStore, removeEntry, replaceEntry, resetAll, restoreBackup, saveProfile, toggleFavorite } from "./store.ts";
+import type { Entry, Profile } from "./types.ts";
+import { todayISO } from "../lib/dates.ts";
 
 const food = (id: string): Food => getFoodById(id) as Food;
 const at = (h: number, m = 0) => new Date(2026, 0, 5, h, m);
@@ -124,6 +125,26 @@ describe("store", () => {
     const { waterGoalMl: _goal, waterGlassMl: _glass, ...olderSettings } = DEFAULT_SETTINGS;
     restoreBackup({ ...olderParsed!, settings: olderSettings as typeof DEFAULT_SETTINGS });
     expect(getState().settings).toEqual(DEFAULT_SETTINGS);
+    await new Promise((r) => setTimeout(r, 30));
+  });
+
+  it("keeps every weight in a log, the one it replaces included, and through a backup", async () => {
+    resetAll();
+    const today = todayISO();
+    const profile: Profile = { name: "", age: 30, gender: "male", heightCm: 175, weightKg: 80, goal: "lose_fat", targetWeightKg: 72, weeks: 16, activity: "light", weightDate: "2026-01-03", startWeightKg: 80 };
+    restoreBackup({ ...exportBackup(), profile });
+    expect(getState().weights).toEqual({});
+
+    saveProfile({ ...getState().profile!, weightKg: 79.4 });
+    expect(getState().weights).toEqual({ "2026-01-03": 80, [today]: 79.4 });
+    saveProfile({ ...getState().profile!, name: "Asha" });
+    expect(Object.keys(getState().weights)).toHaveLength(2);
+
+    const parsed = parseBackup(JSON.stringify(exportBackup()));
+    resetAll();
+    restoreBackup(parsed!);
+    expect(getState().weights).toEqual({ "2026-01-03": 80, [today]: 79.4 });
+    expect(parseBackup(JSON.stringify({ ...parsed, weights: { [today]: -1 } }))).toBeNull();
     await new Promise((r) => setTimeout(r, 30));
   });
 

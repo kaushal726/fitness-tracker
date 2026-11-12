@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Entry } from "../../data/types.ts";
-import { MEAL_ORDER } from "../../domain/meals.ts";
+import { MEAL_ORDER, mealBudget } from "../../domain/meals.ts";
 import type { MealType } from "../../nutrition/types.ts";
 import { MealCard } from "./MealCard.tsx";
 
@@ -11,12 +11,14 @@ interface Props {
   byMeal: Record<MealType, Entry[]>;
   /** The meal being eaten now (only when the screen is showing today). Nothing else starts open. */
   currentMeal: MealType | null;
+  /** The day's calorie goal, split over the meals as a guide. */
+  dayCalories: number;
   onOpenEntry: (entry: Entry) => void;
   onAdd: (meal: MealType) => void;
 }
 
-/** The day's card, its line, the nutrients and the water come first, so the meals arrive after them. */
-const FIRST_MEAL_INDEX = 4;
+/** The day's card, the nutrients and the water come first, so the meals arrive after them. */
+const FIRST_MEAL_INDEX = 3;
 
 const countsOf = (byMeal: Record<MealType, Entry[]>): MealCounts => Object.fromEntries(MEAL_ORDER.map((m) => [m, byMeal[m].length])) as MealCounts;
 
@@ -25,7 +27,7 @@ const countsOf = (byMeal: Record<MealType, Entry[]>): MealCounts => Object.fromE
  * starts open and the rest are folded to one line that still says what is in them. Food added to a folded
  * meal opens it, so what was just logged is never out of sight. Give it `key={date}` to start afresh on each day.
  */
-export function MealList({ byMeal, currentMeal, onOpenEntry, onAdd }: Props) {
+export function MealList({ byMeal, currentMeal, dayCalories, onOpenEntry, onAdd }: Props) {
   const counts = countsOf(byMeal);
   const [open, setOpen] = useState<MealFlags>(() => Object.fromEntries(MEAL_ORDER.map((m) => [m, m === currentMeal])) as MealFlags);
   const [seen, setSeen] = useState(counts);
@@ -40,7 +42,7 @@ export function MealList({ byMeal, currentMeal, onOpenEntry, onAdd }: Props) {
   return (
     <>
       {MEAL_ORDER.map((meal, i) => (
-        <MealCard key={meal} meal={meal} index={FIRST_MEAL_INDEX + i} entries={byMeal[meal]} open={open[meal]} onToggle={toggle} onOpen={onOpenEntry} onAdd={onAdd} />
+        <MealCard key={meal} meal={meal} index={FIRST_MEAL_INDEX + i} entries={byMeal[meal]} budget={mealBudget(meal, dayCalories)} open={open[meal]} onToggle={toggle} onOpen={onOpenEntry} onAdd={onAdd} />
       ))}
     </>
   );
