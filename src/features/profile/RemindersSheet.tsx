@@ -58,13 +58,18 @@ export function RemindersSheet({ settings, onClose }: Props) {
     onClose();
   };
 
+  // The test works from scratch: with reminders off, it turns them on for this phone first.
   const sendTest = async () => {
     setBusy(true);
     try {
+      if (!on) {
+        await startReminders(times);
+        saveSettings({ reminders: { enabled: true, times } });
+      }
       await sendTestReminder();
       toast("Test sent. It should arrive in a few seconds.");
     } catch {
-      toast("The test could not be sent. Turn reminders off and on again, then try once more.", { tone: "error" });
+      toast("The test could not be sent. Check notifications are allowed and you are online, then try again.", { tone: "error" });
     } finally {
       setBusy(false);
     }
@@ -96,9 +101,7 @@ export function RemindersSheet({ settings, onClose }: Props) {
           </Field>
         );
       })}
-      {support === "ready" && on && (
-        <Button variant="ghost" size="md" block icon={<IconBell />} disabled={busy} onClick={sendTest}>Send a test notification</Button>
-      )}
+      <Button variant="ghost" size="md" block icon={<IconBell />} disabled={busy || support !== "ready"} onClick={sendTest}>Send a test notification</Button>
       <p className={styles.note}>Only these times and your time zone go to the reminder server. What you eat stays on this phone.</p>
     </Sheet>
   );
