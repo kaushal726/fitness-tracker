@@ -1,7 +1,13 @@
+/* On the lead card: the figures wear its colours, and the nutrient tiles are small cards of their own on top of it. */
 .plan {
+  --tile-bg: var(--surface);
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+:root[data-theme="dark"] .plan {
+  --tile-bg: var(--surface-2);
 }
 
 .label {
@@ -9,7 +15,7 @@
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--primary);
+  color: var(--hero-ink-2);
 }
 
 .calories {
@@ -21,14 +27,14 @@
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 1.1;
-  color: var(--ink);
+  color: var(--hero-ink);
 }
 
 .calories small {
   font-size: calc(18px * var(--fs-scale));
   font-weight: 700;
   letter-spacing: 0;
-  color: var(--ink-2);
+  color: var(--hero-ink-2);
 }
 
 .macros {
@@ -46,7 +52,8 @@
   gap: 2px;
   padding: 10px 10px 11px;
   border-radius: 14px;
-  background: var(--surface);
+  background: var(--tile-bg);
+  color: var(--ink);
 }
 
 .macroLabel {
@@ -69,12 +76,12 @@
   margin-top: 14px;
   font-size: calc(14.5px * var(--fs-scale));
   line-height: 1.45;
-  color: var(--ink-2);
+  color: var(--hero-ink-2);
 }
 
 .warn {
-  color: var(--warn);
-  font-weight: 600;
+  color: var(--hero-over);
+  font-weight: 700;
 }
 
 @media (max-width: 359px) {

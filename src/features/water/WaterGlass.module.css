@@ -1,0 +1,39 @@
+.glass {
+  flex: none;
+  display: block;
+  overflow: visible;
+}
+
+.body {
+  fill: color-mix(in srgb, var(--water) 10%, transparent);
+}
+
+.rim {
+  fill: none;
+  stroke: color-mix(in srgb, var(--water) 55%, transparent);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+/* The water rises and falls to its new level. */
+.level {
+  transition: transform 0.9s var(--ease-out);
+}
+
+.wave {
+  fill: var(--water);
+  animation: slide 3.2s linear infinite;
+}
+
+/* A second, paler surface moving the other way gives the water some depth. */
+.back {
+  fill: color-mix(in srgb, var(--water) 45%, transparent);
+  animation-duration: 4.6s;
+  animation-direction: reverse;
+}
+
+@keyframes slide {
+  to {
+    transform: translateX(-24px);
+  }
+}

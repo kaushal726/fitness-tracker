@@ -2,7 +2,7 @@ import { formatDayLabel, parseISODate } from "../../lib/dates.ts";
 import { cx } from "../../lib/cx.ts";
 import { formatNumber } from "../../lib/format.ts";
 import type { NutritionTotals } from "../../nutrition/types.ts";
-import { IconChevronRight } from "../../ui/icons";
+import { IconChevronRight, IconWater } from "../../ui/icons";
 import { ProgressBar } from "../../ui/ProgressBar";
 import styles from "./DayRow.module.css";
 
@@ -12,11 +12,13 @@ interface Props {
   date: string;
   totals: NutritionTotals;
   goal: number;
+  /** Glasses of water that day; left out when there were none. */
+  waterGlasses?: number;
   onOpen: (date: string) => void;
 }
 
 /** One logged day: when, how much, and how that sits against the goal. */
-export function DayRow({ date, totals, goal, onOpen }: Props) {
+export function DayRow({ date, totals, goal, waterGlasses = 0, onOpen }: Props) {
   const d = parseISODate(date);
   const over = totals.calories > goal * OVER_TOLERANCE;
   const share = goal > 0 ? Math.round((totals.calories / goal) * 100) : 0;
@@ -28,7 +30,14 @@ export function DayRow({ date, totals, goal, onOpen }: Props) {
       </span>
       <span className={styles.main}>
         <span className={styles.top}>
-          <span className={styles.title}>{formatDayLabel(date)}</span>
+          <span className={styles.title}>
+            {formatDayLabel(date)}
+            {waterGlasses > 0 && (
+              <span className={cx(styles.water, "num")} role="img" aria-label={`${waterGlasses.toLocaleString("en-IN")} glasses of water`}>
+                <IconWater aria-hidden /> {waterGlasses.toLocaleString("en-IN")}
+              </span>
+            )}
+          </span>
           <span className={cx(styles.kcal, "num", over && styles.overText)}>{formatNumber(totals.calories)}<small> kcal</small></span>
         </span>
         <ProgressBar value={totals.calories} max={goal} tone={over ? "over" : "primary"} size="sm" label={`${share}% of goal`} />

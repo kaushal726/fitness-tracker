@@ -1,14 +1,13 @@
 import type { Targets } from "../../data/types.ts";
+import { calorieBalance } from "../../domain/dayReport.ts";
 import { useAnimatesIn } from "../../lib/arrival.ts";
 import { cx } from "../../lib/cx.ts";
 import { formatNumber } from "../../lib/format.ts";
 import type { NutritionTotals } from "../../nutrition/types.ts";
-import { IconButton } from "../../ui/Button";
 import { Card } from "../../ui/Card";
 import { CountUp } from "../../ui/CountUp";
-import { IconEaten, IconFlame, IconShare, IconTarget } from "../../ui/icons";
+import { IconFlame, IconShare } from "../../ui/icons";
 import { Ring } from "../../ui/Ring";
-import { MacroTile } from "./MacroTile.tsx";
 import styles from "./CalorieHero.module.css";
 
 interface Props {
@@ -18,53 +17,49 @@ interface Props {
   onShare?: () => void;
 }
 
-const RING_SIZE = 164;
-const RING_STROKE = 16;
+const GAUGE_SIZE = 204;
+const GAUGE_STROKE = 18;
+/** The gauge is open at the bottom: this much of a circle is drawn. */
+const GAUGE_SWEEP = 264;
+const PERCENT = 100;
 
-const MACROS = [
-  { key: "protein", label: "Protein" },
-  { key: "carbs", label: "Carbs" },
-  { key: "fat", label: "Fat" },
-  { key: "fiber", label: "Fiber" },
-] as const;
-
-/** Calories first, in a ring; then the four macros, each in a ring of its own. */
+/** The day's calories: a gauge of how much is left, and what was eaten against the goal under it. */
 export function CalorieHero({ totals, targets, onShare }: Props) {
   const animates = useAnimatesIn();
-  const left = targets.calories - totals.calories;
-  const over = left < 0;
+  const { over, amount } = calorieBalance(totals.calories, targets.calories);
+  const used = targets.calories > 0 ? Math.round((totals.calories / targets.calories) * PERCENT) : 0;
   return (
-    <Card tone="hero" className={cx(styles.hero, animates && "motion-rise")}>
-      {onShare && <IconButton label="Share this day" icon={<IconShare />} variant="outline" className={styles.share} onClick={onShare} />}
-      <div className={styles.top}>
-        <Ring value={totals.calories} max={targets.calories} size={RING_SIZE} stroke={RING_STROKE} glow tone={over ? "over" : "primary"} label={`${formatNumber(totals.calories)} of ${formatNumber(targets.calories)} calories eaten`}>
-          <IconFlame className={cx(styles.flame, over && styles.overValue)} aria-hidden />
-          <span className={cx(styles.leftValue, over && styles.overValue, "num")}><CountUp value={Math.abs(left)} /></span>
+    <Card tone="lead" padded={false} className={cx(styles.hero, over && styles.over, animates && "motion-rise")} role="region" aria-label="Calories">
+      <header className={styles.head}>
+        <span className={styles.title}><IconFlame aria-hidden /> Calories</span>
+        {onShare && (
+          <button type="button" className={styles.share} onClick={onShare} aria-label="Share this day" title="Share this day">
+            <IconShare aria-hidden />
+          </button>
+        )}
+      </header>
+
+      <div className={styles.gauge}>
+        <Ring className={styles.ring} value={totals.calories} max={targets.calories} size={GAUGE_SIZE} stroke={GAUGE_STROKE} sweep={GAUGE_SWEEP} glow label={`${formatNumber(totals.calories)} of ${formatNumber(targets.calories)} calories eaten`}>
+          <span className={cx(styles.leftValue, "num")}><CountUp value={amount} /></span>
           <span className={styles.leftLabel}>{over ? "kcal over" : "kcal left"}</span>
         </Ring>
-        <ul className={styles.figures}>
-          <li>
-            <span className={styles.chip} aria-hidden><IconEaten /></span>
-            <span className={styles.figure}>
-              <span className={styles.figureLabel}>Eaten</span>
-              <span className={cx(styles.figureValue, "num")}><CountUp value={totals.calories} /></span>
-            </span>
-          </li>
-          <li>
-            <span className={styles.chip} aria-hidden><IconTarget /></span>
-            <span className={styles.figure}>
-              <span className={styles.figureLabel}>Goal</span>
-              <span className={cx(styles.figureValue, "num")}>{formatNumber(targets.calories)}</span>
-            </span>
-          </li>
-        </ul>
       </div>
 
-      <ul className={styles.macros}>
-        {MACROS.map(({ key, label }) => (
-          <MacroTile key={key} label={label} tone={key} value={totals[key]} target={targets[key]} />
-        ))}
-      </ul>
+      <dl className={styles.figures}>
+        <div className={styles.figure}>
+          <dt>Eaten</dt>
+          <dd className="num"><CountUp value={totals.calories} /></dd>
+        </div>
+        <div className={styles.figure}>
+          <dt>Goal</dt>
+          <dd className="num">{formatNumber(targets.calories)}</dd>
+        </div>
+        <div className={styles.figure}>
+          <dt>Used</dt>
+          <dd className="num"><CountUp value={used} />%</dd>
+        </div>
+      </dl>
     </Card>
   );
 }

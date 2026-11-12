@@ -26,6 +26,17 @@ body {
   overscroll-behavior-y: none;
 }
 
+/* The accent's light behind the top of the page. It stays put while the page scrolls under it. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: -1;
+  height: 440px;
+  background: var(--page-glow);
+  pointer-events: none;
+}
+
 body.sheet-open {
   overflow: hidden;
 }

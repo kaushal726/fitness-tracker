@@ -4,7 +4,7 @@ import { cx } from "../../lib/cx.ts";
 import { slotAt } from "./chartScale.ts";
 import styles from "./ColumnChart.module.css";
 
-export type ColumnTone = "primary" | "over" | "muted" | "soft";
+export type ColumnTone = "primary" | "over" | "muted" | "soft" | "water" | "waterSoft";
 
 export interface Column {
   key: string;

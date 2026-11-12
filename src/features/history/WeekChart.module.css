@@ -15,7 +15,7 @@
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--ink-3);
+  color: var(--hero-ink-2);
 }
 
 .average {
@@ -30,16 +30,16 @@
   font-size: calc(14px * var(--fs-scale));
   font-weight: 600;
   letter-spacing: 0;
-  color: var(--ink-3);
+  color: var(--hero-ink-2);
 }
 
 .goal {
   padding: 6px 12px;
   border-radius: var(--r-pill);
-  background: var(--surface-2);
+  background: var(--hero-panel);
   font-size: calc(13px * var(--fs-scale));
   font-weight: 700;
-  color: var(--ink-2);
+  color: var(--hero-ink);
 }
 
 .chart {
@@ -54,7 +54,8 @@
   left: 0;
   right: 0;
   margin-bottom: 26px;
-  border-top: 1.5px dashed var(--line-strong);
+  border-top: 1.5px dashed var(--hero-ink-2);
+  opacity: 0.55;
   pointer-events: none;
 }
 
@@ -78,16 +79,16 @@
 .bar {
   width: 100%;
   border-radius: 9px 9px 5px 5px;
-  background: color-mix(in srgb, var(--primary) 34%, transparent);
+  background: color-mix(in srgb, var(--hero-ring-to) 38%, transparent);
   transition: height 0.6s var(--ease-out);
 }
 
 .today {
-  background: var(--primary);
+  background: var(--hero-ring-to);
 }
 
 .over {
-  background: var(--over);
+  background: var(--hero-over);
 }
 
 .day {
@@ -95,9 +96,10 @@
   bottom: 0;
   font-size: max(11px, calc(12px * var(--fs-scale)));
   font-weight: 700;
-  color: var(--ink-3);
+  color: var(--hero-ink-2);
 }
 
 .dayToday {
-  color: var(--primary);
+  color: var(--hero-ink);
+  font-weight: 800;
 }

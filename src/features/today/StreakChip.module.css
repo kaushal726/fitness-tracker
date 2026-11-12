@@ -1,0 +1,25 @@
+.chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  height: 40px;
+  padding: 0 14px 0 11px;
+  border-radius: var(--r-pill);
+  background: var(--warn-soft);
+  color: var(--warn);
+  font-size: calc(17px * var(--fs-scale));
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 40px;
+}
+
+.chip svg {
+  align-self: center;
+  font-size: calc(18px * var(--fs-scale));
+}
+
+.chip small {
+  font-size: max(11px, calc(12.5px * var(--fs-scale)));
+  font-weight: 700;
+  letter-spacing: 0;
+}

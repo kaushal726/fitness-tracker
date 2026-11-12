@@ -4,8 +4,9 @@
   align-items: center;
   justify-content: center;
   border-radius: 34%;
-  background: var(--primary);
+  background: var(--grad-primary);
   color: var(--on-primary);
+  box-shadow: var(--glow-primary);
   font-weight: 800;
   letter-spacing: -0.02em;
 }

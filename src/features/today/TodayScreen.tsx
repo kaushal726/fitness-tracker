@@ -1,7 +1,8 @@
 import { useMemo, useState, type CSSProperties } from "react";
-import { caloriesByDate, entriesOn, groupByMeal, sumEntries } from "../../data/selectors.ts";
+import { caloriesByDate, entriesOn, groupByMeal, loggedDates, sumEntries } from "../../data/selectors.ts";
 import { useAppState } from "../../data/store.ts";
 import type { Entry, Profile } from "../../data/types.ts";
+import { currentStreak } from "../../domain/breakdowns.ts";
 import { computePlan } from "../../domain/goals.ts";
 import { dayInsight } from "../../domain/insights.ts";
 import { mealForTime } from "../../domain/meals.ts";
@@ -14,7 +15,11 @@ import { EditEntrySheet } from "../add/EditEntrySheet.tsx";
 import { IdeasSheet } from "../ideas/IdeasSheet.tsx";
 import { ShareDaySheet } from "../share/ShareDaySheet.tsx";
 import { useDayIdeas } from "../ideas/useDayIdeas.ts";
+import { useWater } from "../water/useWater.ts";
+import { WaterCard } from "../water/WaterCard.tsx";
+import { WaterSheet } from "../water/WaterSheet.tsx";
 import { InsightPill } from "./InsightPill.tsx";
+import { MacroGrid } from "./MacroGrid.tsx";
 import { MealList } from "./MealList.tsx";
 import { WeekStrip } from "./WeekStrip.tsx";
 import styles from "./TodayScreen.module.css";
@@ -38,12 +43,15 @@ export function TodayScreen({ profile, date, today, onSelectDate, onAdd }: Props
   const [editingId, setEditingId] = useState<string | null>(null);
   const [ideasOpen, setIdeasOpen] = useState(false);
   const [sharing, setSharing] = useState(false);
+  const [waterOpen, setWaterOpen] = useState(false);
+  const water = useWater(date);
 
   const plan = useMemo(() => computePlan(profile, settings.customCalories), [profile, settings.customCalories]);
   const dayEntries = useMemo(() => entriesOn(entries, date), [entries, date]);
   const totals = useMemo(() => sumEntries(dayEntries), [dayEntries]);
   const byMeal = useMemo(() => groupByMeal(dayEntries), [dayEntries]);
   const eatenByDay = useMemo(() => caloriesByDate(entries), [entries]);
+  const streak = useMemo(() => currentStreak(new Set(loggedDates(entries)), today), [entries, today]);
   const editing: Entry | undefined = dayEntries.find((e) => e.id === editingId);
   const insight = dayInsight(totals, plan.targets, dayEntries.length > 0, new Date().getHours());
   const currentMeal = date === today ? mealForTime(new Date(), settings.mealStartHours) : null;
@@ -53,7 +61,7 @@ export function TodayScreen({ profile, date, today, onSelectDate, onAdd }: Props
 
   return (
     <>
-      <DayHeader date={date} today={today} name={profile.name} onBackToToday={() => onSelectDate(today)} />
+      <DayHeader date={date} today={today} name={profile.name} streak={streak} onBackToToday={() => onSelectDate(today)} />
       <WeekStrip selected={date} today={today} caloriesByDate={eatenByDay} goal={plan.targets.calories} onSelect={onSelectDate} />
       <div className={styles.layout}>
         <div className={styles.aside}>
@@ -64,11 +72,16 @@ export function TodayScreen({ profile, date, today, onSelectDate, onAdd }: Props
             </div>
           )}
         </div>
+        <div className={styles.tiles}>
+          <MacroGrid totals={totals} targets={plan.targets} index={2} />
+          <WaterCard water={water} index={3} onOpen={() => setWaterOpen(true)} />
+        </div>
         <div className={styles.meals}>
           <MealList key={date} byMeal={byMeal} currentMeal={currentMeal} onOpenEntry={(e) => setEditingId(e.id)} onAdd={onAdd} />
         </div>
       </div>
 
+      {waterOpen && <WaterSheet date={date} onClose={() => setWaterOpen(false)} />}
       {sharing && <ShareDaySheet profile={profile} date={date} onClose={() => setSharing(false)} />}
       {editing && <EditEntrySheet entry={editing} onClose={() => setEditingId(null)} />}
       {ideasOpen && (

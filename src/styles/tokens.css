@@ -45,8 +45,37 @@
   --n-fiber: #2b9967;
   --n-fiber-soft: #dff2e8;
 
+  /* Water: always blue, whatever the accent, so a glass of water never looks like a calorie. */
+  --water: #1f8fd6;
+  --water-strong: #14679f;
+  --water-soft: #e2f1fb;
+  --water-line: #c0def3;
+  --on-water: #ffffff;
+
   --track: color-mix(in srgb, var(--ink) 9%, transparent);
   --overlay: rgba(12, 18, 14, 0.48);
+
+  /* The accent as a fill with some life in it: the main button, the selected day. */
+  --grad-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-strong) 100%);
+  --glow-primary: 0 10px 24px -10px color-mix(in srgb, var(--primary) 70%, transparent);
+  /* A soft light of the accent behind the top of every page. */
+  --page-glow: radial-gradient(90% 100% at 50% -30%, color-mix(in srgb, var(--primary) 20%, transparent), transparent 70%);
+  /* Bars that float over the page: see-through, with the page blurred behind. */
+  --glass: color-mix(in srgb, var(--surface) 82%, transparent);
+  --glass-line: color-mix(in srgb, var(--ink) 8%, transparent);
+
+  /* The card that leads Today. In light it is the accent itself with white on it; in dark a deep card lit by the accent. */
+  --hero-bg: radial-gradient(120% 90% at 100% 0%, rgba(255, 255, 255, 0.24), transparent 56%), radial-gradient(90% 80% at 0% 100%, rgba(0, 0, 0, 0.16), transparent 60%), linear-gradient(150deg, var(--primary) 0%, var(--primary-strong) 100%);
+  --hero-edge: transparent;
+  --hero-shadow: 0 20px 36px -18px color-mix(in srgb, var(--primary) 75%, transparent);
+  --hero-ink: #ffffff;
+  --hero-ink-2: rgba(255, 255, 255, 0.82);
+  --hero-panel: rgba(255, 255, 255, 0.15);
+  --hero-line: rgba(255, 255, 255, 0.2);
+  --hero-ring-from: #ffffff;
+  --hero-ring-to: #ffffff;
+  --hero-ring-track: rgba(255, 255, 255, 0.24);
+  --hero-over: #ffd8bd;
 
   /* Chart marks. The nutrient colours as they are drawn in a chart: checked as a set for colour-blind separation
    * (light and dark), with the amount always written beside the mark. Text on a chart wears the ink colours. */
@@ -71,10 +100,10 @@
   /* Shape */
   --r-sm: 12px;
   --r-md: 16px;
-  --r-lg: 22px;
-  --r-xl: 28px;
+  --r-lg: 24px;
+  --r-xl: 30px;
   --r-pill: 999px;
-  --shadow-card: 0 1px 2px rgba(21, 32, 26, 0.04), 0 6px 18px rgba(21, 32, 26, 0.05);
+  --shadow-card: 0 1px 1px rgba(21, 32, 26, 0.03), 0 10px 26px -10px rgba(21, 32, 26, 0.1);
   --shadow-float: 0 12px 32px rgba(21, 32, 26, 0.16);
   --shadow-sheet: 0 -10px 40px rgba(21, 32, 26, 0.16);
 
@@ -86,12 +115,14 @@
   --fs-body: calc(16px * var(--fs-scale));
   --fs-lead: calc(18px * var(--fs-scale));
   --fs-h2: calc(20px * var(--fs-scale));
-  --fs-h1: calc(28px * var(--fs-scale));
+  --fs-h1: calc(30px * var(--fs-scale));
 
   /* Layout */
   --content-max: 640px;
   --sidenav-width: 248px;
-  --dock-h: 60px;
+  --dock-h: 62px;
+  /* The bar floats this far off the bottom and the sides on a phone. */
+  --dock-gap: 10px;
   --touch: 44px;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -107,12 +138,12 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --bg: #0b100d;
-  --surface: #131a16;
-  --surface-2: #1a231e;
-  --surface-3: #232e28;
-  --line: #222c26;
-  --line-strong: #2f3c34;
+  --bg: #090d0b;
+  --surface: #141b17;
+  --surface-2: #1b2520;
+  --surface-3: #25312b;
+  --line: #242f29;
+  --line-strong: #324138;
 
   --ink: #edf3ef;
   --ink-2: #b4c1b9;
@@ -139,8 +170,32 @@
   --n-fiber: #4fd39e;
   --n-fiber-soft: #12302a;
 
+  --water: #5bb8f5;
+  --water-strong: #93d1fb;
+  --water-soft: #10283a;
+  --water-line: #1d425c;
+  --on-water: #04202f;
+
   --track: color-mix(in srgb, var(--ink) 11%, transparent);
   --overlay: rgba(0, 0, 0, 0.62);
+
+  --grad-primary: linear-gradient(135deg, var(--primary-strong) 0%, var(--primary) 100%);
+  --glow-primary: 0 10px 26px -10px color-mix(in srgb, var(--primary) 55%, transparent);
+  --page-glow: radial-gradient(90% 100% at 50% -30%, color-mix(in srgb, var(--primary) 17%, transparent), transparent 70%);
+  --glass: color-mix(in srgb, var(--surface-2) 78%, transparent);
+  --glass-line: rgba(255, 255, 255, 0.09);
+
+  --hero-bg: radial-gradient(110% 90% at 100% 0%, color-mix(in srgb, var(--primary) 30%, transparent), transparent 60%), radial-gradient(90% 80% at 0% 100%, color-mix(in srgb, var(--primary) 13%, transparent), transparent 62%), var(--surface);
+  --hero-edge: var(--primary-line);
+  --hero-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --hero-ink: var(--ink);
+  --hero-ink-2: var(--ink-2);
+  --hero-panel: color-mix(in srgb, var(--primary) 11%, transparent);
+  --hero-line: var(--primary-line);
+  --hero-ring-from: color-mix(in srgb, var(--primary) 55%, #ffffff);
+  --hero-ring-to: var(--primary);
+  --hero-ring-track: color-mix(in srgb, var(--primary) 16%, transparent);
+  --hero-over: var(--over);
 
   /* Deeper than the text versions of the same colours: a large fill in the pale ones glares on a dark card. */
   --viz-protein: #6a86ee;
@@ -158,7 +213,8 @@
   --toast-ink: #0b100d;
   --toast-action: #0f6a4a;
 
-  --shadow-card: none;
+  /* No shadow shows on a dark page: a card is lit along its top edge instead. */
+  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.045);
   --shadow-float: 0 12px 32px rgba(0, 0, 0, 0.55);
   --shadow-sheet: 0 -10px 40px rgba(0, 0, 0, 0.55);
 }
@@ -166,6 +222,7 @@
 @media (min-width: 900px) {
   :root {
     --dock-h: 0px;
+    --dock-gap: 0px;
   }
 }
 

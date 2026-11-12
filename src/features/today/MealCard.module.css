@@ -70,6 +70,9 @@
   font-size: calc(17px * var(--fs-scale));
   font-weight: 800;
   letter-spacing: -0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .count {
@@ -184,4 +187,11 @@
   flex: none;
   font-size: calc(15.5px * var(--fs-scale));
   font-weight: 800;
+}
+
+/* A narrow phone has no room for the meal's icon beside its name and its total. */
+@media (max-width: 359px) {
+  .tile {
+    display: none;
+  }
 }

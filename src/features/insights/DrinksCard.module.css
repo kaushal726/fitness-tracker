@@ -13,12 +13,6 @@
   list-style: none;
 }
 
-.list li {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
 .line,
 .row {
   display: flex;

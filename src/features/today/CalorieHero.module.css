@@ -1,126 +1,119 @@
-/* The day's card: a soft glow of the accent in its top corner, the ring, the two figures beside it, and the macros under. */
+/* The day's lead card: a gauge of the calories left and three figures under it, in the lead card's own colours. */
 .hero {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 22px 18px 18px;
-  overflow: hidden;
-  background-image: radial-gradient(120% 85% at 0% 0%, color-mix(in srgb, var(--primary) 14%, transparent), transparent 62%);
+  padding: 16px;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 40px;
+}
+
+.title {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: calc(15px * var(--fs-scale));
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--hero-ink-2);
+}
+
+.title svg {
+  font-size: calc(18px * var(--fs-scale));
 }
 
 .share {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin: -2px -4px -2px 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--hero-panel);
+  color: var(--hero-ink);
+  font-size: calc(19px * var(--fs-scale));
+  transition: transform var(--dur-fast) var(--ease-out), background var(--dur-fast) ease;
 }
 
-.hero .share {
-  background: var(--surface);
-  border-color: var(--primary-line);
+.share:active {
+  transform: scale(0.92);
 }
 
-.top {
+/* The gauge's opening at the bottom is empty space: the figures move up into it. */
+.gauge {
   display: flex;
-  align-items: center;
-  gap: 18px;
+  justify-content: center;
+  margin: 2px 0 -26px;
 }
 
-.flame {
-  margin-bottom: 3px;
-  color: var(--primary);
-  font-size: calc(20px * var(--fs-scale));
+.ring {
+  --ring-from: var(--hero-ring-from);
+  --ring-to: var(--hero-ring-to);
+  --ring-track: var(--hero-ring-track);
+}
+
+.over .ring {
+  --ring-from: var(--hero-over);
+  --ring-to: var(--hero-over);
 }
 
 .leftValue {
-  font-size: calc(37px * var(--fs-scale));
+  font-size: calc(50px * var(--fs-scale));
   font-weight: 800;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.045em;
   line-height: 1;
 }
 
-.overValue {
-  color: var(--over);
+.leftLabel {
+  margin-top: 6px;
+  font-size: calc(14px * var(--fs-scale));
+  font-weight: 700;
+  color: var(--hero-ink-2);
 }
 
-.leftLabel {
-  margin-top: 5px;
-  font-size: max(11px, calc(12.5px * var(--fs-scale)));
-  font-weight: 700;
-  color: var(--ink-2);
+.over .leftValue,
+.over .leftLabel {
+  color: var(--hero-over);
 }
 
 .figures {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  min-width: 0;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.figures li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-
-.chip {
-  flex: none;
+  position: relative;
   display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 12px;
-  background: color-mix(in srgb, var(--primary) 14%, transparent);
-  color: var(--primary);
-  font-size: calc(17px * var(--fs-scale));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  padding: 12px 4px;
+  border-radius: var(--r-md);
+  background: var(--hero-panel);
 }
 
 .figure {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 1px;
   min-width: 0;
 }
 
-.figureLabel {
+.figure + .figure {
+  border-left: 1px solid var(--hero-line);
+}
+
+.figure dt {
   font-size: max(11px, calc(12.5px * var(--fs-scale)));
   font-weight: 700;
-  color: var(--ink-2);
+  color: var(--hero-ink-2);
 }
 
-.figureValue {
-  font-size: calc(24px * var(--fs-scale));
+.figure dd {
+  margin: 0;
+  font-size: calc(20px * var(--fs-scale));
   font-weight: 800;
   letter-spacing: -0.03em;
-  line-height: 1.1;
-}
-
-.macros {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px;
-  margin: 0;
-  padding: 18px 0 0;
-  border-top: 1px solid var(--primary-line);
-  list-style: none;
-}
-
-@media (max-width: 359px) {
-  .top {
-    gap: 12px;
-  }
-
-  .chip {
-    display: none;
-  }
-
-  .macros {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    row-gap: 16px;
-  }
+  line-height: 1.15;
 }

@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 0 -16px 18px;
+  margin: 0 -16px 6px;
 }
 
 .arrow {
@@ -13,8 +13,8 @@
   flex: 1;
   min-width: 0;
   display: flex;
-  gap: 8px;
-  padding: 2px 16px 4px;
+  gap: 4px;
+  padding: 2px 16px 12px;
   overflow-x: auto;
   scroll-snap-type: x proximity;
   scrollbar-width: none;
@@ -31,11 +31,11 @@
   align-items: center;
   justify-content: center;
   gap: 5px;
-  width: 54px;
-  height: 82px;
+  width: 50px;
+  height: 78px;
   border: 1.5px solid transparent;
-  border-radius: 20px;
-  background: var(--surface);
+  border-radius: var(--r-pill);
+  background: transparent;
   color: var(--ink);
   scroll-snap-align: center;
   transition: background var(--dur) ease, color var(--dur-fast) ease, border-color var(--dur) ease, transform var(--dur-fast) var(--ease-out);
@@ -66,10 +66,13 @@
   border-color: var(--primary-line);
 }
 
+/* The day on screen is a filled pill; the rest sit straight on the page. */
 .selected {
-  background: var(--primary);
-  border-color: var(--primary);
+  background: var(--grad-primary);
+  border-color: transparent;
   color: var(--on-primary);
+  /* Kept short: the strip scrolls sideways, so anything that reaches far below it is cut off. */
+  box-shadow: 0 6px 10px -6px color-mix(in srgb, var(--primary) 70%, transparent);
 }
 
 .selected .weekday {
@@ -84,10 +87,10 @@
 
 @media (min-width: 900px) {
   .wrap {
-    margin: 0 0 22px;
+    margin: 0 0 10px;
   }
 
   .strip {
-    padding: 2px 0 4px;
+    padding: 2px 0 12px;
   }
 }

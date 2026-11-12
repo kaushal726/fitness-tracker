@@ -13,8 +13,12 @@
   padding: 20px;
 }
 
-.hero {
-  background: var(--primary-soft);
-  border-color: var(--primary-line);
-  box-shadow: none;
+/* The accent itself in light, a deep card lit by the accent in dark. What sits on it wears the --hero-* colours. */
+.lead {
+  overflow: hidden;
+  border-color: var(--hero-edge);
+  border-radius: var(--r-xl);
+  background: var(--hero-bg);
+  box-shadow: var(--hero-shadow);
+  color: var(--hero-ink);
 }

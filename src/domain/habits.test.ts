@@ -56,7 +56,7 @@ describe("meals and the clock", () => {
 });
 
 describe("drinks", () => {
-  it("counts water, cups of tea or coffee, sweet drinks and alcohol on the counted days", () => {
+  it("counts cups of tea or coffee, sweet drinks and alcohol on the counted days, and leaves water to its own count", () => {
     const drink = (foodId: string, date: string, grams: number, kcal: number, extra = {}) => entry(date, kcal, { foodId, grams, ...extra });
     const e = [
       entry("2026-10-01", 1900),
@@ -69,11 +69,12 @@ describe("drinks", () => {
     ];
     const r = drinkSummary(e, insights(e).days, lookup);
     expect(r?.countedDays).toBe(2);
-    expect(r?.waterGlasses).toBeCloseTo((500 + 750) / 250 / 2, 9);
     expect(r?.cups).toBeCloseTo(300 / 150 / 2, 9);
     expect(r?.sweetDrinks).toBe(1);
     expect(r?.alcoholDrinks).toBe(2);
     expect(drinkSummary([entry("2026-10-01", 1900)], insights([entry("2026-10-01", 1900)]).days, lookup)).toBeNull();
+    const onlyWater = [entry("2026-10-01", 1900), drink("water", "2026-10-01", 500, 0)];
+    expect(drinkSummary(onlyWater, insights(onlyWater).days, lookup)).toBeNull();
   });
 });
 

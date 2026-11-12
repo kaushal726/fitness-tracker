@@ -10,17 +10,19 @@ import type { Profile } from "../../data/types.ts";
 import { bmi } from "../../domain/bmi.ts";
 import { computePlan, goalDef } from "../../domain/goals.ts";
 import { formatHour, MEAL_ORDER } from "../../domain/meals.ts";
+import { formatVolume } from "../../domain/water.ts";
 import { downloadBlob } from "../../lib/files.ts";
 import { formatNumber } from "../../lib/format.ts";
 import { Avatar } from "../../ui/Avatar";
 import { useConfirm } from "../../ui/Confirm";
-import { IconBook, IconClock, IconColor, IconDownload, IconFlame, IconInfo, IconPalette, IconPhone, IconShare, IconText, IconTarget, IconTrash, IconUpload } from "../../ui/icons";
+import { IconBook, IconClock, IconColor, IconDownload, IconFlame, IconInfo, IconPalette, IconPhone, IconShare, IconText, IconTarget, IconTrash, IconUpload, IconWater } from "../../ui/icons";
 import { MadeWithLove } from "../../ui/MadeWithLove";
 import { Segmented } from "../../ui/Segmented";
 import { SettingsGroup, SettingsRow } from "../../ui/SettingsList";
 import { useToast } from "../../ui/Toast";
 import { PlanPreview } from "../onboarding/PlanPreview.tsx";
 import { ShareSheet } from "../share/ShareSheet.tsx";
+import { WaterSheet } from "../water/WaterSheet.tsx";
 import { AccentPicker } from "./AccentPicker.tsx";
 import { AboutSheet } from "./AboutSheet.tsx";
 import { CalorieTargetSheet } from "./CalorieTargetSheet.tsx";
@@ -30,7 +32,7 @@ import { MealTimesSheet } from "./MealTimesSheet.tsx";
 import { MyFoodsSheet } from "./MyFoodsSheet.tsx";
 import styles from "./profile.module.css";
 
-type OpenSheet = "profile" | "target" | "meals" | "foods" | "share" | "about" | null;
+type OpenSheet = "profile" | "target" | "meals" | "water" | "foods" | "share" | "about" | null;
 
 const TEXT_SIZES: { value: TextSize; label: string }[] = [
   { value: "small", label: "Small" },
@@ -98,6 +100,7 @@ export function ProfileScreen({ profile, today }: { profile: Profile; today: str
         <SettingsRow icon={<IconTarget />} tone="green" title="Goal and body" subtitle="Weight, goal, activity" onClick={() => setOpen("profile")} />
         <SettingsRow icon={<IconFlame />} tone="amber" title="Daily calories" subtitle={plan.custom ? "Set by you" : "Calculated for you"} value={`${formatNumber(plan.targets.calories)} kcal`} onClick={() => setOpen("target")} />
         <SettingsRow icon={<IconClock />} tone="blue" title="Meal times" subtitle={mealTimes} onClick={() => setOpen("meals")} />
+        <SettingsRow icon={<IconWater />} tone="blue" title="Water" subtitle="Daily goal and glass size" value={formatVolume(settings.waterGoalMl)} onClick={() => setOpen("water")} />
         <SettingsRow icon={<IconBook />} tone="rose" title="My foods" subtitle="Foods you added yourself" value={customFoods.length ? String(customFoods.length) : undefined} onClick={() => setOpen("foods")} />
       </SettingsGroup>
 
@@ -153,6 +156,7 @@ export function ProfileScreen({ profile, today }: { profile: Profile; today: str
       {open === "profile" && <EditProfileSheet profile={profile} onClose={close} />}
       {open === "target" && <CalorieTargetSheet profile={profile} settings={settings} onClose={close} />}
       {open === "meals" && <MealTimesSheet settings={settings} onClose={close} />}
+      {open === "water" && <WaterSheet date={today} onClose={close} />}
       {open === "foods" && <MyFoodsSheet onClose={close} />}
       {open === "share" && <ShareSheet profile={profile} today={today} onClose={close} />}
       {open === "about" && <AboutSheet onClose={close} />}

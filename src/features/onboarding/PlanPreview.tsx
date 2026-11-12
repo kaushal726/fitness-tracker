@@ -25,7 +25,7 @@ export function PlanPreview({ plan, requestedWeeks, reveal }: Props) {
   const pace = paceSentence(plan, requestedWeeks);
   const note = plan.custom ? "You set this target yourself." : pace ? pace.text : "This matches what your body uses in a day.";
   return (
-    <Card tone="hero" className={styles.plan}>
+    <Card tone="lead" className={styles.plan}>
       <p className={styles.label}>Daily calories</p>
       <p className={styles.calories}>
         <span className="num"><CountUp value={plan.targets.calories} from={reveal ? 0 : undefined} /></span>

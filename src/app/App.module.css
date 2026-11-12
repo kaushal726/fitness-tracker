@@ -1,6 +1,6 @@
 .main {
   min-height: 100dvh;
-  padding: calc(14px + var(--safe-top)) 16px calc(var(--dock-h) + var(--safe-bottom) + 96px);
+  padding: calc(14px + var(--safe-top)) 16px calc(var(--dock-h) + var(--safe-bottom) + var(--dock-gap) + 96px);
 }
 
 @media (min-width: 900px) {

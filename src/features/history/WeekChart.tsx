@@ -28,7 +28,7 @@ export function WeekChart({ today, goal, caloriesByDate }: Props) {
   const average = loggedDays.length ? loggedDays.reduce((a, b) => a + b, 0) / loggedDays.length : 0;
 
   return (
-    <Card className={styles.card}>
+    <Card tone="lead" className={styles.card}>
       <div className={styles.head}>
         <div>
           <p className={styles.label}>This week</p>

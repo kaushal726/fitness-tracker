@@ -1,15 +1,18 @@
+/* A bar of glass that floats over the page, clear of the edges. On a phone with a home indicator it sits a little into that space, as the system's own bars do. */
 .dock {
   position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  left: var(--dock-gap);
+  right: var(--dock-gap);
+  bottom: max(var(--dock-gap), calc(var(--safe-bottom) - 12px));
   z-index: 30;
   display: grid;
-  padding: 0 4px var(--safe-bottom);
-  border-top: 1px solid var(--line);
-  background: color-mix(in srgb, var(--surface) 93%, transparent);
-  -webkit-backdrop-filter: blur(18px);
-  backdrop-filter: blur(18px);
+  padding: 0 4px;
+  border: 1px solid var(--glass-line);
+  border-radius: 26px;
+  background: var(--glass);
+  box-shadow: var(--shadow-float);
+  -webkit-backdrop-filter: blur(22px) saturate(1.6);
+  backdrop-filter: blur(22px) saturate(1.6);
 }
 
 .tab {
@@ -34,7 +37,7 @@
   position: relative;
   display: grid;
   place-items: center;
-  width: 54px;
+  width: 52px;
   height: 30px;
   transition: transform var(--dur-fast) var(--ease-out);
 }

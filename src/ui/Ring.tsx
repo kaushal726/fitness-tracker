@@ -14,15 +14,25 @@ interface RingProps {
   label: string;
   /** A soft glow around the arc: for a big ring, not for the small ones. */
   glow?: boolean;
+  /** How much of a circle it is, in degrees. Less than a full turn makes a gauge, open at the bottom. */
+  sweep?: number;
   /** Lets a place restyle the ring's colours (`--ring-from`, `--ring-to`, `--ring-track`). */
   className?: string;
   children?: ReactNode;
 }
 
 /** A progress ring that draws itself in when it appears (already drawn when the app starts) and eases to each new value. */
-export function Ring({ value, max, size = 152, stroke = 14, tone = "primary", label, glow = false, className, children }: RingProps) {
+const FULL_TURN = 360;
+/** Where a full ring starts: the top. */
+const TOP = -90;
+/** Where the middle of a gauge's opening points: straight down. */
+const BOTTOM = 90;
+
+export function Ring({ value, max, size = 152, stroke = 14, tone = "primary", label, glow = false, sweep = FULL_TURN, className, children }: RingProps) {
   const radius = (size - stroke) / 2;
   const circumference = 2 * Math.PI * radius;
+  const length = circumference * (Math.min(FULL_TURN, sweep) / FULL_TURN);
+  const startAngle = sweep >= FULL_TURN ? TOP : BOTTOM + (FULL_TURN - sweep) / 2;
   const share = max > 0 ? Math.min(1, Math.max(0, value / max)) : 0;
   const drawsIn = useAnimatesIn();
   const [drawn, setDrawn] = useState(drawsIn ? 0 : share);
@@ -44,7 +54,7 @@ export function Ring({ value, max, size = 152, stroke = 14, tone = "primary", la
             <stop offset="1" className={styles.to} />
           </linearGradient>
         </defs>
-        <circle className={styles.track} cx={center} cy={center} r={radius} strokeWidth={stroke} fill="none" />
+        <circle className={styles.track} cx={center} cy={center} r={radius} strokeWidth={stroke} fill="none" strokeLinecap="round" strokeDasharray={`${length} ${circumference}`} transform={`rotate(${startAngle} ${center} ${center})`} />
         <circle
           className={styles.arc}
           cx={center}
@@ -54,9 +64,9 @@ export function Ring({ value, max, size = 152, stroke = 14, tone = "primary", la
           strokeWidth={stroke}
           fill="none"
           strokeLinecap="round"
-          strokeDasharray={circumference}
-          strokeDashoffset={circumference * (1 - drawn)}
-          transform={`rotate(-90 ${center} ${center})`}
+          strokeDasharray={`${length} ${circumference}`}
+          strokeDashoffset={length * (1 - drawn)}
+          transform={`rotate(${startAngle} ${center} ${center})`}
           style={{ opacity: drawn > 0 ? 1 : 0 }}
         />
       </svg>

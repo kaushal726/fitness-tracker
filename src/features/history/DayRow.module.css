@@ -63,9 +63,27 @@
 }
 
 .title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
   font-size: calc(15px * var(--fs-scale));
   font-weight: 700;
   color: var(--ink-2);
+  white-space: nowrap;
+}
+
+/* Glasses of water that day, in the water's own blue. */
+.water {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 8px 1px 6px;
+  border-radius: var(--r-pill);
+  background: var(--water-soft);
+  color: var(--water-strong);
+  font-size: max(11px, calc(12.5px * var(--fs-scale)));
+  font-weight: 800;
 }
 
 .kcal {

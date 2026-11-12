@@ -7,7 +7,7 @@ import { parseBackup } from "./backup.ts";
 import { getAll, STORE } from "./db.ts";
 import { buildEntry, reviseEntry } from "./entries.ts";
 import { groupByMeal, makeFoodLookup, recentFoodIds, sumEntries } from "./selectors.ts";
-import { addCustomFood, addEntry, DEFAULT_SETTINGS, exportBackup, getState, initStore, removeEntry, replaceEntry, resetAll, restoreBackup, toggleFavorite } from "./store.ts";
+import { addCustomFood, addEntry, addWater, DEFAULT_SETTINGS, exportBackup, getState, initStore, removeEntry, replaceEntry, resetAll, restoreBackup, toggleFavorite } from "./store.ts";
 import type { Entry } from "./types.ts";
 
 const food = (id: string): Food => getFoodById(id) as Food;
@@ -97,6 +97,34 @@ describe("store", () => {
     await new Promise((r) => setTimeout(r, 30));
     expect(getState().entries).toHaveLength(1);
     expect((await getAll<Entry>(STORE.entries)).length).toBe(1);
+  });
+
+  it("keeps water through a backup, and takes a backup made before water was tracked", async () => {
+    resetAll();
+    addWater("2026-01-05", 250);
+    addWater("2026-01-05", 500);
+    addWater("2026-01-06", 250);
+    addWater("2026-01-06", -250);
+    expect(getState().water).toEqual({ "2026-01-05": 750 });
+
+    const parsed = parseBackup(JSON.stringify(exportBackup()));
+    expect(parsed?.water).toEqual({ "2026-01-05": 750 });
+    resetAll();
+    expect(getState().water).toEqual({});
+    restoreBackup(parsed!);
+    expect(getState().water).toEqual({ "2026-01-05": 750 });
+
+    const { water: _water, ...older } = exportBackup();
+    const olderParsed = parseBackup(JSON.stringify(older));
+    expect(olderParsed).not.toBeNull();
+    restoreBackup(olderParsed!);
+    expect(getState().water).toEqual({});
+    expect(parseBackup(JSON.stringify({ ...older, water: { "2026-01-05": "lots" } }))).toBeNull();
+
+    const { waterGoalMl: _goal, waterGlassMl: _glass, ...olderSettings } = DEFAULT_SETTINGS;
+    restoreBackup({ ...olderParsed!, settings: olderSettings as typeof DEFAULT_SETTINGS });
+    expect(getState().settings).toEqual(DEFAULT_SETTINGS);
+    await new Promise((r) => setTimeout(r, 30));
   });
 
   it("lets a custom food be logged like any other", () => {

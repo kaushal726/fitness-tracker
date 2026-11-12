@@ -63,9 +63,11 @@
 .over { background: var(--over); }
 .muted { background: var(--surface-3); }
 .soft { background: color-mix(in srgb, var(--primary) 55%, transparent); }
+.water { --bar-ring: var(--water); background: var(--water); }
+.waterSoft { --bar-ring: var(--water); background: color-mix(in srgb, var(--water) 50%, transparent); }
 
 .current {
-  box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--primary);
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--bar-ring, var(--primary));
 }
 
 .active .bar {

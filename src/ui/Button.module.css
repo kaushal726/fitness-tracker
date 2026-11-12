@@ -11,7 +11,7 @@
   font-weight: 700;
   letter-spacing: -0.005em;
   white-space: nowrap;
-  transition: background var(--dur-fast) ease, border-color var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out), opacity var(--dur-fast) ease;
+  transition: background var(--dur-fast) ease, border-color var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out), opacity var(--dur-fast) ease, filter var(--dur-fast) ease;
 }
 
 .button:active:not(:disabled) {
@@ -24,12 +24,17 @@
 }
 
 .primary {
-  background: var(--primary);
+  background: var(--grad-primary);
   color: var(--on-primary);
+  box-shadow: var(--glow-primary);
 }
 
 .primary:hover:not(:disabled) {
-  background: var(--primary-strong);
+  filter: brightness(1.06);
+}
+
+.primary:disabled {
+  box-shadow: none;
 }
 
 .soft {

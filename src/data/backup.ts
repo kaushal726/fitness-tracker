@@ -13,7 +13,8 @@ export function parseBackup(text: string): Backup | null {
   const b = data as Partial<Backup>;
   const shapeOk = b.app === "fitly" && b.version === 1 && Array.isArray(b.entries) && Array.isArray(b.customFoods) && Array.isArray(b.favorites);
   const entriesOk = shapeOk && b.entries!.every((e) => e && typeof e.id === "string" && typeof e.date === "string" && typeof e.foodId === "string" && typeof e.nutrition?.calories === "number");
-  if (!entriesOk || !b.settings || typeof b.lastUsed !== "object") return null;
+  const waterOk = b.water === undefined || (typeof b.water === "object" && b.water !== null && Object.values(b.water).every((ml) => typeof ml === "number" && ml >= 0));
+  if (!entriesOk || !waterOk || !b.settings || typeof b.lastUsed !== "object") return null;
   return b as Backup;
 }
 

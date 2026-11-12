@@ -27,6 +27,7 @@ import { MonthGoalCard } from "./MonthGoalCard.tsx";
 import { MonthSwitcher } from "./MonthSwitcher.tsx";
 import { SugarSaltCard } from "./SugarSaltCard.tsx";
 import { useMonthInsights } from "./useMonthInsights.ts";
+import { WaterMonthCard } from "./WaterMonthCard.tsx";
 import { WeekdayCard } from "./WeekdayCard.tsx";
 import styles from "./InsightsScreen.module.css";
 
@@ -80,6 +81,7 @@ export function InsightsScreen({ profile, today, onAdd }: Props) {
         <MealCard month={insights} entries={entries} />
         <ClockCard month={insights} entries={counted} />
         <MixCard entries={counted} lookup={lookup} ready={foodsReady} />
+        <WaterMonthCard month={insights} />
         <DrinksCard month={insights} entries={counted} lookup={lookup} ready={foodsReady} />
         <WeekdayCard month={insights} />
         <FoodsCard entries={entries} month={month} />

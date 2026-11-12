@@ -3,6 +3,7 @@ import { entriesOn, loggedDates, sumEntries } from "../../data/selectors.ts";
 import { useAppState } from "../../data/store.ts";
 import type { Profile } from "../../data/types.ts";
 import { computePlan } from "../../domain/goals.ts";
+import { glassesOf, waterByDate } from "../../domain/water.ts";
 import { EmptyState } from "../../ui/EmptyState";
 import { IconHistory } from "../../ui/icons";
 import { ScreenHeader } from "../../ui/ScreenHeader";
@@ -20,7 +21,7 @@ interface Props {
 const MAX_DAYS = 45;
 
 export function HistoryScreen({ profile, today, onOpenDay }: Props) {
-  const { entries, settings } = useAppState();
+  const { entries, settings, water } = useAppState();
   const goal = useMemo(() => computePlan(profile, settings.customCalories).targets.calories, [profile, settings.customCalories]);
 
   const days = useMemo(
@@ -28,6 +29,7 @@ export function HistoryScreen({ profile, today, onOpenDay }: Props) {
     [entries],
   );
   const caloriesByDate = useMemo(() => new Map(days.map((d) => [d.date, d.totals.calories])), [days]);
+  const waterOnDay = useMemo(() => waterByDate(water, entries), [water, entries]);
 
   return (
     <>
@@ -42,7 +44,7 @@ export function HistoryScreen({ profile, today, onOpenDay }: Props) {
           <div className={styles.main}>
             <SectionLabel>All days</SectionLabel>
             <div className={styles.list}>
-              {days.map((d) => <DayRow key={d.date} date={d.date} totals={d.totals} goal={goal} onOpen={onOpenDay} />)}
+              {days.map((d) => <DayRow key={d.date} date={d.date} totals={d.totals} goal={goal} waterGlasses={glassesOf(waterOnDay.get(d.date) ?? 0, settings.waterGlassMl)} onOpen={onOpenDay} />)}
             </div>
           </div>
         </div>

@@ -15,8 +15,8 @@ interface Props {
   onAdd: (meal: MealType) => void;
 }
 
-/** The day's card and its line come first, so the meals arrive after them. */
-const FIRST_MEAL_INDEX = 2;
+/** The day's card, its line, the nutrients and the water come first, so the meals arrive after them. */
+const FIRST_MEAL_INDEX = 4;
 
 const countsOf = (byMeal: Record<MealType, Entry[]>): MealCounts => Object.fromEntries(MEAL_ORDER.map((m) => [m, byMeal[m].length])) as MealCounts;
 

@@ -3,11 +3,11 @@ import { cx } from "../lib/cx";
 import styles from "./Card.module.css";
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
-  /** "hero" is the tinted card that leads a screen. */
-  tone?: "default" | "hero";
+  /** "lead" is the bold card that opens a screen, in the accent (the --hero-* tokens). */
+  tone?: "default" | "lead";
   padded?: boolean;
 }
 
 export function Card({ tone = "default", padded = true, className, ...rest }: CardProps) {
-  return <div className={cx(styles.card, tone === "hero" && styles.hero, padded && styles.padded, className)} {...rest} />;
+  return <div className={cx(styles.card, tone === "lead" && styles.lead, padded && styles.padded, className)} {...rest} />;
 }

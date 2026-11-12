@@ -126,7 +126,7 @@ button.main:active {
   padding: 0;
   border: 0;
   border-radius: 50%;
-  background: var(--primary);
+  background: var(--grad-primary);
   color: var(--on-primary);
   font-size: calc(20px * var(--fs-scale));
   transition: background var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out);

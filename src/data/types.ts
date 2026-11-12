@@ -35,6 +35,10 @@ export interface Settings {
   mealStartHours: Record<MealType, number>;
   /** When set, replaces the calculated calorie target. */
   customCalories: number | null;
+  /** Water to drink in a day, in millilitres. */
+  waterGoalMl: number;
+  /** What one tap on the water card adds: the size of the glass, in millilitres. */
+  waterGlassMl: number;
 }
 
 export interface Entry {
@@ -71,4 +75,6 @@ export interface Backup {
   customFoods: import("../nutrition/types.ts").Food[];
   favorites: string[];
   lastUsed: Record<string, LastUsed>;
+  /** Millilitres of water tapped in on each day. Backups made before water was tracked do not have it. */
+  water?: Record<string, number>;
 }
