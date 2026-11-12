@@ -174,6 +174,8 @@ export interface SearchOutcome {
 
 /** The most readings of a query tried together; each unknown word multiplies them. */
 const MAX_READINGS = 8;
+/** Fewer matches than this for a query with a descriptor word and the plain food is added after them. */
+const FEW_MATCHES = 5;
 
 /** Every way to read the query, each doubtful word as typed or as one of its likely meanings; the likeliest first. */
 function readings(tokens: string[], doubtful: Set<string>, vocabulary: Vocabulary): string[][] {
@@ -221,6 +223,13 @@ export function searchFoodDetailed(query: string, options: SearchOptions = {}): 
   };
   const everyWord = (text: string, words: string[], fuzzy = true): Food[] => rank(words, (ix) => baseScore(ix, text, words, fuzzy));
 
+  /** "fresh curd" matches a few branded foods; the plain food the descriptor only describes ("curd") follows them. */
+  const withPlainFood = (matches: Food[]): Food[] => {
+    const core = tokens.filter((t) => !isSkippable(t));
+    if (matches.length >= FEW_MATCHES || core.length === 0 || core.length === tokens.length) return matches;
+    const extra = everyWord(core.join(" "), core).filter((f) => !matches.some((m) => m.id === f.id));
+    return [...matches, ...extra].slice(0, options.limit ?? DEFAULT_LIMIT);
+  };
   let found = everyWord(q, tokens);
   // "2 egg", "3 roti": a number is how many, unless the food's own name starts with what was typed ("chicken 65").
   const wanted = tokens.filter((t) => !QUANTITY.test(t));
@@ -230,7 +239,7 @@ export function searchFoodDetailed(query: string, options: SearchOptions = {}): 
     q = wanted.join(" ");
     found = everyWord(q, tokens);
   }
-  if (found.length > 0) return { foods: found, closest: false };
+  if (found.length > 0) return { foods: withPlainFood(found), closest: false };
 
   // A word few foods have may be a mishearing or another spelling ("wet sandwich", "bindi"): search what it was likely meant to be.
   const vocabulary = options.extraFoods?.length ? vocabularyOf(pool) : (baseVocabulary ??= vocabularyOf(pool));

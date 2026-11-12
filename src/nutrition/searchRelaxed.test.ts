@@ -6,11 +6,15 @@ const ids = (query: string, limit = 5) => searchFood(query, { limit }).map((f) =
 
 describe("search when no food has every word typed", () => {
   it("leaves out words that describe the food or the amount, and finds the food", () => {
-    for (const q of ["homemade curd", "home made curd", "fresh curd", "1 katori curd", "2 bowl curd"]) {
+    for (const q of ["homemade curd", "home made curd", "1 katori curd", "2 bowl curd"]) {
       const r = searchFoodDetailed(q, { limit: 5 });
       expect(r.foods.map((f) => f.id), q).toContain("curd");
       expect(r.closest, q).toBe(true);
     }
+  });
+
+  it("adds the plain food after the few foods that match a descriptive word", () => {
+    expect(ids("fresh curd", 5)).toContain("curd");
   });
 
   it("finds the plain food when a descriptive word is also in some names", () => {
