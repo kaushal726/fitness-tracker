@@ -53,56 +53,71 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(caches.match(req, MATCH).then((cached) => cached || fetch(req)));
 });
 
-/* Meal reminders. The push server (push-worker/) sends an empty push at each reminder time; the meal is worked out
- * here from the reminder times saved on the phone, so nothing about food ever leaves it. Keep these in step with
- * src/domain/reminders.ts and src/domain/meals.ts.
+/* Reminders. The push server (push-worker/) sends an empty push at each reminder minute. What it is for is read here
+ * from the list the app keeps on the phone (kv "reminderPlan", made by src/domain/reminders.ts), so nothing about food
+ * ever leaves it. Phones that saved reminders before that list existed fall back to the meal times in the settings.
  */
-const MEALS = [
-  { id: "breakfast", label: "breakfast" },
-  { id: "lunch", label: "lunch" },
-  { id: "snack", label: "snack" },
-  { id: "dinner", label: "dinner" },
-];
-const DEFAULT_REMINDER_HOURS = { breakfast: 8.5, lunch: 13.5, snack: 17, dinner: 20.5 };
+const MEAL_LABELS = { breakfast: "breakfast", lunch: "lunch", snack: "snack", dinner: "dinner" };
+const DEFAULT_MEAL_HOURS = { breakfast: 8.5, lunch: 13.5, snack: 17, dinner: 20.5 };
 const MINUTES_IN_DAY = 1440;
 
-function readSettings() {
+function readKv(keys) {
   return new Promise((resolve) => {
     const open = indexedDB.open("fitly");
-    open.onerror = () => resolve(null);
+    open.onerror = () => resolve({});
     open.onsuccess = () => {
+      const db = open.result;
+      const out = {};
       try {
-        const req = open.result.transaction("kv").objectStore("kv").get("settings");
-        req.onsuccess = () => resolve(req.result ?? null);
-        req.onerror = () => resolve(null);
+        const store = db.transaction("kv").objectStore("kv");
+        keys.forEach((key) => {
+          const req = store.get(key);
+          req.onsuccess = () => (out[key] = req.result);
+        });
+        store.transaction.oncomplete = () => {
+          db.close();
+          resolve(out);
+        };
+        store.transaction.onerror = () => {
+          db.close();
+          resolve(out);
+        };
       } catch {
-        resolve(null);
+        db.close();
+        resolve(out);
       }
     };
   });
 }
 
-/** The meal whose reminder time is nearest to now. */
-function mealNow(hours) {
+/** The planned reminder nearest to now. */
+function reminderNow(plan) {
   const now = new Date();
   const minute = now.getHours() * 60 + now.getMinutes();
-  const distance = (m) => {
-    const d = Math.abs(minute - Math.round((hours[m.id] ?? DEFAULT_REMINDER_HOURS[m.id]) * 60));
+  const distance = (r) => {
+    const d = Math.abs(minute - r.minute);
     return Math.min(d, MINUTES_IN_DAY - d);
   };
-  return MEALS.reduce((best, m) => (distance(m) < distance(best) ? m : best));
+  return plan.reduce((best, r) => (distance(r) < distance(best) ? r : best));
+}
+
+function planFrom(kv) {
+  if (Array.isArray(kv.reminderPlan) && kv.reminderPlan.length) return kv.reminderPlan;
+  const hours = kv.settings?.reminders?.times ?? DEFAULT_MEAL_HOURS;
+  return Object.keys(MEAL_LABELS).map((meal) => ({ minute: Math.round((hours[meal] ?? DEFAULT_MEAL_HOURS[meal]) * 60), kind: "meal", meal }));
 }
 
 self.addEventListener("push", (event) => {
   event.waitUntil(
-    readSettings().then((settings) => {
-      const meal = mealNow(settings?.reminders?.times ?? DEFAULT_REMINDER_HOURS);
-      return self.registration.showNotification(`Time to log your ${meal.label}`, {
-        body: "Tap to add what you ate.",
+    readKv(["reminderPlan", "settings"]).then((kv) => {
+      const reminder = reminderNow(planFrom(kv));
+      const water = reminder.kind === "water";
+      return self.registration.showNotification(water ? "Time for a glass of water" : `Time to log your ${MEAL_LABELS[reminder.meal] ?? "meal"}`, {
+        body: water ? "A glass now keeps you on track. Tap to log it." : "Tap to add what you ate.",
         icon: "./icons/icon-192.png",
         badge: "./icons/icon-192.png",
-        tag: "meal-reminder",
-        data: { meal: meal.id },
+        tag: water ? "water-reminder" : "meal-reminder",
+        data: { kind: reminder.kind },
       });
     }),
   );

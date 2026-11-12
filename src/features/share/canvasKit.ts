@@ -89,6 +89,29 @@ export function fit(ctx: Ctx, value: string, max: number): string {
   return `${cut.trimEnd()}…`;
 }
 
+/**
+ * A list ("Poha, Masala Chai, Banana") broken into lines no wider than `max` pixels, at the font last set. Lines break
+ * between items, never inside one unless a single item is too wide on its own (then it is cut). Past `maxLines`, the
+ * last line ends with how many more there are.
+ */
+export function wrapList(ctx: Ctx, items: string[], max: number, maxLines: number): string[] {
+  const lines: string[][] = [];
+  for (const item of items) {
+    const last = lines[lines.length - 1];
+    if (last && ctx.measureText([...last, item].join(", ")).width <= max) last.push(item);
+    else lines.push([item]);
+  }
+  if (lines.length <= maxLines) return lines.map((l, i) => fit(ctx, i === lines.length - 1 ? l.join(", ") : `${l.join(", ")},`, max));
+
+  // Too many: the last line gives up foods from its end until "and N more" fits beside the rest.
+  const shown = lines.slice(0, maxLines);
+  const last = [...shown[maxLines - 1]];
+  const shownBefore = shown.slice(0, -1).reduce((sum, l) => sum + l.length, 0);
+  const tail = () => `${last.join(", ")} and ${items.length - shownBefore - last.length} more`;
+  while (last.length > 1 && ctx.measureText(tail()).width > max) last.pop();
+  return [...shown.slice(0, -1).map((l) => fit(ctx, `${l.join(", ")},`, max)), fit(ctx, tail(), max)];
+}
+
 export function line(ctx: Ctx, x1: number, x2: number, y: number, color: string = C.line): void {
   ctx.fillStyle = color;
   ctx.fillRect(x1, y, x2 - x1, 2);

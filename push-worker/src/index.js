@@ -1,9 +1,9 @@
 /* EatRight meal reminders: a tiny push server on Cloudflare Workers (free plan).
  *
- * The app sends its push subscription, its time zone and up to four minutes of the day. Every five minutes a cron
+ * The app sends its push subscription, its time zone and the minutes of the day its reminders fall on. Every five minutes a cron
  * looks for reminders that fall in the last five minutes, in each subscriber's own time zone, and sends an empty push.
- * The app's service worker then shows the notification and picks the meal from its own settings, so no food, name
- * or meal ever reaches this server. A subscription the push service says is gone is deleted.
+ * The app's service worker then shows the notification and works out from its own list what it is for (a meal or
+ * water), so no food, name or meal ever reaches this server. A subscription the push service says is gone is deleted.
  *
  * Storage: one KV entry per phone, keyed by a hash of its push endpoint.
  * Secrets: VAPID_PRIVATE_JWK (wrangler secret). Vars: VAPID_PUBLIC_KEY, VAPID_SUBJECT, ALLOWED_ORIGINS.
@@ -12,7 +12,8 @@
 const MINUTES_IN_DAY = 1440;
 /** How often the cron runs, in minutes: a reminder is sent on the first run at or after its minute. */
 const WINDOW_MINUTES = 5;
-const MAX_REMINDERS = 4;
+/** Four meals and water up to every hour of the day. */
+const MAX_REMINDERS = 32;
 /** A reminder that cannot be delivered within this many seconds is dropped, not delivered late. */
 const PUSH_TTL_SECONDS = 1800;
 const JWT_HOURS = 12;

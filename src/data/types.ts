@@ -41,6 +41,8 @@ export interface Settings {
   waterGlassMl: number;
   /** Phone notifications to log each meal. */
   reminders: import("../domain/reminders.ts").Reminders;
+  /** Phone notifications to drink water through the day. */
+  waterReminders: import("../domain/reminders.ts").WaterReminders;
 }
 
 export interface Entry {

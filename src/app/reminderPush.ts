@@ -1,9 +1,13 @@
-/* Turning meal reminders on and off on this phone: the notification permission, the push subscription, and telling
- * the push server the times. Only the times (as minutes of the day) and the time zone are sent.
+/* Turning reminders on and off on this phone: the notification permission, the push subscription, and telling the push
+ * server the minutes. Only the minutes of the day and the time zone are sent; what each one is for stays on the phone,
+ * in the list the service worker reads.
  */
-import type { Reminders } from "../domain/reminders.ts";
-import { reminderMinutes } from "../domain/reminders.ts";
+import { setValue } from "../data/db.ts";
+import type { PlannedReminder } from "../domain/reminders.ts";
 import { PUSH_PUBLIC_KEY, PUSH_SERVER_URL } from "./pushConfig.ts";
+
+/** Where the day's reminders are kept for the service worker (vite-plugins/sw-template.js reads the same key). */
+const PLAN_KEY = "reminderPlan";
 
 export type ReminderSupport = "ready" | "not-set-up" | "unsupported" | "install-first" | "blocked";
 
@@ -33,16 +37,30 @@ async function post(path: string, body: unknown): Promise<void> {
   if (!res.ok) throw new Error("The reminder server did not accept it");
 }
 
-/** Asks for permission if needed, subscribes this phone, and sends the times. Throws when any step fails. */
-export async function startReminders(times: Reminders["times"]): Promise<void> {
+/** Keeps the day's reminders where the service worker reads them. Cheap, so the app redoes it whenever settings change. */
+export function saveReminderPlan(plan: PlannedReminder[]): Promise<void> {
+  return setValue(PLAN_KEY, plan);
+}
+
+/**
+ * Puts this phone's reminders in line with the plan: with any reminder on, asks for permission if needed, subscribes and
+ * sends the minutes; with none, stops them. Throws when a step fails.
+ */
+export async function syncReminders(plan: PlannedReminder[]): Promise<void> {
+  if (plan.length === 0) {
+    await stopReminders();
+    await saveReminderPlan(plan);
+    return;
+  }
   if ((await Notification.requestPermission()) !== "granted") throw new Error("Notifications are not allowed");
   const reg = await navigator.serviceWorker.ready;
   const subscription = (await reg.pushManager.getSubscription()) ?? (await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes(PUSH_PUBLIC_KEY) }));
-  await post("/subscribe", { subscription: subscription.toJSON(), minutes: reminderMinutes(times), timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone });
+  await saveReminderPlan(plan);
+  await post("/subscribe", { subscription: subscription.toJSON(), minutes: plan.map((r) => r.minute), timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone });
 }
 
 /** Stops the reminders on this phone and tells the server to forget it. */
-export async function stopReminders(): Promise<void> {
+async function stopReminders(): Promise<void> {
   const reg = await navigator.serviceWorker.ready;
   const subscription = await reg.pushManager.getSubscription();
   if (!subscription) return;

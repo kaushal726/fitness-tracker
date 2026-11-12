@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { onStorageError, useAppState } from "../data/store.ts";
+import { reminderPlan } from "../domain/reminders.ts";
 import { AddFood } from "../features/add/AddFood.tsx";
 import { BodyScreen } from "../features/body/BodyScreen.tsx";
 import { HistoryScreen } from "../features/history/HistoryScreen.tsx";
@@ -15,6 +16,7 @@ import { useToast } from "../ui/Toast";
 import { AddButton } from "./AddButton.tsx";
 import { Dock } from "./Dock.tsx";
 import { InstallSheet } from "./InstallSheet.tsx";
+import { saveReminderPlan } from "./reminderPush.ts";
 import type { TabId } from "./navItems.ts";
 import { Screen } from "./Screen.tsx";
 import { SideNav } from "./SideNav.tsx";
@@ -30,7 +32,7 @@ interface AddRequest {
 }
 
 export function App() {
-  const { ready, profile } = useAppState();
+  const { ready, profile, settings } = useAppState();
   const toast = useToast();
   const today = useToday();
   const [tab, setTab] = useState<TabId>("today");
@@ -43,6 +45,11 @@ export function App() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [hasProfile]);
+
+  // The service worker reads what each reminder is for from this list; a restored backup or a new setting rewrites it.
+  useEffect(() => {
+    if (ready) saveReminderPlan(reminderPlan(settings.reminders, settings.waterReminders)).catch(() => undefined);
+  }, [ready, settings.reminders, settings.waterReminders]);
 
   useEffect(() => onStorageError(() => toast("Couldn't save on this device. Free up some space and try again.", { tone: "error" })), [toast]);
 

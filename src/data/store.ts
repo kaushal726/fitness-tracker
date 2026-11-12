@@ -6,7 +6,7 @@ import { DEFAULT_MEAL_STARTS } from "../domain/meals.ts";
 import { stampWeight } from "../domain/profileWeight.ts";
 import { DEFAULT_GLASS_ML, DEFAULT_WATER_GOAL_ML, withWater, type WaterLog } from "../domain/water.ts";
 import { withWeighIn, type WeightLog } from "../domain/weighIns.ts";
-import { DEFAULT_REMINDERS } from "../domain/reminders.ts";
+import { DEFAULT_REMINDERS, DEFAULT_WATER_REMINDERS } from "../domain/reminders.ts";
 import { todayISO } from "../lib/dates.ts";
 import type { Food } from "../nutrition/types.ts";
 import { deleteRecord, getAll, getValue, putRecord, replaceEverything, setValue, STORE } from "./db.ts";
@@ -25,7 +25,7 @@ export interface AppState {
 }
 
 const KEY = { profile: "profile", settings: "settings", favorites: "favorites", lastUsed: "lastUsed", water: "water", weights: "weights" } as const;
-export const DEFAULT_SETTINGS: Settings = { mealStartHours: DEFAULT_MEAL_STARTS, customCalories: null, waterGoalMl: DEFAULT_WATER_GOAL_ML, waterGlassMl: DEFAULT_GLASS_ML, reminders: DEFAULT_REMINDERS };
+export const DEFAULT_SETTINGS: Settings = { mealStartHours: DEFAULT_MEAL_STARTS, customCalories: null, waterGoalMl: DEFAULT_WATER_GOAL_ML, waterGlassMl: DEFAULT_GLASS_ML, reminders: DEFAULT_REMINDERS, waterReminders: DEFAULT_WATER_REMINDERS };
 
 let state: AppState = { ready: false, profile: null, settings: DEFAULT_SETTINGS, entries: [], customFoods: [], favorites: [], lastUsed: {}, water: {}, weights: {} };
 const listeners = new Set<() => void>();

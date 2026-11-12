@@ -1,11 +1,12 @@
 /* Draws the day as a picture for sharing: the calories left or over, the four macros and each meal.
  * Simple on purpose, and always in the light colours so it reads the same wherever it is sent.
- * It is 1080 wide and between a square and 4:5 tall, however many foods there are. The pieces it draws with are in canvasKit.ts.
+ * It is 1080 wide and from a square up to a phone story (9:16) tall, so every food fits; a very long day says how many more
+ * there are. The pieces it draws with are in canvasKit.ts.
  */
 import { calorieBalance, type DayReport } from "../../domain/dayReport.ts";
 import { formatDate } from "../../lib/dates.ts";
 import { formatNumber } from "../../lib/format.ts";
-import { alpha, brandMark, C, type Ctx, FONT, FONT_WEIGHTS, fillRound, fit, line, mix, ring, text, widthOf } from "./canvasKit.ts";
+import { alpha, brandMark, C, type Ctx, FONT, FONT_WEIGHTS, fillRound, fit, line, mix, ring, setFont, text, widthOf, wrapList } from "./canvasKit.ts";
 
 export interface Who {
   name: string;
@@ -24,9 +25,15 @@ const PAD = 72;
 const LEFT = PAD;
 const RIGHT = W - PAD;
 const MIN_HEIGHT = 1080;
-const MAX_HEIGHT = 1350;
-const MEAL_ROW = 88;
+/** A phone story, 9:16. */
+const MAX_HEIGHT = 1920;
 const MEAL_ROW_NO_FOODS = 64;
+/** Where a meal's first line of foods sits under its name, and the room each line takes. */
+const NAMES_TOP = 68;
+const NAME_LINE = 34;
+const NAMES_BOTTOM = 20;
+const MAX_NAME_LINES = 5;
+const NAME_FONT = { weight: 500, size: 25 } as const;
 const FOOTER = 120;
 const SECTION_GAP = 36;
 const HEADER_END = PAD + 248;
@@ -98,38 +105,44 @@ function macros(ctx: Ctx, report: DayReport, y: number): number {
   return y + MACROS_HEIGHT;
 }
 
-function meals(ctx: Ctx, report: DayReport, y: number, withFoods: boolean): number {
-  const row = withFoods ? MEAL_ROW : MEAL_ROW_NO_FOODS;
+/** Each meal's foods as the lines they take; empty lines when the foods are left out. */
+function foodLines(ctx: Ctx, report: DayReport, withFoods: boolean): string[][] {
+  if (!withFoods) return report.meals.map(() => []);
+  setFont(ctx, NAME_FONT.weight, NAME_FONT.size);
+  return report.meals.map((meal) => wrapList(ctx, meal.items.map((item) => item.name), RIGHT - LEFT, MAX_NAME_LINES));
+}
+
+const rowHeight = (lines: string[]): number => (lines.length ? NAMES_TOP + (lines.length - 1) * NAME_LINE + NAMES_BOTTOM : MEAL_ROW_NO_FOODS);
+
+function meals(ctx: Ctx, report: DayReport, y: number, lines: string[][]): number {
   let top = y;
-  for (const meal of report.meals) {
+  report.meals.forEach((meal, i) => {
     text(ctx, meal.label, LEFT, top + 32, 800, 32, C.ink);
     text(ctx, formatNumber(meal.calories), RIGHT - widthOf(ctx, " kcal", 600, 26), top + 32, 800, 32, C.ink, "right");
     text(ctx, " kcal", RIGHT, top + 32, 600, 26, C.ink3, "right");
-    if (withFoods) {
-      const names = meal.items.map((item) => item.name).join(", ");
-      ctx.font = `500 25px ${FONT}`;
-      text(ctx, fit(ctx, names, RIGHT - LEFT), LEFT, top + 68, 500, 25, C.ink3);
-    }
-    top += row;
-  }
+    lines[i].forEach((l, n) => text(ctx, l, LEFT, top + NAMES_TOP + n * NAME_LINE, NAME_FONT.weight, NAME_FONT.size, C.ink3));
+    top += rowHeight(lines[i]);
+  });
   return top;
 }
 
-/** The height the picture needs for what is in it: a square at the least, 4:5 at the most. */
-function heightFor(report: DayReport, withFoods: boolean): number {
-  const rows = report.meals.length * (withFoods ? MEAL_ROW : MEAL_ROW_NO_FOODS);
+/** The height the picture needs for what is in it: a square at the least, a phone story at the most. */
+function heightFor(lines: string[][]): number {
+  const rows = lines.reduce((sum, l) => sum + rowHeight(l), 0);
   return Math.min(MAX_HEIGHT, Math.max(MIN_HEIGHT, MEALS_TOP + rows + FOOTER));
 }
 
 /** The day as a PNG, 1080 pixels wide. */
 export async function renderDayImage(report: DayReport, who: Who, { withFoods, primary }: PictureOptions): Promise<Blob> {
   await Promise.all(FONT_WEIGHTS.map((weight) => document.fonts.load(`${weight} 28px ${FONT}`))).catch(() => undefined);
-  const height = heightFor(report, withFoods);
   const out = document.createElement("canvas");
   out.width = W;
-  out.height = height;
   const ctx = out.getContext("2d");
   if (!ctx) throw new Error("Pictures are not available here");
+  // The foods are measured first: how many lines they take decides how tall the picture is.
+  const lines = foodLines(ctx, report, withFoods);
+  const height = heightFor(lines);
+  out.height = height;
 
   ctx.fillStyle = C.bg;
   ctx.fillRect(0, 0, W, height);
@@ -144,7 +157,7 @@ export async function renderDayImage(report: DayReport, who: Who, { withFoods, p
   line(ctx, LEFT, RIGHT, y - SECTION_GAP / 2);
   y = macros(ctx, report, y) + SECTION_GAP;
   line(ctx, LEFT, RIGHT, y - SECTION_GAP / 2);
-  meals(ctx, report, y + 12, withFoods);
+  meals(ctx, report, y + 12, lines);
   text(ctx, "Made with EatRight", W / 2, height - PAD + 8, 600, 24, C.ink3, "center");
   return new Promise((resolve, reject) => out.toBlob((blob) => (blob ? resolve(blob) : reject(new Error("The picture could not be made"))), "image/png"));
 }

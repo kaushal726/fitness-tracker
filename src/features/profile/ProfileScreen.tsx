@@ -81,6 +81,7 @@ export function ProfileScreen({ profile, today }: { profile: Profile; today: str
   };
 
   const mealTimes = MEAL_ORDER.map((m) => formatHour(settings.mealStartHours[m])).join(" · ");
+  const reminderSummary = [settings.reminders.enabled && "Meals", settings.waterReminders.enabled && "Water"].filter(Boolean).join(" and ") || "Nudges to log meals and drink water";
 
   return (
     <>
@@ -101,7 +102,7 @@ export function ProfileScreen({ profile, today }: { profile: Profile; today: str
         <SettingsRow icon={<IconTarget />} tone="green" title="Goal and body" subtitle="Weight, goal, activity" onClick={() => setOpen("profile")} />
         <SettingsRow icon={<IconFlame />} tone="amber" title="Daily calories" subtitle={plan.custom ? "Set by you" : "Calculated for you"} value={`${formatNumber(plan.targets.calories)} kcal`} onClick={() => setOpen("target")} />
         <SettingsRow icon={<IconClock />} tone="blue" title="Meal times" subtitle={mealTimes} onClick={() => setOpen("meals")} />
-        <SettingsRow icon={<IconBell />} tone="amber" title="Meal reminders" subtitle={settings.reminders.enabled ? "A notification for each meal" : "Get a nudge to log each meal"} value={settings.reminders.enabled ? "On" : "Off"} onClick={() => setOpen("reminders")} />
+        <SettingsRow icon={<IconBell />} tone="amber" title="Reminders" subtitle={reminderSummary} value={settings.reminders.enabled || settings.waterReminders.enabled ? "On" : "Off"} onClick={() => setOpen("reminders")} />
         <SettingsRow icon={<IconWater />} tone="blue" title="Water" subtitle={`Goal and glass · one glass is ${settings.waterGlassMl} ml`} value={formatVolume(settings.waterGoalMl)} onClick={() => setOpen("water")} />
         <SettingsRow icon={<IconBook />} tone="rose" title="My foods" subtitle="Foods you added yourself" value={customFoods.length ? String(customFoods.length) : undefined} onClick={() => setOpen("foods")} />
       </SettingsGroup>
