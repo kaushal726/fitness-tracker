@@ -80,7 +80,7 @@ export function TodayScreen({ profile, date, today, onSelectDate, onAdd }: Props
           <WaterCard water={water} index={2} onOpen={() => setWaterOpen(true)} />
         </div>
         <div className={styles.meals}>
-          <MealList key={date} byMeal={byMeal} currentMeal={currentMeal} dayCalories={plan.targets.calories} onOpenEntry={(e) => setEditingId(e.id)} onAdd={onAdd} />
+          <MealList key={date} byMeal={byMeal} currentMeal={currentMeal} onOpenEntry={(e) => setEditingId(e.id)} onAdd={onAdd} />
         </div>
       </div>
 

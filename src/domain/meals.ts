@@ -8,15 +8,6 @@ export const MEAL_LABELS: Record<MealType, string> = { breakfast: "Breakfast", l
 /** 6 AM breakfast, 11 AM lunch, 4 PM snack, 7 PM dinner. */
 export const DEFAULT_MEAL_STARTS: Settings["mealStartHours"] = { breakfast: 6, lunch: 11, snack: 16, dinner: 19 };
 
-/** A usual split of the day's calories over its meals: a guide to aim for, not a rule. */
-export const MEAL_SHARES: Record<MealType, number> = { breakfast: 0.25, lunch: 0.35, snack: 0.1, dinner: 0.3 };
-const BUDGET_ROUNDING = 10;
-
-/** About how many calories a meal could have, out of the day's goal, to the nearest ten. */
-export function mealBudget(meal: MealType, dayCalories: number): number {
-  return Math.round((dayCalories * MEAL_SHARES[meal]) / BUDGET_ROUNDING) * BUDGET_ROUNDING;
-}
-
 /** Half an hour, the step a meal's start moves by. */
 export const MEAL_START_STEP = 0.5;
 

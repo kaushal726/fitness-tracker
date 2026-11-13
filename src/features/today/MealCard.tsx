@@ -11,14 +11,11 @@ import { IconButton } from "../../ui/Button";
 import { Card } from "../../ui/Card";
 import { CountUp } from "../../ui/CountUp";
 import { IconChevronDown, IconPlus } from "../../ui/icons";
-import { Ring } from "../../ui/Ring";
 import { MealIcon, MEAL_TONE } from "../meals/MealIcon.tsx";
 import styles from "./MealCard.module.css";
 
 /** A meal's total glides to a new value (an entry added, changed or removed) instead of jumping. */
 const TOTAL_COUNT_MS = 500;
-const RING_SIZE = 50;
-const RING_STROKE = 4;
 
 const MACROS = [
   { key: "protein", label: "Protein" },
@@ -32,8 +29,6 @@ interface Props {
   /** Its place on the page: the cards arrive one after another. */
   index: number;
   entries: Entry[];
-  /** About how many calories this meal could have: its share of the day's goal. */
-  budget: number;
   /** Whether the entries are showing. A meal with nothing in it has nothing to fold. */
   open: boolean;
   onToggle: (meal: MealType) => void;
@@ -42,10 +37,10 @@ interface Props {
 }
 
 /**
- * One meal of the day. Folded, it is one line: the meal's picture in a ring of how much of its share it has had,
- * how many foods, and its total. Open, it lists each food and the meal's protein, carbs and fat.
+ * One meal of the day. Folded, it is one line: the meal's picture, how many foods, and the calories eaten in it.
+ * There is no target to reach: a meal only says what it has had. Open, it lists each food and the meal's protein, carbs and fat.
  */
-export function MealCard({ meal, index, entries, budget, open, onToggle, onOpen, onAdd }: Props) {
+export function MealCard({ meal, index, entries, open, onToggle, onOpen, onAdd }: Props) {
   const animates = useAnimatesIn();
   // What was here when the card appeared is not new: only food that comes after it rises into place and glows.
   const [known] = useState(() => new Set(entries.map((e) => e.id)));
@@ -61,17 +56,14 @@ export function MealCard({ meal, index, entries, budget, open, onToggle, onOpen,
 
   const summary = (
     <>
-      <Ring value={kcal} max={budget} size={RING_SIZE} stroke={RING_STROKE} tone={MEAL_TONE[meal]} label={`${formatNumber(kcal)} of about ${formatNumber(budget)} kcal`}>
-        <MealIcon meal={meal} size="sm" className={styles.icon} />
-      </Ring>
+      <MealIcon meal={meal} size="md" />
       <span className={styles.headText}>
         <span className={styles.name}>{label}</span>
-        <span className={styles.detail}>{foldable ? count : `Aim for about ${formatNumber(budget)} kcal`}</span>
+        <span className={styles.detail}>{foldable ? count : "Nothing logged yet"}</span>
       </span>
       {foldable && (
         <span className={styles.total}>
           <span className={cx(styles.totalValue, "num")}><CountUp value={kcal} duration={TOTAL_COUNT_MS} /><small> kcal</small></span>
-          <span className={cx(styles.totalOf, "num")}>of {formatNumber(budget)}</span>
         </span>
       )}
       {foldable && <span className={styles.chevron} aria-hidden><IconChevronDown /></span>}

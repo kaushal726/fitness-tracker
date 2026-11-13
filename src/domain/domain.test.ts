@@ -3,7 +3,7 @@ import type { Profile } from "../data/types.ts";
 import { ACTIVITY_LEVELS, bmr, computePlan, GOALS, profileIssues } from "./goals.ts";
 import { TIMELINE_PRESETS } from "./timeline.ts";
 import { calorieStatus, proteinShortfall } from "./insights.ts";
-import { DEFAULT_MEAL_STARTS, isValidMealStarts, MEAL_SHARES, mealBudget, mealForTime } from "./meals.ts";
+import { DEFAULT_MEAL_STARTS, isValidMealStarts, mealForTime } from "./meals.ts";
 
 const base: Profile = { name: "", age: 30, gender: "male", heightCm: 175, weightKg: 75, goal: "maintain", targetWeightKg: null, weeks: null, activity: "moderate" };
 
@@ -118,12 +118,6 @@ describe("meal by time", () => {
     expect(mealForTime(at(2))).toBe("dinner");
     expect(mealForTime(at(9), { breakfast: 7, lunch: 9, snack: 15, dinner: 20 })).toBe("lunch");
   });
-  it("splits the whole day over the meals", () => {
-    expect(Object.values(MEAL_SHARES).reduce((sum, s) => sum + s, 0)).toBeCloseTo(1);
-    expect(mealBudget("lunch", 2000)).toBe(700);
-    expect(mealBudget("breakfast", 1960)).toBe(490);
-  });
-
   it("only accepts windows that increase through the day", () => {
     expect(isValidMealStarts(DEFAULT_MEAL_STARTS)).toBe(true);
     expect(isValidMealStarts({ breakfast: 8, lunch: 8, snack: 16, dinner: 19 })).toBe(false);

@@ -1,4 +1,4 @@
-/* Each meal wears its own colour: the ring, the glow when open, the dots by its foods. */
+/* Each meal wears its own colour: the picture, the glow when open, the dots by its foods. */
 .card {
   position: relative;
   overflow: hidden;
@@ -36,7 +36,7 @@
   font: inherit;
 }
 
-/* The meal's ring, its name, what is in it and its total. A button when there is something to fold. */
+/* The meal's picture, its name, what is in it and its total. A button when there is something to fold. */
 .summary {
   display: flex;
   align-items: center;
@@ -69,12 +69,6 @@
 
 .isOpen .toggle:active .chevron {
   transform: rotate(180deg) scale(0.9);
-}
-
-.icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
 }
 
 .headText {
@@ -115,12 +109,6 @@
   font-weight: 800;
   letter-spacing: -0.02em;
   white-space: nowrap;
-}
-
-.totalOf {
-  font-size: max(11px, calc(11.5px * var(--fs-scale)));
-  font-weight: 600;
-  color: var(--ink-3);
 }
 
 .totalValue small,
@@ -310,7 +298,7 @@
 .m_carbs { --macro-color: var(--n-carbs); }
 .m_fat { --macro-color: var(--n-fat); }
 
-/* A narrow phone has no room for the ring beside the name, the total and the buttons. */
+/* A narrow phone has no room for the picture beside the name, the total and the buttons. */
 @media (max-width: 359px) {
   .summary > :first-child {
     display: none;
