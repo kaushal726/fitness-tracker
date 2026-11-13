@@ -21,7 +21,6 @@
 
   /* Brand */
   --brand: #1f6f54;
-  --brand-leaf: #b9e6cf;
   --primary: #1b7a56;
   --primary-strong: #145f43;
   --primary-soft: #e1f1e8;
@@ -231,7 +230,6 @@
  * accent.ts is its light --primary, and accent.test.ts keeps the two in step. */
 :root[data-accent="blue"] {
   --brand: #1c5fb0;
-  --brand-leaf: #bfd8f7;
   --primary: #1a66c0;
   --primary-strong: #134f9a;
   --primary-soft: #e3eefb;
@@ -250,7 +248,6 @@
 
 :root[data-accent="purple"] {
   --brand: #5f3dbd;
-  --brand-leaf: #d4c9f6;
   --primary: #6a46cc;
   --primary-strong: #5232ab;
   --primary-soft: #ede8fb;
@@ -269,7 +266,6 @@
 
 :root[data-accent="orange"] {
   --brand: #a14707;
-  --brand-leaf: #f7d3b0;
   --primary: #b04f08;
   --primary-strong: #8f3f05;
   --primary-soft: #fcefe2;
@@ -288,7 +284,6 @@
 
 :root[data-accent="pink"] {
   --brand: #a82958;
-  --brand-leaf: #f5c8d9;
   --primary: #b82e62;
   --primary-strong: #962250;
   --primary-soft: #fbe8ef;
@@ -307,7 +302,6 @@
 
 :root[data-accent="teal"] {
   --brand: #0d6b75;
-  --brand-leaf: #b7e0e5;
   --primary: #0f7681;
   --primary-strong: #0a5a63;
   --primary-soft: #e0f1f3;

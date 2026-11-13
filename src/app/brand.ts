@@ -12,7 +12,7 @@ export const THEME_COLOR = "#F4F6F5";
 /** Matches --bg under [data-theme="dark"] in src/styles/global.css. */
 export const THEME_COLOR_DARK = "#0E1211";
 /** The icon's own background. */
-export const BRAND_COLOR = "#1F6F54";
+export const BRAND_COLOR = "#0E1F19";
 
 export const WEB_MANIFEST = {
   name: APP_NAME,

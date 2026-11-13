@@ -2,13 +2,7 @@ interface BrandMarkProps {
   className?: string;
 }
 
-/** The app's mark: a leaf with a plus. White on a brand-coloured background. */
+/** The app's icon, the same file the browser and the home screen use. The caller sizes it and rounds its corners. */
 export function BrandMark({ className }: BrandMarkProps) {
-  return (
-    <svg className={className} viewBox="150 56 212 332" role="presentation" aria-hidden>
-      <path d="M256 138c-52 0-94 34-94 92 0 74 52 144 94 144s94-70 94-144c0-58-42-92-94-92z" fill="#ffffff" />
-      <path d="M256 138c0-38 22-62 58-70-2 36-20 62-58 70z" style={{ fill: "var(--brand-leaf)" }} />
-      <path d="M256 196v138M212 264h88" fill="none" style={{ stroke: "var(--brand)" }} strokeWidth="26" strokeLinecap="round" />
-    </svg>
-  );
+  return <img className={className} src={`${import.meta.env.BASE_URL}icons/icon.svg`} alt="" aria-hidden draggable={false} />;
 }

@@ -114,8 +114,10 @@ self.addEventListener("push", (event) => {
       const water = reminder.kind === "water";
       return self.registration.showNotification(water ? "Time for a glass of water" : `Time to log your ${MEAL_LABELS[reminder.meal] ?? "meal"}`, {
         body: water ? "A glass now keeps you on track. Tap to log it." : "Tap to add what you ate.",
-        icon: "./icons/icon-192.png",
-        badge: "./icons/icon-192.png",
+        // A full-bleed square: Android cuts its own shape, so transparent corners would show as white patches.
+        icon: "./icons/notification-192.png",
+        // The status bar uses only the badge's alpha, so it is a one-colour silhouette.
+        badge: "./icons/badge-96.png",
         tag: water ? "water-reminder" : "meal-reminder",
         data: { kind: reminder.kind },
       });

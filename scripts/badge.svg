@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="96 76 320 360">
+  <!-- The status-bar badge: the logo's drop as a one-colour silhouette. Android uses only its alpha. -->
+  <defs>
+    <mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="512" height="512">
+      <rect width="512" height="512" fill="#fff"/>
+      <path d="M256 84C218 172 300 248 256 322C228 364 250 404 256 428" fill="none" stroke="#000" stroke-width="22" stroke-linecap="round"/>
+    </mask>
+  </defs>
+  <path mask="url(#cut)" d="M256 84C330 156 386 226 386 302C386 374 328 428 256 428C184 428 126 374 126 302C126 226 182 156 256 84Z" fill="#fff"/>
+</svg>

@@ -13,7 +13,8 @@
     "validate:foods": "node scripts/validate-foods.ts",
     "validate:quotes": "node scripts/validate-quotes.ts",
     "build:index": "node scripts/build-index.ts",
-    "stats:foods": "node scripts/stats.ts"
+    "stats:foods": "node scripts/stats.ts",
+    "icons": "node scripts/render-icons.ts"
   },
   "dependencies": {
     "@fontsource-variable/plus-jakarta-sans": "^5.3.0",

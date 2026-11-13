@@ -1,6 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#1F6F54"/>
-  <path d="M256 138c-52 0-94 34-94 92 0 74 52 144 94 144s94-70 94-144c0-58-42-92-94-92z" fill="#ffffff"/>
-  <path d="M256 138c0-38 22-62 58-70-2 36-20 62-58 70z" fill="#B9E6CF"/>
-  <path d="M256 196v138M212 264h88" stroke="#1F6F54" stroke-width="26" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- EatRight: a leaf and a flame in one drop, the food and the calories. Full bleed, so it also works masked. -->
+  <defs>
+    <radialGradient id="er-bg" cx="0.5" cy="0.36" r="0.85"><stop offset="0" stop-color="#173A2F"/><stop offset="1" stop-color="#070F0C"/></radialGradient>
+    <linearGradient id="er-leaf" x1="0" y1="1" x2="0.6" y2="0"><stop offset="0" stop-color="#0EA5A4"/><stop offset="0.5" stop-color="#34D399"/><stop offset="1" stop-color="#D9FF72"/></linearGradient>
+    <linearGradient id="er-fire" x1="0.4" y1="1" x2="0.8" y2="0"><stop offset="0" stop-color="#FF4D6D"/><stop offset="0.5" stop-color="#FF8A3D"/><stop offset="1" stop-color="#FFD166"/></linearGradient>
+    <filter id="er-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="24"/></filter>
+    <mask id="er-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="512" height="512">
+      <rect width="512" height="512" fill="#fff"/>
+      <path d="M256 84C218 172 300 248 256 322C228 364 250 404 256 428" fill="none" stroke="#000" stroke-width="16" stroke-linecap="round"/>
+      <path d="M204 390C176 338 180 278 224 222" fill="none" stroke="#000" stroke-opacity="0.45" stroke-width="9" stroke-linecap="round"/>
+    </mask>
+  </defs>
+  <rect width="512" height="512" fill="url(#er-bg)"/>
+  <g mask="url(#er-cut)"><g filter="url(#er-glow)" opacity="0.5">
+    <path d="M256 84C330 156 386 226 386 302C386 374 328 428 256 428C184 428 126 374 126 302C126 226 182 156 256 84Z" fill="url(#er-leaf)"/>
+    <path d="M256 84C330 156 386 226 386 302C386 374 328 428 256 428C250 404 228 364 256 322C300 248 218 172 256 84Z" fill="url(#er-fire)"/>
+  </g></g>
+  <g mask="url(#er-cut)">
+    <path d="M256 84C330 156 386 226 386 302C386 374 328 428 256 428C184 428 126 374 126 302C126 226 182 156 256 84Z" fill="url(#er-leaf)"/>
+    <path d="M256 84C330 156 386 226 386 302C386 374 328 428 256 428C250 404 228 364 256 322C300 248 218 172 256 84Z" fill="url(#er-fire)"/>
+    <path d="M320 262C350 300 360 332 352 362C344 390 314 402 296 394C286 372 296 352 304 332C312 312 304 290 320 262Z" fill="#FFE7A3" opacity="0.55"/>
+  </g>
 </svg>
