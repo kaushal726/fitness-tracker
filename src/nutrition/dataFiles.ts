@@ -244,6 +244,8 @@ import healthyRollsPastaMore from "../../data/foods/healthy-rolls-pasta-more.jso
 import coffeeInstantItems from "../../data/foods/coffee-instant-items.json" with { type: "json" };
 import coffeeMore from "../../data/foods/coffee-more.json" with { type: "json" };
 import commonCombosRotiRiceMore from "../../data/foods/common-combos-roti-rice-more.json" with { type: "json" };
+import sweetsPrasadFestivalMore from "../../data/foods/sweets-prasad-festival-more.json" with { type: "json" };
+import sweetsPrasadWheyCombos from "../../data/foods/sweets-prasad-whey-combos.json" with { type: "json" };
 import chocolatesChainsBakeryMore from "../../data/foods/chocolates-chains-bakery-more.json" with { type: "json" };
 import brandsIcecreamMore from "../../data/foods/brands-icecream-more.json" with { type: "json" };
 import brandsCakesPastriesWaffles from "../../data/foods/brands-cakes-pastries-waffles.json" with { type: "json" };
@@ -530,4 +532,6 @@ export const DATA_FILES: DataFile[] = [
   { name: "healthy-rolls-pasta-more", data: healthyRollsPastaMore as DataFile["data"] },
   { name: "coffee-more", data: coffeeMore as DataFile["data"] },
   { name: "common-combos-roti-rice-more", data: commonCombosRotiRiceMore as DataFile["data"] },
+  { name: "sweets-prasad-festival-more", data: sweetsPrasadFestivalMore as DataFile["data"] },
+  { name: "sweets-prasad-whey-combos", data: sweetsPrasadWheyCombos as DataFile["data"] },
 ];

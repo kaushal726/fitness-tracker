@@ -50,7 +50,7 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 <!-- stats:start -->
 
-**Total foods: 17344** (704 composite, 16640 simple)
+**Total foods: 17472** (708 composite, 16764 simple)
 
 **By category**
 
@@ -59,13 +59,13 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 | Main Course | 3023 |
 | Snacks | 2008 |
 | Fast Food | 1912 |
-| Drinks | 1888 |
+| Drinks | 1890 |
 | Chinese | 1215 |
 | Packaged Food | 1102 |
 | Condiments & Cooking | 806 |
 | Breakfast | 799 |
+| Sweets | 785 |
 | Desserts | 748 |
-| Sweets | 659 |
 | Bakery | 579 |
 | Vegetables | 537 |
 | Protein Foods | 486 |
@@ -79,41 +79,41 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 | Cuisine | Foods |
 |---|---|
-| pan_indian | 5249 |
+| pan_indian | 5303 |
 | global | 3844 |
 | indo_chinese | 901 |
 | american | 899 |
-| north_indian | 727 |
-| punjabi | 671 |
-| tamil | 400 |
-| bengali | 316 |
-| kerala | 297 |
-| maharashtrian | 266 |
+| north_indian | 745 |
+| punjabi | 675 |
+| tamil | 406 |
+| bengali | 322 |
+| kerala | 302 |
+| maharashtrian | 280 |
 | continental | 244 |
 | south_indian | 211 |
 | gujarati | 204 |
+| karnataka | 200 |
 | italian | 199 |
-| karnataka | 197 |
 | nepali_tibetan | 197 |
 | mexican | 189 |
-| andhra_telangana | 173 |
+| andhra_telangana | 175 |
 | japanese_korean | 172 |
-| mughlai | 170 |
+| mughlai | 171 |
 | jharkhandi | 147 |
-| bihari_jharkhand | 135 |
-| rajasthani | 118 |
+| bihari_jharkhand | 145 |
+| rajasthani | 119 |
 | middle_eastern | 117 |
 | goan | 107 |
-| hyderabadi | 102 |
+| hyderabadi | 103 |
 | chinese | 96 |
 | french | 85 |
 | northeastern | 68 |
-| odia | 67 |
+| odia | 68 |
 | british | 66 |
 | thai | 63 |
-| kashmiri | 54 |
+| kashmiri | 55 |
 | chettinad | 50 |
-| awadhi | 48 |
+| awadhi | 49 |
 | mangalorean | 47 |
 | assamese | 42 |
 | southeast_asian | 41 |
@@ -140,8 +140,8 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 | Food type | Foods |
 |---|---|
-| vegetarian | 7930 |
-| vegan | 4834 |
+| vegetarian | 8046 |
+| vegan | 4846 |
 | non_vegetarian | 3401 |
 | eggetarian | 1179 |
 
@@ -149,7 +149,7 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 | Confidence | Foods |
 |---|---|
-| medium | 8019 |
+| medium | 8147 |
 | low | 7855 |
 | high | 1470 |
 
@@ -157,7 +157,7 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 
 | Variability | Foods |
 |---|---|
-| medium | 12407 |
+| medium | 12535 |
 | low | 2492 |
 | high | 2445 |
 
@@ -166,7 +166,7 @@ is storage (IndexedDB), `src/quotes/` picks the daily thought, and `src/features
 | Data source | Foods |
 |---|---|
 | estimated | 9486 |
-| recipe_based | 5941 |
+| recipe_based | 6069 |
 | standard_reference | 1917 |
 
 **Serving units:** `g` (mass), `kg` (mass), `ml` (volume), `litre` (volume), `tsp` (volume), `tbsp` (volume), `cup` (volume), `glass` (volume), `katori` (volume), `bowl` (volume), `bottle` (volume), `can` (volume), `peg` (volume), `piece` (count), `slice` (count), `plate` (count), `serving` (count), `handful` (count), `scoop` (count), `pinch` (count), `packet` (count), `roti` (count, = piece), `paratha` (count, = piece), `dosa` (count, = piece), `idli` (count, = piece), `vada` (count, = piece), `samosa` (count, = piece), `egg` (count, = piece), `banana` (count, = piece), `apple` (count, = piece), `orange` (count, = piece), `mango` (count, = piece), `breast` (count, = piece)
@@ -264,6 +264,8 @@ main ingredient, the vegetable, the way it is cooked), so a new dish stays in li
 | `chinese-momos-dimsum-asian.json` | momos by filling and style (steamed, fried, pan fried, tandoori, kurkure, jhol, afghani, schezwan, butter, peri peri, cheese, gravy), dumplings, wontons, gyoza, siu mai, bao, spring rolls, and authentic Chinese, Thai, Japanese, Korean, Malaysian, Tibetan and Burmese dishes written by hand |
 | `indian-everyday-expansion.json` | chicken, mutton, fish, prawn, egg, paneer, soya, mushroom and veg in the usual preparations (korma, handi, kadai, bhuna, jalfrezi, tikka masala, saagwala, rogan josh, vindaloo, chettinad, achari, hariyali, kolhapuri, xacuti, roast, sukha...); vegetable versions of paratha, pakora, raita, cutlet, tikki, chilla, sandwich, kofta, thepla, uttapam, wrap, pulao, biryani, masala, fry, sabzi, soup and salad |
 | `indian-sweets-snacks-dosa-extras.json` | dosa, idli, kachori, halwa, kheer, ladoo, barfi, chaat, pickle and chutney versions that were missing |
+| `sweets-prasad-festival-more.json` | 124 sweets and prasad that were missing: Chhath (kharna and ganna ras kheer, arwa chawal kheer, gur, chini, baked and mini thekua), Satyanarayan sheera, kada prasad, panjiris, kaju, anjeer and badam rolls, flavoured pedas, barfis and ladoos (paan, rose, gulkand, thandai, mango, chocolate, orange, kesar pista), moong dal, sooji, chana dal, sattu, makhana, ragi, singhara and kuttu barfi, regional ladoos and urundai, halwas of potato, sweet potato, jackfruit, raw banana and dalia, chikkis, Bengali and Odia chhena sweets, gujiya, petha and jalebi versions. Each is worked out from its ingredients and the weight left after cooking, so the numbers stay in line with its neighbours |
+| `sweets-prasad-whey-combos.json` | kharna and Chhath plates, and Amul whey chocolate sachet in milk or as a banana shake. Composites, so listed after `composite` |
 | `north-south-chinese-gap-fill.json` | dishes still missing after audits of North Indian, South Indian and Chinese menus (garlic and khasta roti, besan and pizza paratha, aloo-lauki and achari sabzis, chole paneer, nargisi kofta, murgh musallam, tunday kebab, lababdar, nawabi and malai gravies, Andhra and Tamil pachadi, pulusu and podimas, lung fung and hot garlic soup, congee, tea egg, scallion pancake, Chinese sweets), each cloned from a close dish and moved by what differs |
 | `restaurant-combos.json` | plates as they are ordered, built from foods that already exist: fried rice or noodles with manchurian, chilli paneer or chilli chicken; momos with chutney; butter chicken, dal makhani, paneer gravies and kebabs with naan, roti or rice; stuffed parathas with curd; dosa, idli, pongal and upma with sambar and chutney; Kerala parotta, appam, puttu and idiyappam with curry; biryani with raita. Composites, so listed after `composite` |
 | `healthy-rotis-flatbreads.json` | whole wheat roti without oil; foxtail, little, kodo and barnyard millet and barley (jau) rotis; multi-millet, jowar-bajra, wheat-ragi, wheat-jowar, wheat-bajra, wheat-oats and wheat-flaxseed rotis; high fibre, low GI and high protein rotis; rotis with a vegetable in the dough (palak, methi, lauki, carrot, beetroot, cabbage, pumpkin, mooli, onion, spring onion, sweet potato, mixed); a mini phulka. Worked out from the flours (78% of a roti is flour, the rest is the water in the dough) and the vegetable |
