@@ -1,7 +1,8 @@
 /* Local search over the food list. Understands aliases, word order ("chilli chicken" =
  * "chicken chilli"), prefixes while typing, and small spelling differences.
  * Ranking: exact > alias > prefix > word match > fuzzy, then commonly eaten foods, the
- * user's favourites and recents, and shorter names first.
+ * user's favourites and recents, and shorter names first. A branded product does not
+ * outrank the plain food unless the brand was typed.
  */
 import popular from "../../data/popular-foods.json" with { type: "json" };
 import { getAllFoods, getFoodById } from "./registry.ts";
@@ -35,6 +36,12 @@ const SCORE = {
   perNameChar: 0.3,
   /** Ready-made meals rank just below the single foods they are made of. */
   composite: 60,
+  /** The typed words stand together, in order, in the name ("dairy milk" in "Cadbury Dairy Milk"): a better match than the same words scattered. */
+  phraseInName: 60,
+  /** A branded product when no brand was typed: the plain food comes first, so "banana" is a banana before it is a "Complan Banana". */
+  brandedPenalty: 20,
+  /** A branded product that lists the typed word as its own nickname ("chocolate" on a nutrition drink): just below a food named for it, above a loose match. */
+  brandedExactAlias: 520,
 } as const;
 
 /** How well one typed word matched a food. Higher is better; 0 is no match. */
@@ -50,6 +57,8 @@ interface Indexed {
   aliasWords: Set<string>;
   textWords: Set<string>;
   categoryWords: Set<string>;
+  /** The words of the brand, empty for a plain food. */
+  brandWords: Set<string>;
 }
 
 function index(food: Food): Indexed {
@@ -62,6 +71,7 @@ function index(food: Food): Indexed {
     aliasWords: new Set(aliases.flatMap((a) => a.split(" ")).map(stem)),
     textWords: new Set(tokenizeForSearch(food.searchableText).map(stem)),
     categoryWords: new Set(tokenizeForSearch(`${food.category} ${food.subCategory} ${food.cuisine}`).map(stem)),
+    brandWords: new Set(tokenizeForSearch(food.brand ?? "").map(stem)),
   };
 }
 
@@ -100,19 +110,38 @@ function tokenLevel(ix: Indexed, token: string, fuzzy = true): number {
   return 0;
 }
 
-function baseScore(ix: Indexed, query: string, tokens: string[], fuzzy = true): number {
-  if (ix.name === query) return SCORE.exactName;
-  if (ix.aliases.includes(query)) return SCORE.exactAlias;
-  const endsWord = (text: string) => text.length === query.length || text[query.length] === " ";
-  if (ix.name.startsWith(query)) return endsWord(ix.name) ? SCORE.namePrefix : SCORE.partialWordPrefix;
-  if (ix.aliases.some((a) => a.startsWith(query) && endsWord(a))) return SCORE.aliasPrefix;
+/** True when the food is a brand's product and none of the typed words is part of that brand. */
+const isUnaskedBrand = (ix: Indexed, tokens: string[]): boolean => ix.brandWords.size > 0 && !tokens.some((t) => ix.brandWords.has(t));
+
+/** True when the words stand next to each other, in this order, in the food's name. */
+function nameHasPhrase(nameWords: string[], tokens: string[]): boolean {
+  for (let start = 0; start + tokens.length <= nameWords.length; start++) {
+    if (tokens.every((t, i) => nameWords[start + i] === t)) return true;
+  }
+  return false;
+}
+
+/** How well the food matches when every typed word is found in it somewhere; 0 when one is not. */
+function wordMatchScore(ix: Indexed, tokens: string[], fuzzy: boolean): number {
   let total = 0;
   for (const token of tokens) {
     const level = tokenLevel(ix, token, fuzzy);
     if (level === 0) return 0;
     total += level;
   }
-  return SCORE.wordMatchBase + (total / tokens.length) * SCORE.wordMatchPerLevel;
+  const together = tokens.length > 1 && nameHasPhrase(ix.nameWords, tokens) ? SCORE.phraseInName : 0;
+  return SCORE.wordMatchBase + (total / tokens.length) * SCORE.wordMatchPerLevel + together;
+}
+
+function baseScore(ix: Indexed, query: string, tokens: string[], fuzzy = true): number {
+  if (ix.name === query) return SCORE.exactName;
+  if (ix.aliases.includes(query)) return isUnaskedBrand(ix, tokens) ? SCORE.brandedExactAlias : SCORE.exactAlias;
+  const endsWord = (text: string) => text.length === query.length || text[query.length] === " ";
+  if (ix.name.startsWith(query)) return endsWord(ix.name) ? SCORE.namePrefix : SCORE.partialWordPrefix;
+  const words = wordMatchScore(ix, tokens, fuzzy);
+  // A nickname that starts with the query never ranks a food below what its own name's words earn.
+  if (ix.aliases.some((a) => a.startsWith(query) && endsWord(a))) return Math.max(SCORE.aliasPrefix, words);
+  return words;
 }
 
 /** The commonly eaten foods, most common first. Needs the food data loaded. */
@@ -215,6 +244,7 @@ export function searchFoodDetailed(query: string, options: SearchOptions = {}): 
         + (frequentRank === undefined ? 0 : Math.max(0, SCORE.frequentMax - frequentRank * SCORE.frequentStep))
         + (words.some((t) => ix.categoryWords.has(t)) ? SCORE.categoryHit : 0)
         - (ix.food.type === "composite" ? SCORE.composite : 0)
+        - (isUnaskedBrand(ix, words) ? SCORE.brandedPenalty : 0)
         - ix.name.length * SCORE.perNameChar;
       scored.push({ food: ix.food, score });
     }
