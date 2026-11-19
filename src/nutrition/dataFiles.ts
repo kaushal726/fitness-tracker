@@ -246,6 +246,18 @@ import coffeeMore from "../../data/foods/coffee-more.json" with { type: "json" }
 import commonCombosRotiRiceMore from "../../data/foods/common-combos-roti-rice-more.json" with { type: "json" };
 import sweetsPrasadFestivalMore from "../../data/foods/sweets-prasad-festival-more.json" with { type: "json" };
 import sweetsPrasadWheyCombos from "../../data/foods/sweets-prasad-whey-combos.json" with { type: "json" };
+import kachoriPakodaChocolateMore from "../../data/foods/kachori-pakoda-chocolate-more.json" with { type: "json" };
+import kachoriPakodaChocolateCombos from "../../data/foods/kachori-pakoda-chocolate-combos.json" with { type: "json" };
+import w1StreetNorth from "../../data/foods/w1-street-north.json" with { type: "json" };
+import w1StreetWest from "../../data/foods/w1-street-west.json" with { type: "json" };
+import w1StreetSouth from "../../data/foods/w1-street-south.json" with { type: "json" };
+import w1StreetEastNe from "../../data/foods/w1-street-east-ne.json" with { type: "json" };
+import w1MarketPackaged from "../../data/foods/w1-market-packaged.json" with { type: "json" };
+import w1LocalHindiBelt from "../../data/foods/w1-local-hindi-belt.json" with { type: "json" };
+import w1LocalSouth from "../../data/foods/w1-local-south.json" with { type: "json" };
+import w1LocalEastWestNe from "../../data/foods/w1-local-east-west-ne.json" with { type: "json" };
+import w1DhabaThaliTapri from "../../data/foods/w1-dhaba-thali-tapri.json" with { type: "json" };
+import w1MandiProduce from "../../data/foods/w1-mandi-produce.json" with { type: "json" };
 import chocolatesChainsBakeryMore from "../../data/foods/chocolates-chains-bakery-more.json" with { type: "json" };
 import brandsIcecreamMore from "../../data/foods/brands-icecream-more.json" with { type: "json" };
 import brandsCakesPastriesWaffles from "../../data/foods/brands-cakes-pastries-waffles.json" with { type: "json" };
@@ -534,4 +546,16 @@ export const DATA_FILES: DataFile[] = [
   { name: "common-combos-roti-rice-more", data: commonCombosRotiRiceMore as DataFile["data"] },
   { name: "sweets-prasad-festival-more", data: sweetsPrasadFestivalMore as DataFile["data"] },
   { name: "sweets-prasad-whey-combos", data: sweetsPrasadWheyCombos as DataFile["data"] },
+  { name: "kachori-pakoda-chocolate-more", data: kachoriPakodaChocolateMore as DataFile["data"] },
+  { name: "kachori-pakoda-chocolate-combos", data: kachoriPakodaChocolateCombos as DataFile["data"] },
+  { name: "w1-street-north", data: w1StreetNorth as DataFile["data"] },
+  { name: "w1-street-west", data: w1StreetWest as DataFile["data"] },
+  { name: "w1-street-south", data: w1StreetSouth as DataFile["data"] },
+  { name: "w1-street-east-ne", data: w1StreetEastNe as DataFile["data"] },
+  { name: "w1-market-packaged", data: w1MarketPackaged as DataFile["data"] },
+  { name: "w1-local-hindi-belt", data: w1LocalHindiBelt as DataFile["data"] },
+  { name: "w1-local-south", data: w1LocalSouth as DataFile["data"] },
+  { name: "w1-local-east-west-ne", data: w1LocalEastWestNe as DataFile["data"] },
+  { name: "w1-dhaba-thali-tapri", data: w1DhabaThaliTapri as DataFile["data"] },
+  { name: "w1-mandi-produce", data: w1MandiProduce as DataFile["data"] },
 ];
