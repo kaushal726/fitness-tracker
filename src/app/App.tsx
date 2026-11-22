@@ -6,6 +6,7 @@ import { BodyScreen } from "../features/body/BodyScreen.tsx";
 import { HistoryScreen } from "../features/history/HistoryScreen.tsx";
 import { InsightsScreen } from "../features/insights/InsightsScreen.tsx";
 import { Onboarding } from "../features/onboarding/Onboarding.tsx";
+import { WhatsNewPopup } from "../features/releases/WhatsNewPopup.tsx";
 import { ProfileScreen } from "../features/profile/ProfileScreen.tsx";
 import { TodayScreen } from "../features/today/TodayScreen.tsx";
 import { endInstantArrival } from "../lib/arrival.ts";
@@ -96,6 +97,7 @@ export function App() {
         </>
       )}
       {ready && !profile && <Onboarding />}
+      {ready && <WhatsNewPopup hasProfile={hasProfile} />}
       {ready && <InstallSheet />}
     </>
   );

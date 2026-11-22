@@ -21,6 +21,7 @@ import { Segmented } from "../../ui/Segmented";
 import { SettingsGroup, SettingsRow } from "../../ui/SettingsList";
 import { useToast } from "../../ui/Toast";
 import { PlanPreview } from "../onboarding/PlanPreview.tsx";
+import { WhatsNewSection } from "../releases/WhatsNewSection.tsx";
 import { ShareSheet } from "../share/ShareSheet.tsx";
 import { WaterSheet } from "../water/WaterSheet.tsx";
 import { RemindersSheet } from "./RemindersSheet.tsx";
@@ -106,6 +107,8 @@ export function ProfileScreen({ profile, today }: { profile: Profile; today: str
         <SettingsRow icon={<IconWater />} tone="blue" title="Water" subtitle={`Goal and glass · one glass is ${settings.waterGlassMl} ml`} value={formatVolume(settings.waterGoalMl)} onClick={() => setOpen("water")} />
         <SettingsRow icon={<IconBook />} tone="rose" title="My foods" subtitle="Foods you added yourself" value={customFoods.length ? String(customFoods.length) : undefined} onClick={() => setOpen("foods")} />
       </SettingsGroup>
+
+      <WhatsNewSection />
 
       <SettingsGroup label="Share">
         <SettingsRow icon={<IconShare />} tone="blue" title="Share your progress" subtitle="Today as a picture, a month as a report" onClick={() => setOpen("share")} />
