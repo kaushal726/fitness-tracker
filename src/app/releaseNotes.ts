@@ -25,6 +25,23 @@ export const CHANGE_LABELS: Record<ChangeKind, string> = { new: "New", better: "
 
 export const RELEASES: Release[] = [
   {
+    version: "1.1.1",
+    date: "24 Nov 2026",
+    title: "A clearer calorie plan",
+    changes: [
+      {
+        kind: "fix",
+        title: "Timeline matches your plan",
+        text: "When you change how long you give yourself, the pace shown now uses how active you really are, so it agrees with your daily calories.",
+      },
+      {
+        kind: "better",
+        title: "Why the calories did not change",
+        text: "A timeline faster than is safe keeps your calories at the safe pace. The note now says so, instead of looking as if your change was ignored.",
+      },
+    ],
+  },
+  {
     version: "1.1.0",
     date: "22 Nov 2026",
     title: "Over a thousand new foods, and better search",

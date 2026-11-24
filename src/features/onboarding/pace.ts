@@ -21,7 +21,8 @@ export function paceSentence(plan: Plan, requestedWeeks?: number | null): PaceSe
   const rate = `${perWeek.toFixed(2).replace(/0$/, "")} kg a week`;
   if (plan.adjusted && plan.estimatedWeeks) {
     const warn = requestedWeeks ? plan.estimatedWeeks > requestedWeeks * NOTICEABLY_LONGER : true;
-    return { warn, text: `A safe pace for you is about ${rate}, so this takes about ${plan.estimatedWeeks} weeks.` };
+    // Everything faster than the safe pace comes to the same calories: say so, or a shorter timeline looks like it was ignored.
+    return { warn, text: `A safe pace for you is about ${rate}, so this takes about ${plan.estimatedWeeks} weeks. A shorter timeline gives the same calories.` };
   }
   return { warn: false, text: `You would ${verb} about ${rate}.` };
 }

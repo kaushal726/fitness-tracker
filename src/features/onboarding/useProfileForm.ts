@@ -82,35 +82,38 @@ export interface ProfileFormController {
   profile: Profile | null;
   plan: Plan | null;
   /**
-   * The plan as far as it can be known before the last question: activity assumed light. It lets the
-   * timeline step say how fast a pace is while there is still a question to go.
+   * The plan as far as it can be known before the last question: activity assumed light until it is answered. It lets
+   * the timeline step say how fast a pace is while there is still a question to go.
    */
   previewPlan: Plan | null;
+}
+
+/** What the answers add up to: the problems, and the profile and plans when everything needed is there. */
+export function deriveFromForm(form: FormState): Omit<ProfileFormController, "form" | "set"> {
+  const answers = parseAnswers(form);
+  const issues = profileIssues({ ...answers, goal: form.goal ?? "maintain" });
+  if (issues.length || form.gender === null || form.goal === null) return { answers, issues, profile: null, plan: null, previewPlan: null };
+  const { gender, goal } = form;
+  const build = (activity: ActivityId): Profile => ({
+    name: form.name.trim(),
+    age: answers.age,
+    gender,
+    heightCm: Math.round(answers.heightCm * 10) / 10,
+    weightKg: answers.weightKg,
+    goal,
+    targetWeightKg: answers.targetWeightKg,
+    weeks: answers.weeks,
+    activity,
+  });
+  // The preview uses how active the person really is once they have said so (when editing), so it never disagrees with the plan.
+  const previewPlan = computePlan(build(form.activity ?? PREVIEW_ACTIVITY));
+  if (form.activity === null) return { answers, issues, profile: null, plan: null, previewPlan };
+  const profile = build(form.activity);
+  return { answers, issues, profile, plan: computePlan(profile), previewPlan };
 }
 
 export function useProfileForm(initial?: Profile): ProfileFormController {
   const [form, setForm] = useState<FormState>(() => initialState(initial));
   const set = useCallback((patch: Partial<FormState>) => setForm((f) => ({ ...f, ...patch })), []);
-
-  return useMemo(() => {
-    const answers = parseAnswers(form);
-    const issues = profileIssues({ ...answers, goal: form.goal ?? "maintain" });
-    if (issues.length || form.gender === null || form.goal === null) return { form, set, answers, issues, profile: null, plan: null, previewPlan: null };
-    const { gender, goal } = form;
-    const build = (activity: ActivityId): Profile => ({
-      name: form.name.trim(),
-      age: answers.age,
-      gender,
-      heightCm: Math.round(answers.heightCm * 10) / 10,
-      weightKg: answers.weightKg,
-      goal,
-      targetWeightKg: answers.targetWeightKg,
-      weeks: answers.weeks,
-      activity,
-    });
-    const previewPlan = computePlan(build(PREVIEW_ACTIVITY));
-    if (form.activity === null) return { form, set, answers, issues, profile: null, plan: null, previewPlan };
-    const profile = build(form.activity);
-    return { form, set, answers, issues, profile, plan: computePlan(profile), previewPlan };
-  }, [form, set]);
+  return useMemo(() => ({ form, set, ...deriveFromForm(form) }), [form, set]);
 }

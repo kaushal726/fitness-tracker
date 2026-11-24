@@ -4,7 +4,7 @@ import type { Profile } from "../../data/types.ts";
 import { nextStep, previousStep, progressOf, stepOrder } from "./flow.ts";
 import { paceSentence } from "./pace.ts";
 import { activeSteps } from "./steps/registry.tsx";
-import { parseAnswers, type FormState } from "./useProfileForm.ts";
+import { deriveFromForm, parseAnswers, type FormState } from "./useProfileForm.ts";
 
 const form = (patch: Partial<FormState> = {}): FormState => ({
   name: "", gender: "male", age: "30", heightUnit: "cm", heightCm: "175", heightFt: "", heightIn: "", weightKg: "75",
@@ -72,5 +72,34 @@ describe("pace sentence", () => {
     const nearly = computePlan({ ...profile, activity: "light", weeks: 12 });
     expect(nearly.adjusted).toBe(true);
     expect(paceSentence(nearly, 12)).toMatchObject({ warn: false, text: expect.stringContaining("A safe pace for you") });
+  });
+});
+
+describe("the timeline", () => {
+  const losing = (patch: Partial<FormState> = {}) => form({ goal: "lose_weight", weightKg: "80", targetWeightKg: "74", activity: "sedentary", ...patch });
+  const calories = (weeks: string, patch: Partial<FormState> = {}) => deriveFromForm(losing({ timelineValue: weeks, ...patch })).plan?.targets.calories;
+
+  it("changes the daily calories with the weeks while the pace is a safe one", () => {
+    expect(calories("20")).toBeGreaterThan(calories("14") ?? 0);
+    expect(calories("14")).toBeGreaterThan(calories("13") ?? Infinity);
+  });
+
+  it("gives the same calories for any timeline shorter than the safe pace allows, and says so", () => {
+    expect(calories("5")).toBe(calories("7"));
+    const plan = deriveFromForm(losing({ timelineValue: "5" })).plan;
+    expect(plan?.adjusted).toBe(true);
+    expect(paceSentence(plan!, 5)?.text).toContain("A shorter timeline gives the same calories");
+  });
+
+  it("previews the pace for how active the person really is, so it agrees with the plan", () => {
+    const { plan, previewPlan } = deriveFromForm(losing({ timelineValue: "12" }));
+    expect(previewPlan?.targets.calories).toBe(plan?.targets.calories);
+    expect(previewPlan?.estimatedWeeks).toBe(plan?.estimatedWeeks);
+  });
+
+  it("still previews with light activity before the person has answered how active they are", () => {
+    const { plan, previewPlan } = deriveFromForm(losing({ timelineValue: "12", activity: null }));
+    expect(plan).toBeNull();
+    expect(previewPlan?.tdee).toBe(computePlan({ name: "", age: 30, gender: "male", heightCm: 175, weightKg: 80, goal: "lose_weight", targetWeightKg: 74, weeks: 12, activity: "light" }).tdee);
   });
 });
