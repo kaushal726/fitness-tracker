@@ -10,10 +10,15 @@ import { WhatsNewPopup } from "../features/releases/WhatsNewPopup.tsx";
 import { ProfileScreen } from "../features/profile/ProfileScreen.tsx";
 import { TodayScreen } from "../features/today/TodayScreen.tsx";
 import { endInstantArrival } from "../lib/arrival.ts";
+import { gateFor, startSync, useSyncStatus, watchChanges } from "../sync/engine.ts";
+import { syncConfigured } from "../sync/config.ts";
+import { useLocalOnly } from "../sync/localMode.ts";
+import { useSession } from "../sync/session.ts";
 import { CoveredContext } from "../lib/covered.ts";
 import { loadFoods } from "../nutrition/registry.ts";
 import type { Food, MealType } from "../nutrition/types.ts";
 import { useToast } from "../ui/Toast";
+import { AccountScreen } from "./AccountScreen.tsx";
 import { AddButton } from "./AddButton.tsx";
 import { Dock } from "./Dock.tsx";
 import { InstallSheet } from "./InstallSheet.tsx";
@@ -42,7 +47,20 @@ export function App() {
   const [adding, setAdding] = useState<AddRequest | null>(null);
   const date = pickedDate ?? today;
 
+  const session = useSession();
+  const syncStatus = useSyncStatus();
+  const localOnly = useLocalOnly();
+  const gate = gateFor({ configured: syncConfigured(), session, syncStatus, localOnly });
+  const userId = session?.user.id;
   const hasProfile = profile !== null;
+
+  // Saving to the signed-in account: watch for changes once the data is loaded, and start whenever someone signs in.
+  useEffect(() => {
+    if (ready) watchChanges();
+  }, [ready]);
+  useEffect(() => {
+    if (ready && userId) void startSync();
+  }, [ready, userId]);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [hasProfile]);
@@ -76,7 +94,8 @@ export function App() {
 
   return (
     <>
-      {ready && profile && (
+      {ready && gate !== "open" && <AccountScreen gate={gate} otherAccount={syncStatus.blocked?.kind === "mismatch" ? syncStatus.blocked.ownerEmail : undefined} />}
+      {ready && gate === "open" && profile && (
         <>
           <SideNav active={tab} onSelect={selectTab} onAdd={() => openAdd(null)} />
           <main className={styles.main}>
@@ -96,9 +115,9 @@ export function App() {
           <UpdatePrompt />
         </>
       )}
-      {ready && !profile && <Onboarding />}
-      {ready && <WhatsNewPopup hasProfile={hasProfile} />}
-      {ready && <InstallSheet />}
+      {ready && gate === "open" && !profile && <Onboarding />}
+      {ready && gate === "open" && <WhatsNewPopup hasProfile={hasProfile} />}
+      {ready && gate === "open" && <InstallSheet />}
     </>
   );
 }

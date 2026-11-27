@@ -35,8 +35,8 @@ export interface Settings {
   mealStartHours: Record<MealType, number>;
   /** When set, replaces the calculated calorie target. */
   customCalories: number | null;
-  /** Water to drink in a day, in millilitres. */
-  waterGoalMl: number;
+  /** When set, replaces the water goal worked out from body weight and activity. In millilitres. */
+  customWaterGoalMl: number | null;
   /** What one tap on the water card adds: the size of the glass, in millilitres. */
   waterGlassMl: number;
   /** Phone notifications to log each meal. */

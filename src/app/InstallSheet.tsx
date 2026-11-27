@@ -5,6 +5,7 @@ import { Button } from "../ui/Button";
 import { IconAddToHome, IconBrowserShare, IconMenuDots, IconOffline, IconPhone, IconShield } from "../ui/icons";
 import { Sheet } from "../ui/Sheet";
 import { APP_NAME } from "./brand.ts";
+import { syncConfigured } from "../sync/config.ts";
 import { installGuide, readSnoozedUntil, shouldOfferInstall, SHOW_AFTER_MS, snoozeInstall, type InstallGuide } from "./installNudge.ts";
 import { isStandalone, useInstallPrompt } from "./installPrompt.ts";
 import styles from "./InstallSheet.module.css";
@@ -12,7 +13,7 @@ import styles from "./InstallSheet.module.css";
 const PERKS: { icon: ReactNode; text: string }[] = [
   { icon: <IconPhone />, text: "Opens full screen from your home screen" },
   { icon: <IconOffline />, text: "Works without internet" },
-  { icon: <IconShield />, text: "Your food log stays on this phone" },
+  { icon: <IconShield />, text: syncConfigured() ? "Back up your food log to your account" : "Your food log stays on this phone" },
 ];
 
 const STEPS: Record<InstallGuide, { icon: ReactNode; text: ReactNode }[]> = {

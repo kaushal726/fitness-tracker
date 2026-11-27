@@ -10,7 +10,7 @@ import type { Profile } from "../../data/types.ts";
 import { bmi } from "../../domain/bmi.ts";
 import { computePlan, goalDef } from "../../domain/goals.ts";
 import { formatHour, MEAL_ORDER } from "../../domain/meals.ts";
-import { formatVolume } from "../../domain/water.ts";
+import { formatVolume, waterGoal } from "../../domain/water.ts";
 import { downloadBlob } from "../../lib/files.ts";
 import { formatNumber } from "../../lib/format.ts";
 import { Avatar } from "../../ui/Avatar";
@@ -21,11 +21,13 @@ import { Segmented } from "../../ui/Segmented";
 import { SettingsGroup, SettingsRow } from "../../ui/SettingsList";
 import { useToast } from "../../ui/Toast";
 import { PlanPreview } from "../onboarding/PlanPreview.tsx";
+import { useSession } from "../../sync/session.ts";
 import { WhatsNewSection } from "../releases/WhatsNewSection.tsx";
 import { ShareSheet } from "../share/ShareSheet.tsx";
 import { WaterSheet } from "../water/WaterSheet.tsx";
 import { RemindersSheet } from "./RemindersSheet.tsx";
 import { AccentPicker } from "./AccentPicker.tsx";
+import { AccountSection } from "./AccountSection.tsx";
 import { AboutSheet } from "./AboutSheet.tsx";
 import { CalorieTargetSheet } from "./CalorieTargetSheet.tsx";
 import { DailyThought } from "./DailyThought.tsx";
@@ -55,10 +57,12 @@ export function ProfileScreen({ profile, today }: { profile: Profile; today: str
   const textSize = useTextSize();
   const accent = useAccent();
   const install = useInstallPrompt();
+  const session = useSession();
   const confirm = useConfirm();
   const toast = useToast();
   const fileInput = useRef<HTMLInputElement>(null);
   const plan = computePlan(profile, settings.customCalories);
+  const water = waterGoal(profile, settings.customWaterGoalMl);
   const close = () => setOpen(null);
 
   const exportData = () => {
@@ -77,7 +81,7 @@ export function ProfileScreen({ profile, today }: { profile: Profile; today: str
   };
 
   const erase = async () => {
-    const ok = await confirm({ title: "Erase all data?", message: "Your goal, your logs and your own foods are deleted from this device. This cannot be undone.", confirmLabel: "Erase everything", danger: true });
+    const ok = await confirm({ title: "Erase all data?", message: session ? "Your goal, your logs and your own foods are deleted from this phone and from your account. This cannot be undone." : "Your goal, your logs and your own foods are deleted from this device. This cannot be undone.", confirmLabel: "Erase everything", danger: true });
     if (ok) resetAll();
   };
 
@@ -104,11 +108,13 @@ export function ProfileScreen({ profile, today }: { profile: Profile; today: str
         <SettingsRow icon={<IconFlame />} tone="amber" title="Daily calories" subtitle={plan.custom ? "Set by you" : "Calculated for you"} value={`${formatNumber(plan.targets.calories)} kcal`} onClick={() => setOpen("target")} />
         <SettingsRow icon={<IconClock />} tone="blue" title="Meal times" subtitle={mealTimes} onClick={() => setOpen("meals")} />
         <SettingsRow icon={<IconBell />} tone="amber" title="Reminders" subtitle={reminderSummary} value={settings.reminders.enabled || settings.waterReminders.enabled ? "On" : "Off"} onClick={() => setOpen("reminders")} />
-        <SettingsRow icon={<IconWater />} tone="blue" title="Water" subtitle={`Goal and glass · one glass is ${settings.waterGlassMl} ml`} value={formatVolume(settings.waterGoalMl)} onClick={() => setOpen("water")} />
+        <SettingsRow icon={<IconWater />} tone="blue" title="Water" subtitle={water.custom ? `Set by you · one glass is ${settings.waterGlassMl} ml` : `From your weight · one glass is ${settings.waterGlassMl} ml`} value={formatVolume(water.ml)} onClick={() => setOpen("water")} />
         <SettingsRow icon={<IconBook />} tone="rose" title="My foods" subtitle="Foods you added yourself" value={customFoods.length ? String(customFoods.length) : undefined} onClick={() => setOpen("foods")} />
       </SettingsGroup>
 
       <WhatsNewSection />
+
+      <AccountSection />
 
       <SettingsGroup label="Share">
         <SettingsRow icon={<IconShare />} tone="blue" title="Share your progress" subtitle="Today as a picture, a month as a report" onClick={() => setOpen("share")} />

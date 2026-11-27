@@ -23,6 +23,6 @@ export default defineConfig({
   // The food data is one deliberately large chunk, fetched after the first screen (see nutrition/registry.ts).
   build: { chunkSizeWarningLimit: 3000 },
   server: { port: APP_PORT, strictPort: true },
-  test: { setupFiles: ["./src/test/setup.ts"] },
+  test: { include: ["src/**/*.test.{ts,tsx}"], setupFiles: ["./src/test/setup.ts"], env: { VITE_SYNC_API_URL: "http://sync.test", VITE_GOOGLE_CLIENT_ID: "test-client" } },
   preview: { port: APP_PORT, strictPort: true },
 });

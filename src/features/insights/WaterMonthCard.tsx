@@ -4,6 +4,7 @@ import type { MonthInsights } from "../../domain/monthInsights.ts";
 import { formatVolume, glassesOf, waterByDate, waterSummary } from "../../domain/water.ts";
 import { parseISODate } from "../../lib/dates.ts";
 import { glassCount } from "../water/glassCount.ts";
+import { useWaterGoal } from "../water/useWaterGoal.ts";
 import { ColumnChart, type Column } from "./ColumnChart.tsx";
 import { InsightCard } from "./InsightCard.tsx";
 import { Readout } from "./Readout.tsx";
@@ -27,7 +28,8 @@ export function WaterMonthCard({ month }: Props) {
   const { water, entries, settings } = useAppState();
   const [column, setColumn] = useState<Column | null>(null);
   const byDate = useMemo(() => waterByDate(water, entries), [water, entries]);
-  const { waterGoalMl: goalMl, waterGlassMl: glassMl } = settings;
+  const { ml: goalMl } = useWaterGoal();
+  const { waterGlassMl: glassMl } = settings;
   const summary = waterSummary(month.days.map((d) => d.date), byDate, goalMl);
 
   const columns: Column[] = month.days.map((d) => {

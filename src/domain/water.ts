@@ -1,12 +1,17 @@
 /* Water drunk each day. Two things add up to a day's water: what was tapped on the water card (kept in millilitres per
  * day) and plain water logged as a food. Everything here is pure, so the screens only read and show.
  */
-import type { Entry } from "../data/types.ts";
+import type { ActivityId, Entry, Profile } from "../data/types.ts";
 
 /** Millilitres tapped in on each day (YYYY-MM-DD). A day with none has no key. */
 export type WaterLog = Readonly<Record<string, number>>;
 
+/** The goal when there is no body to go by yet. */
 export const DEFAULT_WATER_GOAL_ML = 2000;
+/** A common guide for a day's water: about 35 ml for each kilo of body weight. */
+export const WATER_ML_PER_KG = 35;
+/** On top of that, for the sweat of a more active day. */
+const ACTIVITY_EXTRA_ML: Record<ActivityId, number> = { sedentary: 0, light: 0, moderate: 250, active: 500, athlete: 750 };
 export const DEFAULT_GLASS_ML = 250;
 export const GLASS_SIZES_ML = [200, 250, 300, 500] as const;
 export const MIN_WATER_GOAL_ML = 1000;
@@ -71,6 +76,26 @@ export function formatVolume(ml: number): string {
 /** A goal kept inside what the app offers, on a step. */
 export function clampWaterGoal(ml: number): number {
   return clampToStep(ml, WATER_GOAL_STEP_ML, MIN_WATER_GOAL_ML, MAX_WATER_GOAL_ML);
+}
+
+/** The goal worked out from body weight and how active the day is, on the same step as the goal stepper. */
+export function calculatedWaterGoal(body: Pick<Profile, "weightKg" | "activity">): number {
+  return clampWaterGoal(body.weightKg * WATER_ML_PER_KG + (ACTIVITY_EXTRA_ML[body.activity] ?? 0));
+}
+
+export interface WaterGoal {
+  ml: number;
+  /** True when it was set by hand instead of worked out from the body. */
+  custom: boolean;
+  /** What the body works out to, whether or not a goal was set by hand; null until there is a profile. */
+  calculatedMl: number | null;
+}
+
+/** The goal in use: the one set by hand if there is one, else the one for this body, else the plain default. */
+export function waterGoal(body: Pick<Profile, "weightKg" | "activity"> | null, customMl: number | null): WaterGoal {
+  const calculatedMl = body ? calculatedWaterGoal(body) : null;
+  if (customMl !== null) return { ml: clampWaterGoal(customMl), custom: true, calculatedMl };
+  return { ml: calculatedMl ?? DEFAULT_WATER_GOAL_ML, custom: false, calculatedMl };
 }
 
 /** A glass size kept inside what the app offers, on a step. */

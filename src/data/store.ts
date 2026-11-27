@@ -4,11 +4,13 @@
 import { useSyncExternalStore } from "react";
 import { DEFAULT_MEAL_STARTS } from "../domain/meals.ts";
 import { stampWeight } from "../domain/profileWeight.ts";
-import { DEFAULT_GLASS_ML, DEFAULT_WATER_GOAL_ML, withWater, type WaterLog } from "../domain/water.ts";
+import { DEFAULT_GLASS_ML, withWater, type WaterLog } from "../domain/water.ts";
+import { migrateSettings } from "./settingsMigration.ts";
 import { withWeighIn, type WeightLog } from "../domain/weighIns.ts";
 import { DEFAULT_REMINDERS, DEFAULT_WATER_REMINDERS } from "../domain/reminders.ts";
 import { todayISO } from "../lib/dates.ts";
 import type { Food } from "../nutrition/types.ts";
+import { applyRecords, type SyncData, type SyncRecord } from "../sync/records.ts";
 import { deleteRecord, getAll, getValue, putRecord, replaceEverything, setValue, STORE } from "./db.ts";
 import type { Backup, Entry, LastUsed, Profile, Settings } from "./types.ts";
 
@@ -25,7 +27,7 @@ export interface AppState {
 }
 
 const KEY = { profile: "profile", settings: "settings", favorites: "favorites", lastUsed: "lastUsed", water: "water", weights: "weights" } as const;
-export const DEFAULT_SETTINGS: Settings = { mealStartHours: DEFAULT_MEAL_STARTS, customCalories: null, waterGoalMl: DEFAULT_WATER_GOAL_ML, waterGlassMl: DEFAULT_GLASS_ML, reminders: DEFAULT_REMINDERS, waterReminders: DEFAULT_WATER_REMINDERS };
+export const DEFAULT_SETTINGS: Settings = { mealStartHours: DEFAULT_MEAL_STARTS, customCalories: null, customWaterGoalMl: null, waterGlassMl: DEFAULT_GLASS_ML, reminders: DEFAULT_REMINDERS, waterReminders: DEFAULT_WATER_REMINDERS };
 
 let state: AppState = { ready: false, profile: null, settings: DEFAULT_SETTINGS, entries: [], customFoods: [], favorites: [], lastUsed: {}, water: {}, weights: {} };
 const listeners = new Set<() => void>();
@@ -43,6 +45,37 @@ function persist(work: () => Promise<void>): void {
 
 export function getState(): AppState {
   return state;
+}
+
+/** Calls `listener` after every change to the data. Returns the way to stop. */
+export function subscribeStore(listener: () => void): () => void {
+  listeners.add(listener);
+  return () => void listeners.delete(listener);
+}
+
+/** The data, without the loading flag: what is kept in the cloud. */
+export function getSyncData(s: AppState = state): SyncData {
+  return { profile: s.profile, settings: s.settings, entries: s.entries, customFoods: s.customFoods, favorites: s.favorites, lastUsed: s.lastUsed, water: s.water, weights: s.weights };
+}
+
+/** Takes in records that came from the cloud, and saves what they changed on the phone. */
+export function applyRemote(changes: SyncRecord[]): void {
+  if (changes.length === 0) return;
+  const next = applyRecords(getSyncData(), changes, (saved) => migrateSettings(saved, DEFAULT_SETTINGS));
+  set(next);
+  const kinds = new Set(changes.map((c) => c.kind === "doc" ? c.id : c.kind));
+  persist(async () => {
+    for (const change of changes) {
+      if (change.kind === "entry") await (change.data ? putRecord(STORE.entries, change.data) : deleteRecord(STORE.entries, change.id));
+      if (change.kind === "customFood") await (change.data ? putRecord(STORE.customFoods, change.data) : deleteRecord(STORE.customFoods, change.id));
+    }
+    if (kinds.has("profile")) await setValue(KEY.profile, next.profile);
+    if (kinds.has("settings")) await setValue(KEY.settings, next.settings);
+    if (kinds.has("water")) await setValue(KEY.water, next.water);
+    if (kinds.has("weight")) await setValue(KEY.weights, next.weights);
+    if (kinds.has("favorite")) await setValue(KEY.favorites, next.favorites);
+    if (kinds.has("lastUsed")) await setValue(KEY.lastUsed, next.lastUsed);
+  });
 }
 
 export function useAppState(): AppState {
@@ -74,7 +107,7 @@ export async function initStore(): Promise<void> {
       entries,
       customFoods,
       profile: profile ?? null,
-      settings: { ...DEFAULT_SETTINGS, ...settings },
+      settings: migrateSettings(settings, DEFAULT_SETTINGS),
       favorites: favorites ?? [],
       lastUsed: lastUsed ?? {},
       water: water ?? {},
@@ -189,7 +222,7 @@ export function exportBackup(): Backup {
 export function restoreBackup(backup: Backup): void {
   set({
     profile: backup.profile,
-    settings: { ...DEFAULT_SETTINGS, ...backup.settings },
+    settings: migrateSettings(backup.settings, DEFAULT_SETTINGS),
     entries: backup.entries,
     customFoods: backup.customFoods,
     favorites: backup.favorites,

@@ -122,7 +122,7 @@ describe("store", () => {
     expect(getState().water).toEqual({});
     expect(parseBackup(JSON.stringify({ ...older, water: { "2026-01-05": "lots" } }))).toBeNull();
 
-    const { waterGoalMl: _goal, waterGlassMl: _glass, ...olderSettings } = DEFAULT_SETTINGS;
+    const { customWaterGoalMl: _goal, waterGlassMl: _glass, ...olderSettings } = DEFAULT_SETTINGS;
     restoreBackup({ ...olderParsed!, settings: olderSettings as typeof DEFAULT_SETTINGS });
     expect(getState().settings).toEqual(DEFAULT_SETTINGS);
     await new Promise((r) => setTimeout(r, 30));

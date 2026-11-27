@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Entry } from "../data/types.ts";
 import { ZERO_TOTALS } from "../nutrition/constants.ts";
-import { clampGlassMl, clampWaterGoal,foodWaterByDate, formatVolume, glassesOf, trackedWater, waterByDate, waterShare, waterSummary, withWater } from "./water.ts";
+import { calculatedWaterGoal, clampGlassMl, clampWaterGoal, DEFAULT_WATER_GOAL_ML, foodWaterByDate, formatVolume, glassesOf, trackedWater, waterByDate, waterGoal, waterShare, waterSummary, withWater } from "./water.ts";
 
 const entry = (foodId: string, date: string, grams: number): Entry => ({
   id: `${foodId}-${date}-${grams}`,
@@ -97,5 +97,38 @@ describe("water in words and numbers", () => {
     expect(clampGlassMl(340)).toBe(350);
     expect(clampGlassMl(10)).toBe(50);
     expect(clampGlassMl(5000)).toBe(1000);
+  });
+});
+
+describe("the water goal for a body", () => {
+  const body = (weightKg: number, activity: "sedentary" | "light" | "moderate" | "active" | "athlete" = "light") => ({ weightKg, activity });
+
+  it("is about 35 ml for each kilo, on the goal stepper's step", () => {
+    expect(calculatedWaterGoal(body(70))).toBe(2500);
+    expect(calculatedWaterGoal(body(55))).toBe(2000);
+    expect(calculatedWaterGoal(body(100))).toBe(3500);
+  });
+
+  it("grows with weight and never falls as the person gets more active", () => {
+    const weights = [40, 55, 70, 85, 100, 120].map((w) => calculatedWaterGoal(body(w)));
+    expect([...weights].sort((a, b) => a - b)).toEqual(weights);
+    const levels = (["sedentary", "light", "moderate", "active", "athlete"] as const).map((a) => calculatedWaterGoal(body(70, a)));
+    expect([...levels].sort((a, b) => a - b)).toEqual(levels);
+    expect(levels[4]).toBeGreaterThan(levels[0]);
+  });
+
+  it("stays inside what the app offers", () => {
+    expect(calculatedWaterGoal(body(25, "sedentary"))).toBe(1000);
+    expect(calculatedWaterGoal(body(300, "athlete"))).toBe(6000);
+  });
+
+  it("uses the person's own goal when they set one, and keeps the calculated one to offer back", () => {
+    expect(waterGoal(body(70), null)).toEqual({ ml: 2500, custom: false, calculatedMl: 2500 });
+    expect(waterGoal(body(70), 3000)).toEqual({ ml: 3000, custom: true, calculatedMl: 2500 });
+  });
+
+  it("falls back to the plain default until there is a profile", () => {
+    expect(waterGoal(null, null)).toEqual({ ml: DEFAULT_WATER_GOAL_ML, custom: false, calculatedMl: null });
+    expect(waterGoal(null, 3000).ml).toBe(3000);
   });
 });

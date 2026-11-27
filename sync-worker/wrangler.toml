@@ -1,0 +1,19 @@
+# EatRight sync API. One Worker + one D1 database, Cloudflare free plan. See README.md for the deploy checklist.
+name = "eatright-sync"
+main = "src/index.ts"
+compatibility_date = "2026-11-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "eatright-sync"
+# From `wrangler d1 create eatright-sync` (APAC).
+database_id = "7aec8c67-7cb7-4ec0-9daf-db23af2ed8d6"
+migrations_dir = "migrations"
+
+[vars]
+# Google Cloud Console > APIs & Services > Credentials > OAuth client ID (Web). Public value.
+GOOGLE_CLIENT_ID = "521678096514-gf083p8slvoek28ha0pgsc7ol2sqh790.apps.googleusercontent.com"
+# Origins the app is served from (comma list). Add the Cloudflare app origin here later.
+ALLOWED_ORIGINS = "https://kaushal726.github.io,http://localhost:8790,http://[::1]:8790"
+# Secret (never committed): SESSION_SECRET, set with `wrangler secret put SESSION_SECRET`.
+# Local only (.dev.vars, never here): ALLOW_DEV_AUTH=1

@@ -2,9 +2,9 @@
  * changing them would orphan the data already on a phone.
  */
 const DB_NAME = "fitly";
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
-export const STORE = { entries: "entries", customFoods: "customFoods", kv: "kv" } as const;
+export const STORE = { entries: "entries", customFoods: "customFoods", kv: "kv", syncMeta: "syncMeta" } as const;
 type StoreName = (typeof STORE)[keyof typeof STORE];
 
 let opening: Promise<IDBDatabase> | null = null;
@@ -15,9 +15,11 @@ function open(): Promise<IDBDatabase> {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
     request.onupgradeneeded = () => {
       const db = request.result;
-      db.createObjectStore(STORE.entries, { keyPath: "id" }).createIndex("date", "date");
-      db.createObjectStore(STORE.customFoods, { keyPath: "id" });
-      db.createObjectStore(STORE.kv);
+      // Each store is added only where it is missing, so a phone on an older version keeps its data and gains the new store.
+      if (!db.objectStoreNames.contains(STORE.entries)) db.createObjectStore(STORE.entries, { keyPath: "id" }).createIndex("date", "date");
+      if (!db.objectStoreNames.contains(STORE.customFoods)) db.createObjectStore(STORE.customFoods, { keyPath: "id" });
+      if (!db.objectStoreNames.contains(STORE.kv)) db.createObjectStore(STORE.kv);
+      if (!db.objectStoreNames.contains(STORE.syncMeta)) db.createObjectStore(STORE.syncMeta);
     };
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
@@ -84,5 +86,29 @@ export async function replaceEverything(data: { entries: unknown[]; customFoods:
   data.entries.forEach((e) => entries.put(e));
   data.customFoods.forEach((f) => foods.put(f));
   Object.entries(data.kv).forEach(([k, v]) => kv.put(v, k));
+  await done(tx);
+}
+
+/* What the phone knows about its link with the cloud account. It has a store of its own, so erasing the data
+ * (which clears everything else) cannot forget what the cloud still has to be told.
+ */
+const META_KEY = "meta";
+
+export async function getSyncMeta<T>(): Promise<T | undefined> {
+  const db = await open();
+  return wrap<T | undefined>(db.transaction(STORE.syncMeta).objectStore(STORE.syncMeta).get(META_KEY));
+}
+
+export async function setSyncMeta(value: unknown): Promise<void> {
+  const db = await open();
+  const tx = db.transaction(STORE.syncMeta, "readwrite");
+  tx.objectStore(STORE.syncMeta).put(value, META_KEY);
+  await done(tx);
+}
+
+export async function clearSyncMeta(): Promise<void> {
+  const db = await open();
+  const tx = db.transaction(STORE.syncMeta, "readwrite");
+  tx.objectStore(STORE.syncMeta).delete(META_KEY);
   await done(tx);
 }

@@ -1,8 +1,19 @@
 import { APP_NAME } from "../../app/brand";
+import { syncConfigured } from "../../sync/config.ts";
 import { IconInfo, IconLeaf, IconShield } from "../../ui/icons";
 import { MadeWithLove } from "../../ui/MadeWithLove";
 import { Sheet } from "../../ui/Sheet";
 import styles from "./profile.module.css";
+
+const YOUR_DATA = syncConfigured()
+  ? {
+      title: "Your data is yours",
+      text: "Sign in with Google and what you log is saved to your own account, so it is safe if you lose or change your phone. It is kept only for you and is never shared or sold. Without signing in, your data stays on this phone. Export a backup from Profile any time to keep a copy of your own.",
+    }
+  : {
+      title: "Your data stays with you",
+      text: "Everything you log is kept on this device. Nothing is sent anywhere. Export a backup from Profile any time to keep a copy.",
+    };
 
 const SECTIONS = [
   {
@@ -12,8 +23,7 @@ const SECTIONS = [
   },
   {
     icon: <IconShield />,
-    title: "Your data stays with you",
-    text: "Everything you log is kept on this device. Nothing is sent anywhere. Export a backup from Profile any time to keep a copy.",
+    ...YOUR_DATA,
   },
   {
     icon: <IconInfo />,

@@ -40,7 +40,7 @@ describe("release notes", () => {
 });
 
 describe("when the note is shown", () => {
-  const latest = "1.1.1";
+  const latest = "1.2.0";
   it("shows it once to someone who has the app and has not seen this release", () => {
     expect(shouldShowReleaseNotes({ seen: null, latest, hasProfile: true })).toBe(true);
     expect(shouldShowReleaseNotes({ seen: "1.0.0", latest, hasProfile: true })).toBe(true);

@@ -10,6 +10,7 @@ import { Sheet } from "../../ui/Sheet";
 import { Stepper } from "../../ui/Stepper";
 import { glassCount } from "./glassCount.ts";
 import { useWater } from "./useWater.ts";
+import { useWaterGoal } from "./useWaterGoal.ts";
 import { WaterGlass } from "./WaterGlass.tsx";
 import { WaterWeek } from "./WaterWeek.tsx";
 import styles from "./WaterSheet.module.css";
@@ -28,8 +29,15 @@ export function WaterSheet({ date, onClose }: Props) {
   const { water: log, entries } = useAppState();
   const water = useWater(date);
   const { ml, trackedMl, goalMl, glassMl, glasses, share, reached, add } = water;
+  const goal = useWaterGoal();
+  const { profile } = useAppState();
   const byDate = useMemo(() => waterByDate(log, entries), [log, entries]);
-  const setGoal = (next: number) => saveSettings({ waterGoalMl: clampWaterGoal(next) });
+  /** A goal that comes to what the body works out to is the calculated one, not one set by hand. */
+  const setGoal = (next: number) => {
+    const ml = clampWaterGoal(next);
+    saveSettings({ customWaterGoalMl: ml === goal.calculatedMl ? null : ml });
+  };
+  const goalCaption = goal.custom ? "set by you" : profile ? `from your weight, ${Math.round(profile.weightKg * 10) / 10} kg` : `about ${glassCount(Math.round(glassesOf(goalMl, glassMl)))}`;
   const setGlass = (next: number) => saveSettings({ waterGlassMl: clampGlassMl(next) });
 
   const amounts = [
@@ -73,12 +81,15 @@ export function WaterSheet({ date, onClose }: Props) {
           <Stepper
             label="Daily goal"
             value={formatVolume(goalMl)}
-            caption={`about ${glassCount(Math.round(glassesOf(goalMl, glassMl)))}`}
+            caption={goalCaption}
             lessDisabled={goalMl <= MIN_WATER_GOAL_ML}
             moreDisabled={goalMl >= MAX_WATER_GOAL_ML}
             onLess={() => setGoal(goalMl - WATER_GOAL_STEP_ML)}
             onMore={() => setGoal(goalMl + WATER_GOAL_STEP_ML)}
           />
+          {goal.custom && goal.calculatedMl !== null && (
+            <Button variant="ghost" size="sm" onClick={() => saveSettings({ customWaterGoalMl: null })}>Use {formatVolume(goal.calculatedMl)} for your weight</Button>
+          )}
         </section>
 
         <section className={styles.section} aria-label="Glass size">

@@ -12,6 +12,8 @@ export {
   LuChevronDown as IconChevronDown,
   LuChevronLeft as IconChevronLeft,
   LuChevronRight as IconChevronRight,
+  LuCloud as IconCloud,
+  LuLogOut as IconSignOut,
   LuCircleAlert as IconAlert,
   LuClock as IconClock,
   LuCoffee as IconSnack,

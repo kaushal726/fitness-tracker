@@ -1,0 +1,3 @@
+SESSION_SECRET=replace-with-a-random-string-of-32-or-more-characters
+ALLOW_DEV_AUTH=1
+GOOGLE_CLIENT_ID=dev-placeholder-client-id

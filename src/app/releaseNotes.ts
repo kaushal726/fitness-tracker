@@ -25,6 +25,23 @@ export const CHANGE_LABELS: Record<ChangeKind, string> = { new: "New", better: "
 
 export const RELEASES: Release[] = [
   {
+    version: "1.2.0",
+    date: "27 Nov 2026",
+    title: "Back up your data, and a water goal that fits you",
+    changes: [
+      {
+        kind: "new",
+        title: "Sign in with Google (optional)",
+        text: "Sign in and your food, water and weight are saved to your own account, so a new or lost phone loses nothing. Prefer not to? Choose Continue without an account and the app works as before.",
+      },
+      {
+        kind: "new",
+        title: "Water goal from your weight",
+        text: "Your daily water goal is now worked out from your body weight and how active you are, and changes when they do. You can still set your own.",
+      },
+    ],
+  },
+  {
     version: "1.1.1",
     date: "24 Nov 2026",
     title: "A clearer calorie plan",
